@@ -1,0 +1,20 @@
+---
+description: Use @/ path alias for imports instead of relative paths
+alwaysApply: true
+---
+
+# Global imports (`@/`)
+
+Always use the `@/` path alias (maps to `src/`). Do **not** use relative imports (`./`, `../`).
+
+```typescript
+// ❌ BAD
+import { cn } from "../lib/utils";
+import { SiteHeader } from "./site-header";
+
+// ✅ GOOD
+import { cn } from "@/lib/utils";
+import { SiteHeader } from "@/components/site-header";
+```
+
+Exceptions: CSS modules in the same folder may use `./file.module.css`.

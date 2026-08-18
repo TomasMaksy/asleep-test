@@ -1,0 +1,15 @@
+---
+description: Use Bun for package management and script execution in this project
+alwaysApply: true
+---
+
+# Use Bun
+
+This project uses **Bun** as the package manager and runtime for scripts.
+
+- Install dependencies: `bun install`
+- Add packages: `bun add <package>` (not `npm install`)
+- Run scripts: `bun run <script>` (e.g. `bun run dev`, `bun run lint`)
+- Execute CLIs: `bunx <cli>` (e.g. `bunx biome check`)
+
+Do **not** use `npm`, `npx`, `yarn`, or `pnpm` unless the user explicitly asks.

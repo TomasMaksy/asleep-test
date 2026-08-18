@@ -1,0 +1,31 @@
+---
+description: Pages are sections; sections are components. Prefer server components.
+alwaysApply: true
+---
+
+# Page architecture
+
+A **page** is composed of **sections**. A **section** is composed of **components**.
+
+- Route files (`page.tsx`) only assemble sections — no large markup blobs
+- Sections live in `src/app/(home)/sections/`
+- Shared UI lives in `src/components/`
+- Do **not** add `"use client"` unless the file needs event handlers, state, or browser APIs
+- Prefer CSS (`:hover`, `details/summary`) over client JS for simple interactivity
+- Do not extract a component that is used once and is under ~40 lines
+
+```tsx
+// page.tsx
+export default function HomePage() {
+  return (
+    <>
+      <SiteHeader />
+      <main>
+        <HeroSection />
+        <ProductsSection />
+      </main>
+      <SiteFooter />
+    </>
+  );
+}
+```
