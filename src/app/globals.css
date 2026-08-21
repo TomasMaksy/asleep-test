@@ -3,14 +3,23 @@
 @theme inline {
   --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --breakpoint-xl: 90rem;
+  --breakpoint-2xl: 125rem;
+  /* Exact Matt Sleeps brand palette */
   --color-brand: #1a478a;
   --color-brand-dark: #2b2d41;
   --color-brand-muted: #eaeef7;
   --color-surface: #f5f5f5;
+  --background-image-highlight-light: linear-gradient(#244f9c 0%, #477ccc 100%);
+  --background-image-highlight-default: linear-gradient(
+    #e3dfdf 0%,
+    #eae6e6 100%
+  );
   --color-background: #ffffff;
   --color-foreground: #2b2d41;
   --text-rg: 0.875rem;
   --text-rg--line-height: 1.8;
+  --tracking-heading: -0.045em;
 }
 
 html,
@@ -30,6 +39,148 @@ h3,
   font-family: var(--font-heading);
 }
 
+h2,
+.heading {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-heading);
+  line-height: 1.15;
+}
+
+@media (min-width: 768px) {
+  h2,
+  .heading {
+    font-size: 4.5rem;
+    line-height: 1;
+  }
+}
+
+.reveal {
+  translate: 0 40px;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    translate 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.is-in {
+  translate: 0 0;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    translate: none;
+    opacity: 1;
+    pointer-events: auto;
+    transition: none;
+  }
+}
+
+@media (scripting: none) {
+  .reveal {
+    translate: none;
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
 details summary::-webkit-details-marker {
   display: none;
+}
+
+@keyframes media-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.media-marquee {
+  animation: media-marquee 40s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-marquee {
+    animation: none;
+  }
+}
+
+@keyframes footer-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.footer-marquee {
+  animation: footer-marquee 30s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-marquee {
+    animation: none;
+  }
+}
+
+@keyframes hero-enter-from-left {
+  from {
+    transform: translate3d(-120vw, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes hero-enter-from-right {
+  from {
+    transform: translate3d(120vw, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.hero-enter-left,
+.hero-enter-right {
+  animation-duration: 1.6s;
+  animation-timing-function: cubic-bezier(0.87, 0, 0.13, 1);
+  animation-fill-mode: both;
+  will-change: transform;
+}
+
+.hero-enter-left {
+  animation-name: hero-enter-from-left;
+}
+
+.hero-enter-right {
+  animation-name: hero-enter-from-right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-enter-left,
+  .hero-enter-right {
+    animation: none;
+  }
+}
+
+/* Kill Chrome/Safari autocomplete paint on the footer newsletter field */
+.newsletter-input:-webkit-autofill,
+.newsletter-input:-webkit-autofill:hover,
+.newsletter-input:-webkit-autofill:focus,
+.newsletter-input:-webkit-autofill:active {
+  -webkit-text-fill-color: #fff !important;
+  caret-color: #fff;
+  /* Match footer pill tone without a second rounded edge */
+  border-radius: 0 !important;
+  box-shadow: 0 0 0 1000px #404254 inset !important;
+  transition: background-color 99999s ease-in-out 0s;
+  background-color: transparent !important;
+  background-image: none !important;
 }

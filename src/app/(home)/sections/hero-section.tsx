@@ -1,71 +1,115 @@
 import Image from "next/image";
-import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import { HERO } from "@/lib/copy";
 
-export function HeroSection() {
+function HeroHeadline({
+  peopleClassName,
+  textClassName,
+}: {
+  peopleClassName: string;
+  textClassName: string;
+}) {
+  const typeClassName = `absolute left-1/2 m-0 flex -translate-x-1/2 flex-col items-center gap-[0.08em] text-center font-black font-heading text-white leading-none tracking-[-0.045em] ${textClassName}`;
+
   return (
-    <section className="relative h-[100svh] min-h-[700px] overflow-hidden bg-brand lg:h-[1020px]">
-      <Image
-        alt=""
-        className="hidden object-cover object-center lg:block"
-        fill
-        priority
-        sizes="(min-width: 1024px) 100vw, 1px"
-        src="/images/hero-banner-desktop.png"
-      />
-      <Image
-        alt=""
-        className="object-cover object-center lg:hidden"
-        fill
-        priority
-        sizes="(max-width: 1023px) 100vw, 1px"
-        src="/images/hero-banner-mobile.png"
-      />
-
-      <SiteHeader />
-
-      <div className="relative z-10 flex h-full flex-col items-center pt-20">
-        <h1 className="relative flex w-full max-w-[720px] flex-col items-center px-4 text-center font-black font-heading text-white">
-          <span className="relative z-0 mt-2 text-[clamp(2.5rem,5.5vw,4.75rem)] leading-[0.9] tracking-tight">
-            {HERO.lineOne}
-          </span>
-          <span className="pointer-events-none absolute top-[38%] z-0 w-[min(659px,92vw)] text-[clamp(2.4rem,5.8vw,5.4rem)] leading-[0.88] tracking-tight">
-            {HERO.lineTwo}
-            <br />
-            {HERO.lineThree}
-          </span>
-          <div className="relative z-10 -mt-4 w-[min(626px,90vw)]">
-            <Image
-              alt=""
-              className="h-auto w-full"
-              height={573}
-              priority
-              src="/images/hero-people.png"
-              width={648}
-            />
-          </div>
-        </h1>
-
-        <Button
-          className="relative z-20 mt-2 h-[52px] min-w-[184px] px-8 font-medium"
-          href="#"
-        >
-          {HERO.cta}
-        </Button>
-      </div>
-
-      <div className="absolute right-6 bottom-8 z-20 hidden w-[357px] text-right md:block lg:right-10">
-        <p className="mb-2 font-sans text-sm text-white">
-          {HERO.awardsCaption}
+    <>
+      <h1 className="sr-only">
+        {HERO.lineOne} {HERO.lineTwo} {HERO.lineThree}
+      </h1>
+      <div className="hero-enter-left absolute inset-0 z-10">
+        <p aria-hidden="true" className={typeClassName}>
+          <span className="block">{HERO.lineOne}</span>
         </p>
+      </div>
+      <div className={`pointer-events-none absolute z-20 ${peopleClassName}`}>
         <Image
           alt=""
-          className="ml-auto h-auto w-full"
-          height={125}
-          src="/images/awards.png"
-          width={357}
+          className="h-auto w-full"
+          height={2843}
+          sizes="45vw"
+          src="/images/hero-people.webp"
+          width={3214}
         />
+      </div>
+      <div className="hero-enter-right absolute inset-0 z-30">
+        <p aria-hidden="true" className={typeClassName}>
+          <span className="invisible block">{HERO.lineOne}</span>
+          <span className="block">{HERO.lineTwo}</span>
+          <span className="block">{HERO.lineThree}</span>
+        </p>
+      </div>
+    </>
+  );
+}
+
+export function HeroSection() {
+  return (
+    <section className="relative flex h-[calc(100vh-48px)] flex-col items-center overflow-hidden bg-[#1A478A] pb-8 lg:-mt-5">
+      {/* Media-specific LCP preloads — only the visible artboard is prioritized */}
+      <link
+        as="image"
+        fetchPriority="high"
+        href="/images/hero-banner-desktop.webp"
+        media="(min-width: 768px)"
+        rel="preload"
+      />
+      <link
+        as="image"
+        fetchPriority="high"
+        href="/images/hero-banner-mobile.png"
+        media="(max-width: 767px)"
+        rel="preload"
+      />
+
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="@container absolute top-1/2 left-1/2 hidden aspect-[2560/1813] w-[max(100%,calc((100vh-48px)*1.41202))] -translate-x-1/2 -translate-y-1/2 md:block">
+          <Image
+            alt=""
+            className="object-cover"
+            fill
+            sizes="(min-width: 768px) 100vw, 1px"
+            src="/images/hero-banner-desktop.webp"
+          />
+          <HeroHeadline
+            peopleClassName="left-[29.42%] top-[23.07%] w-[43.45%]"
+            textClassName="top-[23.4%] w-[52%] text-[6.2cqw]"
+          />
+        </div>
+
+        <div className="@container absolute top-1/2 left-1/2 aspect-[780/1688] w-[max(100%,calc((100vh-48px)*0.46209))] -translate-x-1/2 -translate-y-1/2 md:hidden">
+          <Image
+            alt=""
+            className="object-cover"
+            fill
+            sizes="(max-width: 767px) 100vw, 1px"
+            src="/images/hero-banner-mobile.png"
+          />
+          <HeroHeadline
+            peopleClassName="-left-[2.06%] top-[30.19%] w-[100.92%]"
+            textClassName="top-[29.8%] w-[92%] text-[11.8cqw]"
+          />
+        </div>
+      </div>
+
+      <div className="absolute right-0 bottom-8 z-10 w-full px-5 md:bottom-10 md:px-10">
+        <div className="w-full items-center md:flex lg:block xl:mx-auto xl:max-w-[1440px] 2xl:max-w-[2000px]">
+          <div className="mb-0 flex items-center justify-center md:mb-4 lg:-mb-24">
+            <Button href="#">{HERO.cta}</Button>
+          </div>
+          <div className="mt-0 ml-auto w-full origin-bottom scale-[85%] text-center md:w-fit md:max-w-[46rem] md:scale-100">
+            <p className="mx-auto mb-0 w-fit font-bold font-heading text-base text-white leading-tight">
+              {HERO.awardsCaption}
+            </p>
+            <Image
+              alt=""
+              className="z-40 mx-auto h-auto w-[300px] object-contain md:w-[357px]"
+              height={171}
+              sizes="(max-width: 768px) 300px, 357px"
+              src="/images/awards.png"
+              width={486}
+            />
+          </div>
+        </div>
       </div>
     </section>
   );

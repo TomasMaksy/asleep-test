@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
+import { CartSheetHost } from "@/components/cart/cart-sheet-host";
+import { RevealObserver } from "@/components/reveal-observer";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 
@@ -17,7 +19,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html className={cn(dmSans.variable, "h-full antialiased")} lang="en">
-      <body className="relative min-h-full font-sans">{children}</body>
+      <body className="relative min-h-full font-sans">
+        <RevealObserver />
+        {children}
+        <CartSheetHost />
+      </body>
     </html>
   );
 }

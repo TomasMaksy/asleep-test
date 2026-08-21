@@ -1,33 +1,47 @@
 import Image from "next/image";
+import Link from "next/link";
+import { BedroomParallax } from "@/components/effects/bedroom-parallax";
 import { BEDROOM } from "@/lib/copy";
 import { cn } from "@/lib/utils";
 
+const BEDROOM_OFFSETS = BEDROOM.items.map((item) => item.offset);
+
 export function BedroomSection() {
   return (
-    <section className="bg-white px-6 py-16 lg:px-10 lg:py-24">
-      <h2 className="mb-12 text-center font-bold font-heading text-4xl text-[#d1dae8] leading-none md:text-[4.5rem]">
-        {BEDROOM.heading[0]}
-        <br />
-        {BEDROOM.heading[1]}
-      </h2>
-      <div className="mx-auto grid max-w-screen-xl grid-cols-2 gap-4 lg:grid-cols-3 lg:grid-rows-2">
-        {BEDROOM.images.map((image) => (
-          <div
-            className={cn(
-              "relative min-h-[242px] overflow-hidden",
-              image.className,
-            )}
-            key={image.src}
-          >
-            <Image
-              alt={image.alt}
-              className="h-full w-full object-cover"
-              fill
-              sizes="(max-width: 1024px) 50vw, 33vw"
-              src={image.src}
-            />
-          </div>
-        ))}
+    <section className="bg-white">
+      <div className="mx-auto w-full max-w-screen-xl px-6 py-14 text-center lg:px-10 lg:py-32">
+        <h2 className="reveal mx-auto max-w-[730px] text-brand-dark">
+          {BEDROOM.heading}
+        </h2>
+
+        <BedroomParallax offsets={BEDROOM_OFFSETS}>
+          {BEDROOM.items.map((item) => (
+            <div
+              className={cn("will-change-transform", item.className)}
+              data-bedroom-cell=""
+              key={item.label}
+              style={{ transform: `translateY(${item.offset}px)` }}
+            >
+              <Link
+                className="relative z-10 block h-full transform-gpu text-left duration-500 ease-in-out"
+                href={item.href}
+              >
+                <div className="relative h-full w-full overflow-hidden rounded-3xl lg:rounded-[40px]">
+                  <Image
+                    alt={item.alt}
+                    className="object-cover"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    src={item.src}
+                  />
+                </div>
+                <p className="absolute bottom-3 left-3 font-bold text-base text-white md:bottom-7 md:left-7">
+                  {item.label}
+                </p>
+              </Link>
+            </div>
+          ))}
+        </BedroomParallax>
       </div>
     </section>
   );

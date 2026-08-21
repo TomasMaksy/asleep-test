@@ -7,10 +7,12 @@ import { PromiseSection } from "@/app/(home)/sections/promise-section";
 import { ReviewsSection } from "@/app/(home)/sections/reviews-section";
 import { SupportSection } from "@/app/(home)/sections/support-section";
 import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
 
 export default function HomePage() {
   return (
     <>
+      <SiteHeader />
       <main>
         <HeroSection />
         <ProductsSection />

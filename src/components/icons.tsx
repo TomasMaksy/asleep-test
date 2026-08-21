@@ -1,19 +1,46 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-export function Logo({ className }: { className?: string }) {
+type LogoProps = {
+  className?: string;
+  variant?: "auto" | "white" | "dark";
+};
+
+export function Logo({ className, variant = "auto" }: LogoProps) {
+  if (variant !== "auto") {
+    return (
+      <Image
+        alt="Asleep"
+        className={cn("h-[27px] w-auto", className)}
+        height={417}
+        src={
+          variant === "white"
+            ? "/images/logo/asleep-white.png"
+            : "/images/logo/asleep-blue.png"
+        }
+        width={1304}
+      />
+    );
+  }
+
   return (
-    <svg
-      aria-hidden="true"
-      className={cn("h-[27px] w-[85px]", className)}
-      fill="currentColor"
-      viewBox="0 0 85 27"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path d="M0 25.6505V7.11636H6.8303V9.37164C7.8688 7.56209 9.38921 6.63867 11.4965 6.63867C14.0127 6.63867 15.7163 7.59938 16.6036 9.52081C17.8982 7.59938 20.0232 6.63867 22.872 6.63867C27.2003 6.63867 29.5476 9.55632 29.5476 14.692V25.6522H22.7173V15.5035C22.7173 13.7295 21.9508 12.6214 20.6189 12.6214C19.2497 12.6214 18.2627 13.8413 18.2627 15.6136V25.6487H11.2848V15.5035C11.2848 13.7295 10.5006 12.6214 9.16871 12.6214C7.83679 12.6214 6.8303 13.8413 6.8303 15.6136V25.6487H0V25.6505Z" />
-      <path d="M34.8278 9.42669C36.567 7.54256 38.7969 6.61914 41.4234 6.61914C44.1246 6.61914 45.8335 7.35788 46.5768 8.79806V6.87663H53.2577V25.4107H46.5768V23.5017C45.8353 24.9419 44.1246 25.6807 41.4234 25.6807C38.7969 25.6807 36.5723 24.7572 34.8332 22.9104C33.094 21.0636 32.2031 18.8101 32.2031 16.1499C32.2049 13.527 33.0887 11.2753 34.8278 9.42669ZM42.8549 19.698C44.9639 19.698 46.7386 18.1104 46.7386 16.1517C46.7386 14.2302 44.9621 12.6054 42.8549 12.6054C40.7459 12.6054 38.9712 14.2302 38.9712 16.1517C38.9712 18.1086 40.7477 19.698 42.8549 19.698Z" />
-      <path d="M58.4999 13.0486H55.9766V7.11743H58.4999V0H65.3302V7.11743H69.1908V13.0486H65.3302V18.0919C65.3302 19.5694 65.9828 20.198 67.4268 20.198C67.7593 20.198 68.1523 20.1607 68.7463 20.0506V25.8504C67.8553 26.0351 66.8044 26.1452 65.5098 26.1452C60.8863 26.1452 58.4999 23.7816 58.4999 19.0526V13.0486Z" />
-      <path d="M74.3046 13.0486H71.7812V7.11743H74.3046V0H81.1349V7.11743H84.9955V13.0486H81.1349V18.0919C81.1349 19.5694 81.7146 20.198 83.1568 20.198C83.4893 20.198 83.957 20.1607 84.4016 20.0506V25.8504C83.66 26.0351 82.5344 26.1452 81.2398 26.1452C76.6163 26.1452 74.3046 23.7816 74.3046 19.0526V13.0486Z" />
-    </svg>
+    <span className={cn("relative block h-[27px] w-[85px]", className)}>
+      <Image
+        alt="Asleep"
+        className="object-contain duration-150 group-hover:opacity-0 group-data-[scrolled=true]:opacity-0"
+        fill
+        priority
+        sizes="85px"
+        src="/images/logo/asleep-white.png"
+      />
+      <Image
+        alt=""
+        className="object-contain opacity-0 duration-150 group-hover:opacity-100 group-data-[scrolled=true]:opacity-100"
+        fill
+        sizes="85px"
+        src="/images/logo/asleep-blue.png"
+      />
+    </span>
   );
 }
 
@@ -31,29 +58,6 @@ export function ChevronIcon({ className }: { className?: string }) {
         stroke="currentColor"
         strokeLinecap="round"
         strokeWidth="1.208"
-      />
-    </svg>
-  );
-}
-
-export function BagIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      aria-hidden="true"
-      className={cn("h-[15px] w-3", className)}
-      fill="none"
-      viewBox="0 0 12 15"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        className="duration-300"
-        d="M10.692 14.257H1.188C0.5346 14.257 0 13.7224 0 13.069V3.56495C0 2.91155 0.5346 2.37695 1.188 2.37695H10.692C11.3454 2.37695 11.88 2.91155 11.88 3.56495V13.069C11.88 13.7224 11.3454 14.257 10.692 14.257ZM1.188 3.56495V13.069H10.692V3.56495H1.188Z"
-        fill="currentColor"
-      />
-      <path
-        className="duration-300"
-        d="M7.7205 4.752C7.3938 4.752 7.1265 4.4847 7.1265 4.158V1.782C7.1265 1.4553 6.8592 1.188 6.5325 1.188H5.3445C5.0178 1.188 4.7505 1.4553 4.7505 1.782V4.158C4.7505 4.4847 4.4832 4.752 4.1565 4.752C3.8298 4.752 3.5625 4.4847 3.5625 4.158V1.782C3.5625 0.8019 4.3644 0 5.3445 0H6.5325C7.5126 0 8.3145 0.8019 8.3145 1.782V4.158C8.3145 4.4847 8.0472 4.752 7.7205 4.752Z"
-        fill="currentColor"
       />
     </svg>
   );
