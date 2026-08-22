@@ -56,7 +56,7 @@ export function HeroSection() {
       <link
         as="image"
         fetchPriority="high"
-        href="/images/hero-banner-mobile.png"
+        href="/images/hero-banner-mobile.webp"
         media="(max-width: 767px)"
         rel="preload"
       />
@@ -82,7 +82,7 @@ export function HeroSection() {
             className="object-cover"
             fill
             sizes="(max-width: 767px) 100vw, 1px"
-            src="/images/hero-banner-mobile.png"
+            src="/images/hero-banner-mobile.webp"
           />
           <HeroHeadline
             peopleClassName="-left-[2.06%] top-[30.19%] w-[100.92%]"
