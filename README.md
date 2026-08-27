@@ -25,8 +25,6 @@ bun run i18n:check
 
 Open [http://localhost:3000](http://localhost:3000) for the homepage.
 
-Open [http://localhost:3000/compare](http://localhost:3000/compare) to compare our page against a captured screenshot of the original (split, overlay, and difference blend).
-
 ## Structure
 
 A page is assembled from sections; sections are assembled from components. Almost everything is a server component.
