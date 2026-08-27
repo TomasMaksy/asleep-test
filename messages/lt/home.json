@@ -1,0 +1,427 @@
+{
+  "hero": {
+    "lineOne": "Puikus miegas,",
+    "lineTwo": "dviem būdais",
+    "lineThree": "",
+    "cta": "Atrasti čiužinius",
+    "awardsCaption": "Geriausiai įvertintas čiužinys"
+  },
+  "products": {
+    "heading": [
+      "Puikus miegas,",
+      "dviem būdais"
+    ],
+    "items": [
+      {
+        "id": "original",
+        "title": "Original",
+        "variant": "dark",
+        "image": "/images/product-original.webp",
+        "imageAlt": "Lorem ipsum mattress",
+        "cta": "Atrasti Original",
+        "price": 699,
+        "sizeLabel": "180 × 200 cm",
+        "features": [
+          "Lorem ipsum dolor sit amet consectetur adipiscing elit",
+          "Sed do eiusmod tempor incididunt ut labore et dolore",
+          "Ut enim ad minim veniam quis nostrud exercitation",
+          "Ullamco laboris nisi ut aliquip ex ea commodo"
+        ]
+      },
+      {
+        "id": "hybrid",
+        "title": "Hybrid Pro",
+        "variant": "light",
+        "image": "/images/product-hybrid.webp",
+        "imageAlt": "Lorem ipsum hybrid mattress",
+        "cta": "Atrasti Hybrid Pro",
+        "price": 899,
+        "sizeLabel": "180 × 200 cm",
+        "features": [
+          "Duis aute irure dolor in reprehenderit in voluptate",
+          "Excepteur sint occaecat cupidatat non proident sunt",
+          "Officia deserunt mollit anim id est laborum",
+          "Lorem ipsum dolor sit amet consectetur adipiscing"
+        ]
+      }
+    ]
+  },
+  "bundles": {
+    "heading": "Atraskite mūsų rinkinius",
+    "items": [
+      {
+        "title": "Lorem ipsum",
+        "badge": "Lorem 35%",
+        "image": "/images/bundle-1.jpg",
+        "features": [
+          "Lorem ipsum dolor",
+          "Sit amet consectetur",
+          "Adipiscing elit sed",
+          "Eiusmod tempor",
+          "Incididunt ut labore",
+          "Dolore magna aliqua"
+        ]
+      },
+      {
+        "title": "Dolor sit amet",
+        "badge": "Lorem 40%",
+        "image": "/images/bundle-2.jpg",
+        "features": [
+          "Ut enim ad minim",
+          "Veniam quis nostrud",
+          "Exercitation ullamco",
+          "Laboris nisi ut",
+          "Aliquip ex ea"
+        ]
+      },
+      {
+        "title": "Consectetur adipiscing",
+        "badge": "Lorem 45%",
+        "image": "/images/bundle-3.jpg",
+        "features": [
+          "Commodo consequat",
+          "Duis aute irure",
+          "Dolor in reprehenderit",
+          "Voluptate velit esse"
+        ]
+      }
+    ]
+  },
+  "reviews": {
+    "stat": "40 000+",
+    "caption": "laimingų klientų",
+    "cta": "Visi atsiliepimai",
+    "cards": [
+      {
+        "quote": "Penkių žvaigždučių viešbučio patirtis",
+        "source": "google",
+        "left": "-3.13%",
+        "top": "51.66%",
+        "width": "16.94%"
+      },
+      {
+        "quote": "Geras čiužinys nuo pirmos nakties",
+        "source": "consumentenbond",
+        "left": "83.40%",
+        "top": "44.82%",
+        "width": "18.06%"
+      },
+      {
+        "quote": "Daugiau nebebunu pavargęs",
+        "source": "google",
+        "left": "67.29%",
+        "top": "69.04%",
+        "width": "15.83%"
+      },
+      {
+        "quote": "Geriausias miegas per metus",
+        "source": "consumentenbond",
+        "left": "16.60%",
+        "top": "59.12%",
+        "width": "16.94%"
+      },
+      {
+        "quote": "Malonus ir greitas pristatymas",
+        "source": "asleep",
+        "left": "61.42%",
+        "top": "50.39%",
+        "width": "20.07%"
+      },
+      {
+        "quote": "Labai geras ir gerai apgalvotas čiužinys.",
+        "source": "google",
+        "left": "0.28%",
+        "top": "20.31%",
+        "width": "15.83%"
+      },
+      {
+        "quote": "Nuostabus čiužinys",
+        "source": "consumentenbond",
+        "left": "45.14%",
+        "top": "18.75%",
+        "width": "18.06%"
+      },
+      {
+        "quote": "Seniai taip gerai nemiegojau",
+        "source": "consumentenbond",
+        "left": "2.57%",
+        "top": "-3.61%",
+        "width": "18.06%"
+      },
+      {
+        "quote": "Nebėra nugaros skausmo",
+        "source": "asleep",
+        "left": "13.78%",
+        "top": "39.45%",
+        "width": "20.07%"
+      },
+      {
+        "quote": "Teisingai išrinktas geriausiu teste",
+        "source": "asleep",
+        "left": "38.61%",
+        "top": "61.52%",
+        "width": "20.07%"
+      },
+      {
+        "quote": "Niekada neberekomenduočiau kito čiužinio",
+        "source": "consumentenbond",
+        "left": "31.32%",
+        "top": "81.15%",
+        "width": "18.06%"
+      },
+      {
+        "quote": "Pagalba aukščiausio lygio",
+        "source": "asleep",
+        "left": "22.57%",
+        "top": "6.25%",
+        "width": "20.07%"
+      },
+      {
+        "quote": "Klientų aptarnavimas puikus",
+        "source": "asleep",
+        "left": "59.62%",
+        "top": "89.65%",
+        "width": "20.07%"
+      },
+      {
+        "quote": "Nugaros skausmas dingo",
+        "source": "asleep",
+        "left": "84.34%",
+        "top": "75.39%",
+        "width": "20.07%"
+      },
+      {
+        "quote": "Puikus čiužinys",
+        "source": "asleep",
+        "left": "65.38%",
+        "top": "1.66%",
+        "width": "20.07%"
+      },
+      {
+        "quote": "Idealus komfortas",
+        "source": "consumentenbond",
+        "left": "45.42%",
+        "top": "-3.58%",
+        "width": "16.94%"
+      },
+      {
+        "quote": "Čiužinys, po kurio jaučiuosi pailsėjęs.",
+        "source": "google",
+        "left": "65.83%",
+        "top": "25.49%",
+        "width": "16.94%"
+      },
+      {
+        "quote": "Nereikia ieškoti toliau!",
+        "source": "google",
+        "left": "85.21%",
+        "top": "17.77%",
+        "width": "16.94%"
+      },
+      {
+        "quote": "Fantastiškas čiužinys, rekomenduočiau visiems!",
+        "source": "asleep",
+        "left": "2.71%",
+        "top": "79.10%",
+        "width": "20.07%"
+      },
+      {
+        "quote": "Miegas vėl tapo poilsiu.",
+        "source": "google",
+        "left": "25.35%",
+        "top": "25.00%",
+        "width": "15.83%"
+      }
+    ],
+    "cardsMobile": [
+      {
+        "quote": "Nuostabus čiužinys",
+        "source": "consumentenbond",
+        "left": "-21.54%",
+        "top": "61.49%",
+        "width": "66.67%"
+      },
+      {
+        "quote": "Čiužinys, po kurio jaučiuosi pailsėjęs.",
+        "source": "google",
+        "left": "60.51%",
+        "top": "16.59%",
+        "width": "62.56%"
+      },
+      {
+        "quote": "Puikus čiužinys",
+        "source": "asleep",
+        "left": "22.68%",
+        "top": "-3.32%",
+        "width": "74.11%"
+      },
+      {
+        "quote": "Miegas vėl tapo poilsiu.",
+        "source": "google",
+        "left": "-11.03%",
+        "top": "18.13%",
+        "width": "58.46%"
+      },
+      {
+        "quote": "Malonus ir greitas pristatymas",
+        "source": "asleep",
+        "left": "55.13%",
+        "top": "65.40%",
+        "width": "62.55%"
+      },
+      {
+        "quote": "Teisingai išrinktas geriausiu teste",
+        "source": "asleep",
+        "left": "13.85%",
+        "top": "88.27%",
+        "width": "74.11%"
+      },
+      {
+        "quote": "Nebėra nugaros skausmo",
+        "source": "asleep",
+        "left": "-51.16%",
+        "top": "39.34%",
+        "width": "74.11%"
+      },
+      {
+        "quote": "Labai geras ir gerai apgalvotas čiužinys.",
+        "source": "google",
+        "left": "77.44%",
+        "top": "46.56%",
+        "width": "58.46%"
+      }
+    ],
+    "sources": {
+      "asleep": "Asleep",
+      "google": "Google atsiliepimai",
+      "consumentenbond": "Consumentenbond"
+    }
+  },
+  "bedroom": {
+    "heading": "Užbaikite savo miegamąjį.",
+    "items": [
+      {
+        "label": "Reguliuojamas čiužinys",
+        "src": "/images/bedroom-1.jpg",
+        "alt": "Reguliuojamas čiužinys miegamajame",
+        "href": "#",
+        "className": "row-start-1 col-start-1 col-span-2 row-span-2",
+        "offset": 200
+      },
+      {
+        "label": "Boxspring lova",
+        "src": "/images/bedroom-2.jpg",
+        "alt": "Boxspring lova",
+        "href": "#",
+        "className": "row-start-3 col-start-1 row-span-2 lg:col-start-3 lg:row-span-2",
+        "offset": 400
+      },
+      {
+        "label": "Pagalvė",
+        "src": "/images/bedroom-3.jpg",
+        "alt": "Pagalvė",
+        "href": "#",
+        "className": "row-start-3 lg:col-start-4 lg:row-start-auto",
+        "offset": 100
+      },
+      {
+        "label": "Patalynė",
+        "src": "/images/bedroom-4.jpg",
+        "alt": "Patalynė",
+        "href": "#",
+        "className": "col-start-2 row-start-4 lg:col-start-4 lg:row-start-2",
+        "offset": 600
+      }
+    ]
+  },
+  "promise": {
+    "heading": "Mūsų pažadas.",
+    "items": [
+      {
+        "icon": "/images/icons/price.svg",
+        "title": "The innovative sleep experience",
+        "body": "We researched, analysed and tested the best materials to revolutionize your sleep experience."
+      },
+      {
+        "icon": "/images/icons/map.svg",
+        "title": "Handcrafted in Europe",
+        "body": "With an eye for detail, we design quality bedding products from durable materials, here in the Baltics."
+      },
+      {
+        "icon": "/images/icons/piggy.svg",
+        "title": "Better price, better quality",
+        "body": "No commercial chit chat, long queues or unrealistic delivery time. We cut the unnecessary crap to sell Matt at a fair price."
+      },
+      {
+        "icon": "/images/icons/thumb.svg",
+        "title": "100% satisfaction guaranteed",
+        "body": "Shipping is free and fast. We are happy to lend Matt during a 120 day period and to offer you a 10 year warranty."
+      }
+    ]
+  },
+  "media": {
+    "heading": "Spaudoje",
+    "tabs": [
+      "Spauda",
+      "Apdovanojimai"
+    ],
+    "quote": "\"The profit margins of the mattress market are unreasonably high.\"",
+    "logos": [
+      {
+        "src": "/images/media/telegraaf.png",
+        "alt": "De Telegraaf"
+      },
+      {
+        "src": "/images/media/mtsprout.png",
+        "alt": "mt/sprout"
+      },
+      {
+        "src": "/images/media/nrc.png",
+        "alt": "nrc"
+      },
+      {
+        "src": "/images/media/bnr.png",
+        "alt": "BNR"
+      },
+      {
+        "src": "/images/media/parool.png",
+        "alt": "Het Parool"
+      },
+      {
+        "src": "/images/media/rtl.png",
+        "alt": "RTL"
+      },
+      {
+        "src": "/images/media/metro.png",
+        "alt": "Metro"
+      },
+      {
+        "src": "/images/media/cowboys.png",
+        "alt": "Marketing Tribune"
+      }
+    ]
+  },
+  "support": [
+    {
+      "icon": "/images/icons/headset.png",
+      "title": "Susirašykite su mumis",
+      "body": "Our Dreamteam is ready to help you with your questions.",
+      "cta": "Pradėti pokalbį",
+      "href": "#"
+    },
+    {
+      "icon": "/images/icons/box.png",
+      "title": "Dažniausiai užduodami klausimai",
+      "body": "We bundled most of the common questions for you.",
+      "cta": "Peržiūrėti DUK",
+      "href": "#"
+    },
+    {
+      "icon": "/images/icons/shield.png",
+      "title": "Skambinkite mums",
+      "body": "Our Dreamteam helps you to find the perfect mattress.",
+      "cta": "Skambinti +370",
+      "href": "tel:+31202615296"
+    }
+  ]
+}

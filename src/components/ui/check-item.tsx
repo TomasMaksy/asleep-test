@@ -11,9 +11,9 @@ export function CheckItem({
   iconClassName?: string;
 }) {
   return (
-    <div className={cn("flex items-center gap-x-2", className)}>
-      <CheckIcon className={iconClassName} />
-      <p>{children}</p>
+    <div className={cn("flex items-start gap-x-2", className)}>
+      <CheckIcon className={cn("mt-0.5", iconClassName)} />
+      <p className="leading-snug">{children}</p>
     </div>
   );
 }

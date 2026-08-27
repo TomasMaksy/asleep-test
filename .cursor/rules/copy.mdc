@@ -1,0 +1,18 @@
+---
+description: Copy and translation workflow for Asleep.lt. Read when editing headlines, CTAs, FAQs, or any user-facing text.
+globs: messages/**
+alwaysApply: true
+---
+
+# Copy
+
+User-facing text lives in `messages/`, not in React files. Full guide: `COPY.md`.
+
+- Locales: `lt` (default), `en`. Edit both. Keep keys identical.
+- Shared chrome → `messages/{locale}.json`
+- Home → `messages/{locale}/home.json`
+- Original PDP → `messages/{locale}/product-original.json`
+- Reviews → `messages/{locale}/reviews-page.json`
+- Do not rename keys. Do not change `id`, `href`, `image`, `src`, `left`, `top`, `width`, `className`, `offset`, or prices.
+- Keep `{amount}`, `{price}`, `{count}`, `{name}`, `{title}` placeholders as-is.
+- Brand is **Asleep**, not Matt. After edits run `bun run i18n:check`.

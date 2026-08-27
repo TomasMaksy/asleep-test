@@ -1,0 +1,104 @@
+{
+  "metadata": {
+    "title": "Reviews | Asleep",
+    "description": "Read what customers say about Asleep mattresses. Ratings, stories, and press coverage."
+  },
+  "hero": {
+    "title": "Don't judge a mattress by its box.",
+    "body": "To us, Asleep is perfect and we'll do everything possible to get your relationship with Asleep off to a great start. We, and many future Asleep users with us, are looking forward to your adventures together!",
+    "seeAll": "See all reviews",
+    "share": "Share your experience",
+    "rating": "4.8 out of 5 stars",
+    "ratings": [
+      {
+        "label": "Google",
+        "logo": "/images/reviews/google.png",
+        "logoWidth": 512,
+        "logoHeight": 512
+      },
+      {
+        "label": "Asleep",
+        "logo": "/images/logo/asleep-black.png",
+        "logoWidth": 1304,
+        "logoHeight": 417
+      }
+    ]
+  },
+  "shareSheet": {
+    "title": "Tell us what you think of Asleep here",
+    "close": "Close review form",
+    "nameLabel": "Name*",
+    "namePlaceholder": "Name Surname",
+    "emailLabel": "E-mail*",
+    "emailPlaceholder": "E-mail",
+    "productLabel": "Which product do you want to review?*",
+    "products": [
+      "Asleep Original Mattress",
+      "Asleep Hybrid Pro Mattress",
+      "Asleep Original Pillow",
+      "Asleep Topper"
+    ],
+    "ratingLabel": "Your rating*",
+    "ratingStar": "{count} stars",
+    "reviewTitleLabel": "Review title*",
+    "reviewTitlePlaceholder": "Sum up your experience",
+    "reviewBodyLabel": "Your review*",
+    "reviewBodyPlaceholder": "Tell us more about your experience",
+    "send": "Send",
+    "sending": "Sending…",
+    "successTitle": "Thanks for sharing!",
+    "successBody": "We’ve received your review. It helps other sleepers find their perfect mattress.",
+    "done": "Done"
+  },
+  "carousel": {
+    "prev": "Previous reviews",
+    "next": "Next reviews",
+    "items": [
+      {
+        "title": "Fast delivery, great service",
+        "body": "I was a bit skeptical about a memory-foam pillow, but this Asleep pillow changed my mind — beautiful material with comfort I can still adjust. Customer service is also quick, involved, and flexible!",
+        "date": "25 August 2026"
+      },
+      {
+        "title": "Very happy with my new mattress",
+        "body": "I've finally found what's perfect for my needs in terms of comfort, and I'm delighted. I would have liked to hear about Asleep sooner.",
+        "date": "22 August 2026"
+      },
+      {
+        "title": "No more overheating at night",
+        "body": "The ventilation system really works — I no longer wake up feeling too hot at night. Plus, the materials feel premium and sustainable, which matters a lot to me. You can feel the quality. Five stars from me!",
+        "date": "20 August 2026"
+      },
+      {
+        "title": "The best support I've ever felt in a mattress",
+        "body": "I've tried several 'premium' mattresses before, but nothing comes close. You can feel it was designed with real sleep science behind it. The support is amazing and I fall asleep faster and deeper.",
+        "date": "19 August 2026"
+      },
+      {
+        "title": "Back pain gone after just one night!",
+        "body": "After sleeping on Asleep for just one night, I woke up without any back pain for the first time in months. It truly adapts to your body and offers just the right balance between firmness and comfort. Delivery was fast and customer service was super helpful. Highly recommend!",
+        "date": "18 August 2026"
+      },
+      {
+        "title": "Perfect for couples with different comfort needs",
+        "body": "I was a bit skeptical at first, but the 120-day trial gave me the confidence to try it out. Best decision ever. My wife prefers a softer feel, while I like it firmer. This mattress somehow works perfectly for both of us. Impressive!",
+        "date": "18 August 2026"
+      },
+      {
+        "title": "Love it!",
+        "body": "Its adaptability has reconciled me with foam mattresses: I've finally been able to adjust a mattress to the firmness I like.",
+        "date": "17 August 2026"
+      },
+      {
+        "title": "Perfect for my back!",
+        "body": "I've finally found the perfect support for my back. I fall asleep much faster and wake up far less during the night.",
+        "date": "17 August 2026"
+      },
+      {
+        "title": "Fulfills its functions",
+        "body": "Adds an extra touch of comfort that's very nice.",
+        "date": "5 August 2026"
+      }
+    ]
+  }
+}

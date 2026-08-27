@@ -1,0 +1,104 @@
+{
+  "metadata": {
+    "title": "Atsiliepimai | Asleep",
+    "description": "Skaitykite, ką klientai sako apie Asleep čiužinius. Įvertinimai, istorijos ir spauda."
+  },
+  "hero": {
+    "title": "Nespręskite apie čiužinį iš dėžės.",
+    "body": "Mums Asleep yra tobulas ir padarysime viską, kad jūsų santykiai su Asleep prasidėtų kuo geriau. Mes ir daugelis būsimų Asleep naudotojų nekantraujame išgirsti jūsų istorijas!",
+    "seeAll": "Visi atsiliepimai",
+    "share": "Pasidalinkite patirtimi",
+    "rating": "4,8 iš 5 žvaigždučių",
+    "ratings": [
+      {
+        "label": "Google",
+        "logo": "/images/reviews/google.png",
+        "logoWidth": 512,
+        "logoHeight": 512
+      },
+      {
+        "label": "Asleep",
+        "logo": "/images/logo/asleep-black.png",
+        "logoWidth": 1304,
+        "logoHeight": 417
+      }
+    ]
+  },
+  "shareSheet": {
+    "title": "Papasakokite, ką manote apie Asleep",
+    "close": "Uždaryti atsiliepimo formą",
+    "nameLabel": "Vardas*",
+    "namePlaceholder": "Vardas Pavardė",
+    "emailLabel": "El. paštas*",
+    "emailPlaceholder": "El. paštas",
+    "productLabel": "Kurį produktą norite įvertinti?*",
+    "products": [
+      "Asleep Original čiužinys",
+      "Asleep Hybrid Pro čiužinys",
+      "Asleep Original pagalvė",
+      "Asleep Topper"
+    ],
+    "ratingLabel": "Jūsų įvertinimas*",
+    "ratingStar": "{count} žvaigždutės",
+    "reviewTitleLabel": "Atsiliepimo pavadinimas*",
+    "reviewTitlePlaceholder": "Trumpai apibūdinkite patirtį",
+    "reviewBodyLabel": "Jūsų atsiliepimas*",
+    "reviewBodyPlaceholder": "Papasakokite daugiau apie savo patirtį",
+    "send": "Siųsti",
+    "sending": "Siunčiama…",
+    "successTitle": "Ačiū, kad pasidalijote!",
+    "successBody": "Gavome jūsų atsiliepimą. Jis padeda kitiems rasti tobulą čiužinį.",
+    "done": "Gerai"
+  },
+  "carousel": {
+    "prev": "Ankstesni atsiliepimai",
+    "next": "Kiti atsiliepimai",
+    "items": [
+      {
+        "title": "Greitas pristatymas, puikus aptarnavimas",
+        "body": "Buvau šiek tiek skeptiškas dėl pagalvės su atminties putomis, bet Asleep pagalvė pakeitė mano nuomonę — graži medžiaga ir komfortas, kurį dar galiu reguliuoti. Klientų aptarnavimas greitas, įsitraukęs ir lankstus!",
+        "date": "2026 m. rugpjūčio 25 d."
+      },
+      {
+        "title": "Labai džiaugiuosi nauju čiužiniu",
+        "body": "Pagaliau radau tai, kas man tobulai tinka pagal komfortą, ir esu sužavėtas. Būčiau norėjęs anksčiau sužinoti apie Asleep.",
+        "date": "2026 m. rugpjūčio 22 d."
+      },
+      {
+        "title": "Naktimis nebeperkaistu",
+        "body": "Vėdinimo sistema tikrai veikia — naktį nebeprabundu karščiuodamas. Medžiagos atrodo premium ir tvarios, o man tai svarbu. Jaučiasi kokybė. Penkios žvaigždutės!",
+        "date": "2026 m. rugpjūčio 20 d."
+      },
+      {
+        "title": "Geriausia atrama, kokią esu jautęs čiužinyje",
+        "body": "Išbandžiau ne vieną „premium“ čiužinį, bet niekas neprilygsta. Jaučiasi, kad jis sukurtas remiantis tikru miego mokslu. Atrama nuostabi — užmiegu greičiau ir giliau.",
+        "date": "2026 m. rugpjūčio 19 d."
+      },
+      {
+        "title": "Nugaros skausmas dingo po pirmos nakties!",
+        "body": "Pirmą naktį pamiegojęs ant Asleep, pabudau be nugaros skausmo pirmą kartą per mėnesius. Tikrai prisitaiko prie kūno ir suteikia tinkamą kietumo bei komforto balansą. Pristatymas greitas, aptarnavimas labai padėjo. Labai rekomenduoju!",
+        "date": "2026 m. rugpjūčio 18 d."
+      },
+      {
+        "title": "Idealu poroms su skirtingais poreikiais",
+        "body": "Iš pradžių buvau skeptiškas, bet 120 dienų išbandymas suteikė drąsos. Geriausias sprendimas. Žmona nori minkštesnio, aš — kietesnio. Šis čiužinys kažkaip tinka abiem. Įspūdinga!",
+        "date": "2026 m. rugpjūčio 18 d."
+      },
+      {
+        "title": "Labai patinka!",
+        "body": "Jo reguliuojamumas sutaikė mane su putų čiužiniais: pagaliau galiu nustatyti tokį kietumą, kokio noriu.",
+        "date": "2026 m. rugpjūčio 17 d."
+      },
+      {
+        "title": "Tobula nugarai!",
+        "body": "Pagaliau radau tobulą atramą nugarai. Užmiegu daug greičiau ir naktį prabundu gerokai rečiau.",
+        "date": "2026 m. rugpjūčio 17 d."
+      },
+      {
+        "title": "Atlieka savo funkcijas",
+        "body": "Prideda papildomo komforto, kuris labai malonus.",
+        "date": "2026 m. rugpjūčio 5 d."
+      }
+    ]
+  }
+}

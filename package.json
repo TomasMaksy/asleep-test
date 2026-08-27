@@ -4,16 +4,20 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "server": "export $(grep -v '^#' .env.local | xargs) && ngrok http --url=$NEXT_PUBLIC_BASE_HOST 3000",
     "build": "next build",
     "start": "next start",
     "lint": "biome check",
-    "format": "biome format --write"
+    "i18n:check": "bun scripts/check-i18n.ts",
+    "format": "biome format --write",
+    "images:hero": "cd public/images && cwebp -q 85 hero-banner-desktop.png -o hero-banner-desktop.webp && cwebp -q 85 hero-banner-mobile.png -o hero-banner-mobile.webp && cwebp -q 85 hero-people.png -o hero-people.webp"
   },
   "dependencies": {
     "clsx": "^2.1.1",
     "lucide-react": "^1.32.0",
     "motion": "^13.1.1",
     "next": "16.3.1",
+    "next-intl": "^4.13.7",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "tailwind-merge": "^3.6.0",

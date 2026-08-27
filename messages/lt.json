@@ -1,0 +1,116 @@
+{
+  "nav": {
+    "links": [
+      {
+        "label": "Akcijos",
+        "href": "#",
+        "accent": true
+      },
+      {
+        "label": "Čiužiniai",
+        "href": "#",
+        "hasMenu": true
+      },
+      {
+        "label": "Lovos",
+        "href": "#",
+        "hasMenu": true
+      },
+      {
+        "label": "Pagalvės",
+        "href": "#"
+      },
+      {
+        "label": "Priedai",
+        "href": "#",
+        "hasMenu": true
+      },
+      {
+        "label": "Paklodės",
+        "href": "#",
+        "hasMenu": true
+      },
+      {
+        "label": "Daugiau",
+        "href": "#",
+        "hasMenu": true
+      }
+    ],
+    "reviews": "Atsiliepimai",
+    "menu": "Meniu"
+  },
+  "locale": {
+    "lt": "Lietuvių",
+    "en": "English"
+  },
+  "cart": {
+    "title": "Krepšelis",
+    "empty": "Jūsų krepšelis tuščias",
+    "emptyHint": "Raskite idealų čiužinį ir pridėkite jį čia.",
+    "continue": "Tęsti apsipirkimą",
+    "checkout": "Apmokėti",
+    "subtotal": "Suma",
+    "remove": "Pašalinti",
+    "quantity": "Kiekis",
+    "open": "Atidaryti krepšelį",
+    "close": "Uždaryti krepšelį"
+  },
+  "footer": {
+    "newsletter": "Prenumeruokite naujienlaiškį",
+    "subscribe": "Siųsti",
+    "payments": "Mokėjimo būdai",
+    "marquee": "Miego saldūs sapnai su asleep",
+    "columns": [
+      {
+        "title": "Klausimai",
+        "links": [
+          "Contact",
+          "Return Request",
+          "FAQ"
+        ]
+      },
+      {
+        "title": "Sekite mus",
+        "links": [
+          "Facebook",
+          "Instagram",
+          "Twitter"
+        ]
+      },
+      {
+        "title": "Apie mus",
+        "links": [
+          "Jobs"
+        ]
+      },
+      {
+        "title": "Miegui",
+        "links": [
+          "Warranty",
+          "Privacy policy",
+          "Terms & Conditions"
+        ]
+      },
+      {
+        "title": "Produktai",
+        "links": [
+          "The mattress",
+          "The Hybrid Pro Mattress",
+          "The Original Boxspring",
+          "The Velvet Boxspring",
+          "The mattress protector",
+          "The topper",
+          "The refurbished mattress",
+          "The pillow",
+          "The seersucker bed sheets",
+          "The percal bed sheets",
+          "The fitted sheet"
+        ]
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Asleep",
+    "description": "Premium čiužiniai ir miegamojo prekės Lietuvoje."
+  }
+}

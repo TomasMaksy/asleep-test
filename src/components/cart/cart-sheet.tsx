@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import {
   formatEuro,
@@ -9,7 +10,6 @@ import {
   selectCartSubtotal,
   useCartStore,
 } from "@/lib/cart-store";
-import { CART } from "@/lib/copy";
 import { cn } from "@/lib/utils";
 
 const sheetTransition = {
@@ -46,6 +46,7 @@ function CartLineItem({
   variant?: string;
   quantity: number;
 }) {
+  const t = useTranslations("cart");
   const setQuantity = useCartStore((s) => s.setQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
 
@@ -54,7 +55,7 @@ function CartLineItem({
       <div className="relative size-[88px] shrink-0 overflow-hidden rounded-2xl bg-surface">
         <Image
           alt=""
-          className="object-contain p-2"
+          className="object-cover object-center"
           fill
           sizes="88px"
           src={image}
@@ -104,7 +105,7 @@ function CartLineItem({
             onClick={() => removeItem(id)}
             type="button"
           >
-            {CART.remove}
+            {t("remove")}
           </button>
         </div>
       </div>
@@ -113,6 +114,7 @@ function CartLineItem({
 }
 
 export function CartSheet() {
+  const t = useTranslations("cart");
   const reduceMotion = useReducedMotion();
   const isOpen = useCartStore((s) => s.isOpen);
   const closeCart = useCartStore((s) => s.closeCart);
@@ -148,7 +150,7 @@ export function CartSheet() {
       {isOpen ? (
         <div className="fixed inset-0 z-[2000]" key="cart">
           <motion.button
-            aria-label={CART.close}
+            aria-label={t("close")}
             className="absolute inset-0 cursor-pointer bg-brand-dark/25 backdrop-blur-[6px] supports-[backdrop-filter]:bg-brand-dark/20"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -176,7 +178,7 @@ export function CartSheet() {
                 className="!text-[1.25rem] !leading-none !tracking-normal font-bold"
                 id="cart-title"
               >
-                {CART.title}
+                {t("title")}
                 {count > 0 ? (
                   <span className="ml-2 font-medium text-brand-dark/45 text-rg">
                     ({count})
@@ -184,7 +186,7 @@ export function CartSheet() {
                 ) : null}
               </h2>
               <button
-                aria-label={CART.close}
+                aria-label={t("close")}
                 className="flex size-10 cursor-pointer items-center justify-center rounded-full border border-brand-dark/15 transition-colors hover:bg-surface"
                 onClick={closeCart}
                 type="button"
@@ -196,16 +198,16 @@ export function CartSheet() {
             <div className="flex min-h-0 flex-1 flex-col">
               {empty ? (
                 <div className="flex flex-1 flex-col items-center justify-center gap-3 px-8 text-center">
-                  <p className="font-bold text-lg">{CART.empty}</p>
+                  <p className="font-bold text-lg">{t("empty")}</p>
                   <p className="max-w-[16rem] text-brand-dark/55 text-rg leading-relaxed">
-                    {CART.emptyHint}
+                    {t("emptyHint")}
                   </p>
                   <button
                     className="mt-4 cursor-pointer font-medium text-[#1A478A] text-rg underline"
                     onClick={closeCart}
                     type="button"
                   >
-                    {CART.continue}
+                    {t("continue")}
                   </button>
                 </div>
               ) : (
@@ -221,7 +223,7 @@ export function CartSheet() {
               {!empty ? (
                 <div className="mb-4 flex items-center justify-between gap-4">
                   <span className="font-medium text-brand-dark/55 text-rg">
-                    {CART.subtotal}
+                    {t("subtotal")}
                   </span>
                   <span className="font-bold text-base tabular-nums">
                     {formatEuro(subtotal)}
@@ -240,14 +242,14 @@ export function CartSheet() {
                   disabled={empty}
                   type="button"
                 >
-                  {CART.checkout}
+                  {t("checkout")}
                 </button>
                 <button
                   className="cursor-pointer py-1 text-center text-brand-dark/50 text-rg underline transition-colors hover:text-brand-dark"
                   onClick={closeCart}
                   type="button"
                 >
-                  {CART.continue}
+                  {t("continue")}
                 </button>
               </div>
             </footer>

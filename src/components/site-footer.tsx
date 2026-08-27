@@ -1,8 +1,8 @@
 import Image from "next/image";
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { Logo } from "@/components/icons";
 import { NewsletterForm } from "@/components/newsletter-form";
-import { FOOTER } from "@/lib/copy";
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 const PAYMENTS = [
@@ -14,18 +14,21 @@ const PAYMENTS = [
   { id: "20", alt: "SprayPay" },
 ] as const;
 
-export function SiteFooter() {
-  const questions = FOOTER.columns[0];
-  const follow = FOOTER.columns[1];
-  const about = FOOTER.columns[2];
-  const sleepinducing = FOOTER.columns[3];
-  const products = FOOTER.columns[4];
+type FooterColumnData = {
+  title: string;
+  links: string[];
+};
+
+export async function SiteFooter() {
+  const t = await getTranslations("footer");
+  const columns = t.raw("columns") as FooterColumnData[];
+  const [questions, follow, about, sleepinducing, products] = columns;
 
   return (
     <footer className="bg-[#2B2D41] pt-12 pb-24 text-white lg:pt-24">
       <div className="mx-auto flex w-full max-w-screen-xl flex-col gap-12 px-5 lg:flex-row lg:gap-8 xl:px-10">
         <div className="flex w-full min-w-0 flex-col lg:w-1/3">
-          <div className="mb-[43px] hidden w-[120px] md:block">
+          <div className="mb-8 w-[120px] md:mb-[43px]">
             <Logo className="h-[27px] w-auto" variant="white" />
           </div>
 
@@ -35,7 +38,7 @@ export function SiteFooter() {
 
           <div>
             <p className="pb-2 font-bold text-rg text-white/50 leading-[2.5]">
-              {FOOTER.payments}
+              {t("payments")}
             </p>
             <div className="flex flex-wrap gap-5">
               {PAYMENTS.map((payment) => (
@@ -75,19 +78,15 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="container block py-8 md:hidden">
-        <Logo className="h-[27px] w-auto" variant="white" />
-      </div>
-
       <div className="mt-10 overflow-hidden py-4 md:mt-14 md:py-6">
         <div className="footer-marquee flex w-max items-center gap-[50vw]">
           {[0, 1, 2, 3].map((index) => (
             <p
               aria-hidden={index > 0}
-              className="shrink-0 whitespace-nowrap font-bold font-heading text-[clamp(3.5rem,12vw,10rem)] text-white leading-none tracking-[-0.04em]"
+              className="shrink-0 whitespace-nowrap font-bold font-heading text-[clamp(3.5rem,12vw,10rem)] text-white leading-none tracking-heading"
               key={`marquee-${index}`}
             >
-              {FOOTER.marquee}
+              {t("marquee")}
             </p>
           ))}
         </div>
@@ -100,7 +99,7 @@ function FooterColumn({
   column,
   className,
 }: {
-  column: { title: string; links: string[] };
+  column: FooterColumnData;
   className?: string;
 }) {
   return (

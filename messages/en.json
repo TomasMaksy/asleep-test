@@ -1,0 +1,116 @@
+{
+  "nav": {
+    "links": [
+      {
+        "label": "Deals",
+        "href": "#",
+        "accent": true
+      },
+      {
+        "label": "Mattresses",
+        "href": "#",
+        "hasMenu": true
+      },
+      {
+        "label": "Beds",
+        "href": "#",
+        "hasMenu": true
+      },
+      {
+        "label": "Pillows",
+        "href": "#"
+      },
+      {
+        "label": "Accessories",
+        "href": "#",
+        "hasMenu": true
+      },
+      {
+        "label": "Bed Sheets",
+        "href": "#",
+        "hasMenu": true
+      },
+      {
+        "label": "More",
+        "href": "#",
+        "hasMenu": true
+      }
+    ],
+    "reviews": "Reviews",
+    "menu": "Menu"
+  },
+  "locale": {
+    "lt": "Lietuvių",
+    "en": "English"
+  },
+  "cart": {
+    "title": "Shopping cart",
+    "empty": "Your cart is empty",
+    "emptyHint": "Find your perfect mattress and add it here.",
+    "continue": "Continue shopping",
+    "checkout": "Checkout",
+    "subtotal": "Subtotal",
+    "remove": "Remove",
+    "quantity": "Quantity",
+    "open": "Open cart",
+    "close": "Close cart"
+  },
+  "footer": {
+    "newsletter": "Subscribe to our newsletter",
+    "subscribe": "Subscribe",
+    "payments": "Payment methods",
+    "marquee": "Rest well with asleep",
+    "columns": [
+      {
+        "title": "Questions",
+        "links": [
+          "Contact",
+          "Return Request",
+          "FAQ"
+        ]
+      },
+      {
+        "title": "Follow us",
+        "links": [
+          "Facebook",
+          "Instagram",
+          "Twitter"
+        ]
+      },
+      {
+        "title": "About",
+        "links": [
+          "Jobs"
+        ]
+      },
+      {
+        "title": "Sleepinducing",
+        "links": [
+          "Warranty",
+          "Privacy policy",
+          "Terms & Conditions"
+        ]
+      },
+      {
+        "title": "Products",
+        "links": [
+          "The mattress",
+          "The Hybrid Pro Mattress",
+          "The Original Boxspring",
+          "The Velvet Boxspring",
+          "The mattress protector",
+          "The topper",
+          "The refurbished mattress",
+          "The pillow",
+          "The seersucker bed sheets",
+          "The percal bed sheets",
+          "The fitted sheet"
+        ]
+      }
+    ]
+  },
+  "metadata": {
+    "title": "Buying the perfect mattress? | Asleep",
+    "description": "The best rated mattress of the Baltics. Adjustable mattresses, free shipping, 120-night trial and 10-year warranty."
+  }
+}

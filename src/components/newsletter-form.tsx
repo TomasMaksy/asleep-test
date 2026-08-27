@@ -1,8 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
-import { FOOTER } from "@/lib/copy";
 import { cn } from "@/lib/utils";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -51,6 +51,7 @@ function CheckIcon() {
 }
 
 export function NewsletterForm() {
+  const t = useTranslations("footer");
   const inputId = useId();
   const messageId = useId();
   const reduceMotion = useReducedMotion();
@@ -142,7 +143,7 @@ export function NewsletterForm() {
       ? "Subscribing"
       : status === "ok"
         ? "Subscribed"
-        : FOOTER.subscribe;
+        : t("subscribe");
 
   return (
     <form
@@ -165,11 +166,11 @@ export function NewsletterForm() {
           <input
             aria-describedby={message ? messageId : undefined}
             aria-invalid={hasClientError || undefined}
-            aria-label={FOOTER.newsletter}
+            aria-label={t("newsletter")}
             autoComplete="email"
             className={cn(
               "newsletter-input h-full w-full min-w-0 border-0 bg-transparent py-2 pr-5 pl-5 text-base text-white outline-none ring-0",
-              "placeholder:font-normal placeholder:text-base placeholder:text-white/55",
+              "placeholder:font-normal placeholder:text-base placeholder:text-white/85",
               "disabled:cursor-not-allowed disabled:opacity-70",
               "md:pr-[7.75rem] md:text-rg md:placeholder:text-rg",
             )}
@@ -191,18 +192,18 @@ export function NewsletterForm() {
                 resetFeedback();
               }
             }}
-            placeholder={FOOTER.newsletter}
+            placeholder={t("newsletter")}
             spellCheck={false}
             type="email"
             value={email}
           />
         </div>
 
-        <div className="self-start md:absolute md:top-1/2 md:right-1.5 md:-translate-y-1/2">
+        <div className="self-start md:absolute md:top-1.5 md:right-1.5">
           <motion.button
             aria-live="polite"
             className={cn(
-              "relative inline-flex h-10 min-w-[7.25rem] cursor-pointer items-center justify-center overflow-hidden rounded-full px-5 font-sans text-rg tracking-normal",
+              "relative inline-flex h-10 min-w-[7.25rem] cursor-pointer items-center justify-center overflow-hidden rounded-full px-5 font-sans text-sm leading-none tracking-normal",
               "bg-white text-[#1A478A] transition-colors duration-300 ease-out",
               "hover:bg-[#2B2D41] hover:text-white",
               "disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-[#1A478A]",
@@ -210,13 +211,6 @@ export function NewsletterForm() {
                 "bg-emerald-400 text-[#12301f] hover:bg-[#2B2D41] hover:text-white",
             )}
             disabled={isBusy}
-            layout
-            transition={{
-              layout: {
-                duration: reduceMotion ? 0 : 0.28,
-                ease: [0.22, 1, 0.36, 1],
-              },
-            }}
             type="submit"
             whileTap={reduceMotion || isBusy ? undefined : { scale: 0.98 }}
           >

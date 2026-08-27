@@ -1,0 +1,51 @@
+---
+description: Internationalization conventions for UI copy and content files.
+globs:
+  - messages/**
+  - src/i18n/**
+  - content/**
+  - COPY.md
+alwaysApply: false
+---
+
+# Internationalization
+
+Read `COPY.md` before editing copy. Supported locales: `lt` (default), `en`. URLs are always prefixed: `/lt/...`, `/en/...`.
+
+## Where strings live
+
+| Type | Location |
+|------|----------|
+| Shared chrome (nav, cart, footer, default SEO) | `messages/lt.json`, `messages/en.json` |
+| Homepage | `messages/{locale}/home.json` |
+| Original product page | `messages/{locale}/product-original.json` |
+| Reviews page | `messages/{locale}/reviews-page.json` |
+| Long-form pages, products, blog | `content/` (future) |
+
+Files are merged in `src/i18n/request.ts`. Page files keep their in-app namespace (`productOriginal`, `reviewsPage`). Home keys stay top-level (`hero`, `products`, …).
+
+Prefer **page-level JSON files** when a page's copy would bloat the shared locale file. Keep shared chrome in the root `messages/{locale}.json`.
+
+## Rules
+
+- Never hardcode user-facing strings in components — use `getTranslations` (server) or `useTranslations` (client).
+- When adding a string, add it to **both** locales with the same key structure. Do not rename keys.
+- Do not change layout/data fields: `id`, `href`, `image`, `src`, `left`, `top`, `width`, `className`, `offset`, prices.
+- Keep ICU placeholders (`{amount}`, `{count}`, `{name}`, …) identical across locales.
+- Use `@/i18n/navigation` `Link` for internal routes so locale is preserved.
+- After copy edits, run `bun run i18n:check`.
+
+## Key structure
+
+```json
+{
+  "cart": {
+    "title": "Shopping cart",
+    "checkout": "Checkout"
+  }
+}
+```
+
+## Language switcher
+
+The navbar switcher uses locale-aware links to the same path in the alternate locale — do not implement locale switching via client-only state.

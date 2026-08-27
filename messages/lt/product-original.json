@@ -1,0 +1,480 @@
+{
+  "metadata": {
+    "title": "Asleep Original čiužinys | Asleep",
+    "description": "Reguliuojamas čiužinys su 6 kietumo lygiais. Premium medžiagos, 120 naktų išbandymas, 10 metų garantija, nemokamas pristatymas."
+  },
+  "hero": {
+    "title": "Reguliuojamas čiužinys",
+    "subtitle": "Asleep Original",
+    "rating": "4,6/5",
+    "seeReviews": "Žiūrėti atsiliepimus",
+    "description": "Geriausiai Baltijos šalyse įvertintas čiužinys yra reguliuojamas. Norite kietesnio ar minkštesnio? Tiesiog atsekite užtrauktuką ir keiskite kietumą, kada tik norite.",
+    "features": [
+      "13 kartų iš eilės geriausiai įvertintas Consumentenbond teste",
+      "Tinka visiems kūno tipams, miego pozoms ir lovos pagrindams",
+      "Visiškai reguliuojamas – 6 kietumai viename čiužinyje",
+      "Sukurtas Baltijos šalyse kartu su TU Delft studentais",
+      "120 naktų miego išbandymas",
+      "Nemokamas pristatymas ir grąžinimas"
+    ],
+    "sizeLabel": "Pasirinkite dydį:",
+    "heightLabel": "Aukštis: 25 cm",
+    "sizeSheet": {
+      "single": "Vienvietis",
+      "double": "Dvivietis",
+      "slackHint": "Rekomenduojame palikti 20 cm atsargos virš jūsų ūgio.",
+      "viewDoubleSizes": "Žiūrėti dviviečius dydžius",
+      "viewSingleSizes": "Žiūrėti vienviečius dydžius",
+      "close": "Uždaryti dydžio pasirinkimą"
+    },
+    "variants": {
+      "plus": {
+        "title": "45 % nuolaida Original čiužiniui Plus",
+        "description": "Original čiužinys su hipoalerginiu užvalkalu"
+      },
+      "original": {
+        "title": "Original čiužinys",
+        "description": "Standartinis užvalkalas – patogus, su švelniu Tencel sluoksniu."
+      }
+    },
+    "saveLabel": "Sutaupote: {amount}",
+    "saveBadge": "−45 %",
+    "deliveryNote": "Yra sandėlyje, pristatymas: 5–8 darbo dienos",
+    "installment": "Mokėkite 3 dalimis po {price}",
+    "addToCart": "Pridėti",
+    "stickyBar": {
+      "plusName": "Asleep Original Plus čiužinys",
+      "originalName": "Asleep Original čiužinys",
+      "addToBasket": "Į krepšelį"
+    },
+    "configurator": "Pradėti konfigūratorių",
+    "zoomLabel": "Padidinti nuotrauką",
+    "gallery": {
+      "heroAlt": "Asleep Original čiužinys miegamajame",
+      "packshotAlt": "Asleep Original čiužinio nuotrauka",
+      "lifestyleAlt": "Pora ilsisi ant Asleep Original čiužinio",
+      "benefitsAlt": "Consumentenbond įvertinti privalumai",
+      "layersAlt": "Asleep čiužinio sluoksnių animacija",
+      "pauseAnimation": "Sustabdyti sluoksnių animaciją",
+      "playAnimation": "Paleisti sluoksnių animaciją",
+      "zoomLabel": "Padidinti nuotrauką"
+    },
+    "addons": {
+      "heading": "Populiarūs priedai",
+      "addLabel": "Pridėti {name} į krepšelį",
+      "items": [
+        {
+          "id": "mattress-protector",
+          "title": "Čiužinio apsauga",
+          "description": "Apsaugokite naują čiužinį nuo dėmių",
+          "size": "Dydis: 80x190",
+          "price": 45,
+          "compareAt": 50,
+          "image": "/images/product-gallery/addon-protector.jpg",
+          "action": "add"
+        },
+        {
+          "id": "original-pillow",
+          "title": "Original pagalvė",
+          "description": "Apsaugokite kaklą nuo skausmo",
+          "size": "",
+          "price": 89,
+          "compareAt": null,
+          "image": "/images/product-gallery/addon-pillow.jpg",
+          "action": "add"
+        },
+        {
+          "id": "original-topper",
+          "title": "Asleep topperis",
+          "description": "Papildomas komfortas",
+          "size": "",
+          "price": null,
+          "compareAt": null,
+          "image": "/images/product-gallery/addon-topper.jpg",
+          "action": "link",
+          "href": "/products/original"
+        }
+      ]
+    },
+    "awards": {
+      "heading": "Geriausiai Baltijos šalyse įvertintas čiužinys.",
+      "imageAlt": "Asleep apdovanojimai ir įvertinimai"
+    },
+    "faq": [
+      {
+        "question": "Detalės",
+        "answer": "Asleep čiužinys yra 25 cm aukščio, turi 4 putų sluoksnius ir premium užvalkalą. Visos putos gaminamos Europoje ir turi CertiPUR bei Oeko-Tex sertifikatus. Kiekviena partija yra kruopščiai tikrinama. Klijai vandens pagrindu, be gyvūninės kilmės produktų.",
+        "materialsHeading": "Medžiagos",
+        "materials": [
+          "Užvalkalas iš natūralaus Tencel",
+          "Viršutinis Hypersupport sluoksnis – labai kvėpuojantis",
+          "Antras sluoksnis – atviros struktūros atminties putos",
+          "Trečias sluoksnis – aukštos kokybės minkštos šaltosios putos su 7 komforto zonomis",
+          "Ketvirtas sluoksnis – aukštos kokybės kietos šaltosios putos su 7 komforto zonomis",
+          "Užvalkalo apačioje yra neslystantis sluoksnis"
+        ]
+      },
+      {
+        "question": "Nemokamas pristatymas ir grąžinimas",
+        "sections": [
+          {
+            "heading": "Pristatymas",
+            "body": "Asleep čiužinys pristatomas nemokamai patogioje 45x45x100 cm dėžėje. Jei užsakote darbo dieną iki 22:00, čiužinys tą pačią dieną perduodamas jūsų pasirinktam vežėjui. Asleep į namus pristatomas per 3 darbo dienas. Norite vėlesnio pristatymo? Datą galite pasirinkti mūsų pristatymo kalendoriuje."
+          },
+          {
+            "heading": "Nemokamas grąžinimas",
+            "body": "Išėmus Asleep iš dėžės, jo nebegalima sudėti atgal. Todėl, jei prašote grąžinimo, kurjeriai atvyksta paimti išskleisto čiužinio. Gavę jį, visą sumą grąžiname į jūsų sąskaitą per 6 darbo dienas."
+          }
+        ]
+      },
+      {
+        "question": "120 naktų išbandymas ir 10 metų garantija",
+        "sections": [
+          {
+            "heading": "120 naktų miego išbandymas",
+            "body": "Suteikiame 120 naktų Asleep čiužinio išbandymo laikotarpį. Jei Asleep jums netinka, grąžinimą lengvai užregistruojate internetu, o čiužinį paimame nemokamai. Nesijaudinkite – grąžinti čiužiniai atiduodami labdarai arba parduodami su nuolaida kaip atnaujinti. Grąžinti čiužiniai niekada neparduodami kaip nauji."
+          },
+          {
+            "heading": "10 metų garantija",
+            "body": "Dėl aukštos kokybės medžiagų garantuojame bent 10 metų patogaus miego. Jei įdubimas siekia 2,5 cm ar daugiau, gausite pakaitinį produktą."
+          }
+        ]
+      },
+      {
+        "question": "Sertifikatai ir priežiūra",
+        "sections": [
+          {
+            "heading": "Sertifikatai",
+            "body": "CertiPUR – savanoriška poliuretano putų aplinkosaugos, sveikatos ir saugumo savybių testavimo, analizės ir sertifikavimo programa. Ji nustato, kokių medžiagų negalima naudoti gamyboje, ir taiko griežtus limitus tam tikroms medžiagoms. Tai užtikrina, kad jūsų Asleep čiužinyje:",
+            "bullets": [
+              "Nėra sunkiųjų metalų, tokių kaip gyvsidabris, švinas ar kadmis",
+              "Nėra ftalatų ar plastifikatorių",
+              "Išskiriama mažai VOC (lakiųjų organinių junginių)"
+            ]
+          },
+          {
+            "heading": "Priežiūra",
+            "body": "Čiužinio Tencel užvalkalą galima skalbti 60 °C temperatūroje. Taip Asleep išlieka higieniškas ir apsaugomas nuo dulkių erkučių."
+          }
+        ]
+      }
+    ]
+  },
+  "infoSlider": {
+    "heading": "Reguliuojamas čiužinys",
+    "skip": "Praleisti animaciją",
+    "slides": [
+      {
+        "title": "6 čiužiniai viename",
+        "body": "Mūsų čiužinys siūlo 6 komforto variantus. Gausite Matt 3 konfigūracijoje (vidutinis). Jei norite minkštesnio ar kietesnio, tiesiog atsekite užvalkalą ir apverskite sluoksnį."
+      },
+      {
+        "title": "Reguliuojamas kiekvienai pusei",
+        "body": "Dalijatės lova su kuo nors, kam tinka kitoks kietumas? Jokių problemų. Kiekvieną čiužinio pusę galite reguliuoti atskirai."
+      },
+      {
+        "title": "Tobula stuburo padėtis",
+        "body": "5 sluoksniai ir 7 komforto zonos užtikrina optimalią stuburo padėtį ir mažina spaudimo taškus. Nesvarbu, ar miegate ant nugaros, pilvo ar šono – Matt išlaiko pusiausvyrą."
+      },
+      {
+        "title": "Aukščiausios kokybės ir ilgaamžiai sluoksniai",
+        "body": "Kūnui paremti pasirinkome geriausias medžiagas: Tencel, Hypersupport, atminties putas ir šaltąsias putas. Matt turi Oeko-Tex sertifikatą ir Consumentenbond Green Choice. Gerai nugarai ir planetai."
+      }
+    ]
+  },
+  "video": {
+    "label": "Pažiūrėkite, kaip mane reguliuoti",
+    "playButton": "Žiūrėti vaizdo įrašą"
+  },
+  "configurator": {
+    "overline": "Pritaikykite čiužinį sau",
+    "title": "Jūsų individualus čiužinys",
+    "cta": "Konfigūruokite čiužinį ir atraskite mūsų patarimus",
+    "imageAlt": "Išskleistas Asleep čiužinio sluoksnių vaizdas",
+    "bedTypeLabel": "Lovos tipas",
+    "single": "Vienvietė",
+    "double": "Dvivietė",
+    "firmnessOptions": [
+      "Labai minkštas",
+      "Minkštas",
+      "Vidutinis",
+      "Kietas",
+      "Labai kietas",
+      "Ypač kietas"
+    ]
+  },
+  "layers": {
+    "heading": "Inovacija viduje",
+    "advantages": "Privalumai",
+    "selectLayer": "Rodyti {title} detales",
+    "close": "Uždaryti",
+    "previousLayer": "Ankstesnis sluoksnis",
+    "nextLayer": "Kitas sluoksnis",
+    "items": {
+      "tencel": {
+        "title": "Tencel",
+        "body": "Tencel gaminamas iš tvariai užaugintos eukalipto medienos – tai natūrali žaliava.",
+        "bodyExtra": "Viršutinis užvalkalas siūtas iš Tencel ir viskozės mišinio. Poliesterio pluoštas suteikia tvirtumo, todėl užvalkalą galima skalbti 60 °C temperatūroje.",
+        "mediaAlt": "Tencel užvalkalo tekstūra iš arti",
+        "advantages": [
+          "Reguliuoja drėgmę (150 % geriau nei medvilnė)",
+          "Hipoalerginis, antibakterinis",
+          "Puikus kvėpavimas",
+          "Šilkinis pojūtis",
+          "Temperatūros reguliavimas",
+          "Skalbiamas"
+        ]
+      },
+      "hypersupport": {
+        "title": "Hypersupport putos",
+        "body": "Hypersupport putos ne tik palaiko kūną. Šios inovatyvios putos su aksominiu paviršiumi taip pat vėdina.",
+        "mediaAlt": "Hypersupport putos iš arti",
+        "advantages": [
+          "Labai geras taškinis elastingumas puikiam kūno palaikymui",
+          "Atvira ląstelių struktūra oro cirkuliacijai",
+          "Geras drėgmės reguliavimas"
+        ]
+      },
+      "memoryFoam": {
+        "title": "Atminties putos",
+        "body": "Mūsų atminties putos skiriasi nuo įprastų. Dalis žaliavų pakeista ricinos aliejumi. Jos prisitaiko prie kūno formos ir mažina spaudimo taškus.",
+        "mediaAlt": "Atminties putos iš arti",
+        "advantages": [
+          "Paskirsto svorį",
+          "Puikiai izoliuoja judesius",
+          "Mažina spaudimo taškus",
+          "Prisitaiko prie kūno padėties pagal kūno temperatūrą",
+          "Geras vėdinimas dėl atviros ląstelių struktūros"
+        ]
+      },
+      "coldFoamSoft": {
+        "title": "Minkštos šaltosios putos",
+        "body": "Šis pagrindo sluoksnis suteikia struktūrą ir padeda išlaikyti geresnę stuburo padėtį. Sukūrėme 7 komforto zonas, kad kūnas būtų taisyklingai palaikomas nepriklausomai nuo svorio.",
+        "mediaAlt": "Minkštos šaltosios putos iš arti",
+        "advantages": [
+          "Optimali stuburo padėtis",
+          "Puikus kūno palaikymas",
+          "Apsaugo nuo įdubimo",
+          "Geras šilumos ir drėgmės reguliavimas"
+        ]
+      },
+      "coldFoamFirm": {
+        "title": "Kietos šaltosios putos",
+        "body": "Kietos šaltosios putos yra stabilumo pagrindo sluoksnis. Dėl 7 komforto zonų kūnas gauna tinkamą palaikymą nepriklausomai nuo svorio.",
+        "mediaAlt": "Kietos šaltosios putos iš arti",
+        "advantages": [
+          "Optimalus elastingumas",
+          "Ilgas tarnavimo laikas",
+          "Apsaugo nuo grimzdimo ir įdubimo",
+          "Drėgmės šalinimas ir šilumos reguliavimas",
+          "Stabilus palaikymas"
+        ]
+      },
+      "comfortZones": {
+        "title": "Komforto zonos",
+        "body": "Kartu su bandymų centru sukūrėme 7 unikalias komforto zonas, kad palaikymas būtų ten, kur kūnui jo reikia. Tai sudėtinga istorija, bet skirtingoms kūno dalims reikia skirtingo palaikymo.",
+        "advantages": [
+          "Mažina spaudimą",
+          "Užtikrina subalansuotą ergonomišką laikyseną",
+          "Išlaiko natūralią stuburo S formą"
+        ]
+      },
+      "nonSlip": {
+        "title": "Neslystantis sluoksnis",
+        "body": "Jei kada slėptumėtės po lova, pamatytumėte, kad pagalvojome ir apie čiužinio apačią. Neslystantis sluoksnis padeda reguliuoti judesius ir užtikrina, kad čiužinys išliktų vietoje.",
+        "mediaAlt": "Neslystantis čiužinio apačios sluoksnis"
+      },
+      "cover": {
+        "title": "Užvalkalas",
+        "body": "Austas užvalkalas pagamintas iš premium tekstilės. Pluoštai užtikrina gerą ventiliaciją. Mėlynąją dalį galite skalbti 40 °C temperatūroje. Nedžiovinkite džiovyklėje.",
+        "mediaAlt": "Čiužinio užvalkalo audinys"
+      }
+    }
+  },
+  "difference": {
+    "heading": "Kas daro skirtumą",
+    "play": "Paleisti vaizdo įrašą",
+    "pause": "Pristabdyti vaizdo įrašą",
+    "blocks": [
+      {
+        "title": "Gaminama vietoje",
+        "body": "Didžiuojamės, kad Matt sukurtas ir tobulinamas Europoje. Džiaugiamės dirbdami su partneriais, kurie dalijasi mūsų socialinėmis ir aplinkosaugos vertybėmis. Tikime, kad gamyba vietoje – geriausias būdas užtikrinti čiužinio kokybę ir sumažinti anglies pėdsaką."
+      },
+      {
+        "title": "Sukurtas kartu su TU Delft",
+        "body": "Pirmajam Matt čiužiniui sukurti, tobulinti ir išbandyti prireikė daugiau nei 15 mėnesių. Medžiagų sudėtis analizavome ir tyrėme kartu su TU Delft studentais. Pastaruosius 7 metus dirbome su pirmaujančiais Europos miego technologijų ekspertais ir rinkome visų klientų atsiliepimus, kad tobulintume produktus. Tai lėmė 60 mažesnių ir didesnių iteracijų, kurių rezultatas – čiužinys, kurį galite užsisakyti šiandien."
+      },
+      {
+        "title": "Intensyviai testuotas",
+        "body": "Kad po daugelio metų Matt būtų toks pat patogus kaip pirmąją dieną, imituojame intensyvų naudojimą. 130 kg voleliu per Matt pervažiuojame 30 000 kartų. Taip esame tikri, kad Matt visada parodo geriausią savo pusę! Tai lemia putų kokybė ir griežta atranka. Kiekvienai putų partijai paimame kelis mėginius ir tikriname kokybę. Tik kai visi 4 testai teigiami, putos keliauja į pjovimo skyrių ir tampa Matt čiužiniu."
+      }
+    ]
+  },
+  "specs": {
+    "title": "Daugiau detalių",
+    "imageAlt": "Moteris sėdi ant sofos apsigaubusi antklode",
+    "firmnessAlt": "Šeši čiužinio kietumo variantai",
+    "items": [
+      {
+        "question": "Konstrukcija ir medžiagos",
+        "answer": "Čiužinio aukštis: 25 cm\n\nMatt sudarytas iš:\n- Viršutinis užvalkalas (1 cm)\n- Hypersupport (4 cm)\n- Atminties putos (4 cm)\n- Minkštos šaltosios putos (8 cm)\n- Kietos šaltosios putos (8 cm)\n- Neslystantis užvalkalas\n\nTankiai\nHypersupport: D40\nAtminties putos: D60\nŠaltosios putos: D40 (vidurkis)\n\nUžvalkalo sudėtis\nViršus/baltoji pusė: 19 % liocelis (tencel) / 19 % viskozė / 62 % poliesteris\nApačia su neslystančiu sluoksniu: 100 % poliesteris"
+      },
+      {
+        "question": "Dydžiai ir svoriai",
+        "answer": "80x190x25 cm (17 kg)\n80x200x25 cm (18 kg)\n80x210x25 cm (19 kg)\n80x220x25 cm (20 kg)\n90x190x25 cm (18 kg)\n90x200x25 cm (20 kg)\n90x210x25 cm (21 kg)\n90x220x25 cm (22 kg)\n100x200x25 cm (23 kg)\n100x210x25 cm (24 kg)\n100x220x25 cm (26 kg)\n120x190x25 cm (24 kg)\n120x200x25 cm (25 kg)\n140x190x25 cm (28 kg)\n140x200x25 cm (29 kg)\n160x190x25 cm (30 kg)\n160x200x25 cm (32 kg)\n160x210x25 cm (34 kg)\n160x220x25 cm (35 kg)\n180x200x25 cm (36 kg)\n180x210x25 cm (38 kg)\n180x220x25 cm (40 kg)\n200x200x25 cm (40 kg)"
+      },
+      {
+        "question": "120 naktų nemokamas išbandymas",
+        "answer": "Suteikiame 120 naktų išbandymo laikotarpį jūsų Matt čiužiniui. Jei Matt jums netiks, grąžinimą galite užregistruoti internetu, o čiužinį paimsime nemokamai."
+      },
+      {
+        "question": "Svarstau tarp dviejų vienviečių ar vieno dviviečio čiužinio",
+        "answer": "Jei rinksitės du vienviečius čiužinius, jie bus atskiruose užvalkaluose. Tarp jų galite pajusti tarpą. Dvivietis čiužinys gaminamas kaip vienas gabalas, o kiekvieną pusę vis tiek galite reguliuoti skirtingu kietumu. Jei turite reguliuojamą lovos rėmą, rinkitės du vienviečius čiužinius. Tarpą prireikus galima uždengti mūsų split-topper."
+      },
+      {
+        "question": "Ar galiu atiduoti seną čiužinį?",
+        "answer": "Matt čiužinys atkeliauja patogioje dėžėje ir siunčiamas paprastu siuntiniu. Deja, paprastas siuntinys senų čiužinių nepriima. Daugelyje savivaldybių stambiagabaričius atliekas galima užsakyti išvežti telefonu arba internetu. Taip pat galite patys nuvežti čiužinį į rūšiavimo aikštelę. Laikykite čiužinį sausą, kad jį būtų galima perdirbti."
+      },
+      {
+        "question": "Skalbiamas užvalkalas",
+        "answer": "Viršutinis čiužinio sluoksnis su Tencel skalbiamas 60 °C temperatūroje. Tai padeda išlaikyti Matt higienišką ir nesudaro sąlygų dulkių erkėms. Mėlynoji dalis su neslystančiu sluoksniu skalbiama iki 30 °C.\n\nUžvalkalo sudėtis\nViršus/baltoji pusė: 19 % liocelis (tencel) / 19 % viskozė / 62 % poliesteris\nNeslystanti apačia: 100 % poliesteris\n\nUžvalkalo dalių negalima džiovinti džiovyklėje — jis susitrauks. Prieš skalbdami atidžiai perskaitykite skalbimo etiketę."
+      },
+      {
+        "question": "Tinka visų tipų lovoms",
+        "answer": "Matt yra universalus čiužinys. Jis tinka grotelėms, boxspring, elektra reguliuojamam rėmui, tinkleliui, padėklams ir grindims.\n\nĮsitikinkite, kad dabartinis lovos rėmas yra geros būklės, be:\n- įdubimų\n- kreivumo\n- nusidėvėjimo\n\nDabartinis rėmas labai veikia jūsų komfortą ir naujojo Matt čiužinio kokybę."
+      },
+      {
+        "question": "6 kietumai viename",
+        "answer": "Žemiau matote 6 čiužinio kietumo variantus:",
+        "image": "/images/product-specs/firmness.webp"
+      },
+      {
+        "question": "Ar galiu naudoti Matt iš karto?",
+        "answer": "Išpakavus čiužinį, Matt reikia apie 48 valandų, kad visiškai išsiskleistų. Miegoti ant jo galite iš karto!\n\nAtkreipkite dėmesį į lovos rėmą. Svarbu, kad jis būtų geros būklės — be nusidėvėjimo, įdubimų ar kreivumo. Rėmo būklė labai veikia naująjį Matt čiužinį."
+      },
+      {
+        "question": "Ar galiu pasirinkti pristatymo datą?",
+        "answer": "Taip, tikrai. Atsiskaitymo metu per pristatymo kalendorių galite pasirinkti siuntimo datą."
+      }
+    ]
+  },
+  "reviews": {
+    "items": [
+      {
+        "title": "Puikiai tinka nugarai!",
+        "description": "Pagaliau radau tobulą palaikymą nugarai.",
+        "rating": 5
+      },
+      {
+        "title": "Puiku!",
+        "description": "Su žmona niekada nemiegojome taip gerai – tobulas komfortas.",
+        "rating": 5
+      },
+      {
+        "title": "5/5",
+        "description": "Kokybė puiki, geresnio čiužinio dar neturėjau.",
+        "rating": 5
+      },
+      {
+        "title": "Puikus produktas ir nuostabus aptarnavimas!",
+        "description": "Miegu geriau nei bet kada. 10/10 – labai rekomenduoju!",
+        "rating": 5
+      },
+      {
+        "title": "Aukštos kokybės čiužinys",
+        "description": "Tikrai miegu geriau, labai malonu.",
+        "rating": 5
+      }
+    ]
+  },
+  "compare": {
+    "heading": "Palyginkite mūsų čiužinius",
+    "rows": [
+      "Čiužinio tipas",
+      "Reguliavimas",
+      "Kietumo diapazonas",
+      "Kūno palaikymas",
+      "Kvėpavimas",
+      "Tarnavimo laikas"
+    ],
+    "original": {
+      "name": "Asleep Original",
+      "tagline": "Geriausiai apdovanotas Baltijos čiužinys",
+      "values": [
+        "Putų čiužinys",
+        "6 deriniai pagal jūsų svorį",
+        "",
+        "",
+        "",
+        "10 metų"
+      ]
+    },
+    "hybrid": {
+      "name": "Hybrid Pro",
+      "tagline": "Individualus čiužinys su daugiau nei 15 000 konfigūracijų",
+      "values": [
+        "Hibridinis čiužinys",
+        "Daugiau nei 15 000 konfigūracijų",
+        "",
+        "",
+        "",
+        "10 metų"
+      ]
+    }
+  },
+  "bundles": {
+    "heading": "Mūsų rinkiniai",
+    "items": [
+      {
+        "title": "Čiužinio rinkinys",
+        "badge": "Sutaupykite 30 %",
+        "originalPrice": "630",
+        "price": "472,50",
+        "features": [
+          "1 čiužinys",
+          "1 arba 2 pagalvės",
+          "1 antklodė",
+          "1 paklodė",
+          "1 čiužinio apsauga"
+        ]
+      },
+      {
+        "title": "Priedų rinkinys",
+        "badge": "Sutaupykite 30 %",
+        "originalPrice": "630",
+        "price": "472,50",
+        "features": [
+          "1 antklodė",
+          "1 užvalkalas",
+          "1 arba 2 pagalvės",
+          "1 paklodė"
+        ]
+      }
+    ]
+  },
+  "related": {
+    "heading": "Puikiai tinka su Matt čiužiniu",
+    "items": [
+      {
+        "id": "boxspring",
+        "title": "Original Boxspring",
+        "description": "1000 kišeninių spyruoklių\nPagaminta Baltijos šalyse\nGeriausios ir ilgaamžiškiausios medžiagos"
+      },
+      {
+        "id": "pillow",
+        "title": "Original pagalvė",
+        "description": "Miegantiems ant šono ir nugaros\nAtminties putų ir šaltųjų putų pagalvė\nKvėpuojanti\nSkalbiamas užvalkalas\n30 naktų miego išbandymas"
+      },
+      {
+        "id": "duvet",
+        "title": "Cloud antklodė",
+        "description": "Tvari Oeko-Tex sertifikuota antklodė\nVisiems sezonams\nIš organinės medvilnės, Tencel ir perdirbtų plastikinių butelių Cloud Fiber"
+      },
+      {
+        "id": "topper",
+        "title": "Original Topper",
+        "description": "2 kietumo lygiai – komfortą pasirenkate jūs\nHypersupport ir atminties putos\n30 naktų miego išbandymas"
+      }
+    ]
+  }
+}
