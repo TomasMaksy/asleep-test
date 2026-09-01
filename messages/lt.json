@@ -59,14 +59,14 @@
     "newsletter": "Prenumeruokite naujienlaiškį",
     "subscribe": "Siųsti",
     "payments": "Mokėjimo būdai",
-    "marquee": "Miego saldūs sapnai su asleep",
+    "marquee": "Susitiksime sapnuose",
     "columns": [
       {
         "title": "Klausimai",
         "links": [
-          "Contact",
-          "Return Request",
-          "FAQ"
+          "Kontaktai",
+          "Grąžinimas",
+          "DUK"
         ]
       },
       {
@@ -84,11 +84,11 @@
         ]
       },
       {
-        "title": "Miegui",
+        "title": "Asleep",
         "links": [
-          "Warranty",
-          "Privacy policy",
-          "Terms & Conditions"
+          "Garantija",
+          "Privatumo politika",
+          "Taisyklės ir sąlygos"
         ]
       },
       {

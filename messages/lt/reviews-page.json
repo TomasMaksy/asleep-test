@@ -4,10 +4,10 @@
     "description": "Skaitykite, ką klientai sako apie Asleep čiužinius. Įvertinimai, istorijos ir spauda."
   },
   "hero": {
-    "title": "Nespręskite apie čiužinį iš dėžės.",
-    "body": "Mums Asleep yra tobulas ir padarysime viską, kad jūsų santykiai su Asleep prasidėtų kuo geriau. Mes ir daugelis būsimų Asleep naudotojų nekantraujame išgirsti jūsų istorijas!",
-    "seeAll": "Visi atsiliepimai",
-    "share": "Pasidalinkite patirtimi",
+    "title": "Geriausiai apie mus kalba jūsų miegas",
+    "body": "Tikrasis ASLEEP atsiskleidžia tada, kai ant jo miegate. Todėl mums svarbiausia ne tai, ką apie savo čiužinį sakome mes, o tai, ką apie jį sako žmonės, kurie ant jo miega kiekvieną naktį.",
+    "seeAll": "Skaityti atsiliepimus",
+    "share": "Pasidalinti savo patirtimi",
     "rating": "4,8 iš 5 žvaigždučių",
     "ratings": [
       {
@@ -55,8 +55,8 @@
     "next": "Kiti atsiliepimai",
     "items": [
       {
-        "title": "Greitas pristatymas, puikus aptarnavimas",
-        "body": "Buvau šiek tiek skeptiškas dėl pagalvės su atminties putomis, bet Asleep pagalvė pakeitė mano nuomonę — graži medžiaga ir komfortas, kurį dar galiu reguliuoti. Klientų aptarnavimas greitas, įsitraukęs ir lankstus!",
+        "title": "Kokybė jaučiasi nuo pirmos nakties",
+        "body": "Skirtumą nuo senojo čiužinio pajutau iš karto. Komfortas malonus, kūnas gerai prilaikomas, o ryte jaučiuosi geriau pailsėjęs.",
         "date": "2026 m. rugpjūčio 25 d."
       },
       {

@@ -4,16 +4,16 @@
     "description": "Reguliuojamas čiužinys su 6 kietumo lygiais. Premium medžiagos, 120 naktų išbandymas, 10 metų garantija, nemokamas pristatymas."
   },
   "hero": {
-    "title": "Reguliuojamas čiužinys",
+    "title": "Čiužinys geresniam miegui",
     "subtitle": "Asleep Original",
     "rating": "4,6/5",
     "seeReviews": "Žiūrėti atsiliepimus",
-    "description": "Geriausiai Baltijos šalyse įvertintas čiužinys yra reguliuojamas. Norite kietesnio ar minkštesnio? Tiesiog atsekite užtrauktuką ir keiskite kietumą, kada tik norite.",
+    "description": "Geriausias čiužinys Baltijos šalyse – sukurtas geresniam miegui. Kruopščiai parinkti skirtingų putų sluoksniai prisitaiko prie kūno ir suteikia optimalų komforto bei atramos balansą visą naktį.",
     "features": [
-      "13 kartų iš eilės geriausiai įvertintas Consumentenbond teste",
+      "Kelių aukštos kokybės putų sluoksnių konstrukcija",
       "Tinka visiems kūno tipams, miego pozoms ir lovos pagrindams",
-      "Visiškai reguliuojamas – 6 kietumai viename čiužinyje",
-      "Sukurtas Baltijos šalyse kartu su TU Delft studentais",
+      "Sukurtas kartu su Vilniaus universiteto medicinos studentais",
+      "Pagaminta Lietuvoje",
       "120 naktų miego išbandymas",
       "Nemokamas pristatymas ir grąžinimas"
     ],
@@ -47,7 +47,7 @@
       "originalName": "Asleep Original čiužinys",
       "addToBasket": "Į krepšelį"
     },
-    "configurator": "Pradėti konfigūratorių",
+    "configurator": "Sukurti savo čiužinį",
     "zoomLabel": "Padidinti nuotrauką",
     "gallery": {
       "heroAlt": "Asleep Original čiužinys miegamajame",
@@ -103,15 +103,15 @@
     "faq": [
       {
         "question": "Detalės",
-        "answer": "Asleep čiužinys yra 25 cm aukščio, turi 4 putų sluoksnius ir premium užvalkalą. Visos putos gaminamos Europoje ir turi CertiPUR bei Oeko-Tex sertifikatus. Kiekviena partija yra kruopščiai tikrinama. Klijai vandens pagrindu, be gyvūninės kilmės produktų.",
+        "answer": "ASLEEP Original – 25 cm aukščio čiužinys, sudarytas iš 4 skirtingų putų sluoksnių ir premium užvalkalo. Čiužinys gaminamas Lietuvoje, naudojant sertifikuotas, kruopščiai atrinktas medžiagas. Kiekvienas konstrukcijos elementas – nuo vidinių putų iki nuimamo užvalkalo – parinktas atsižvelgiant į kokybę, ilgaamžiškumą ir kasdienį naudojimą.",
         "materialsHeading": "Medžiagos",
         "materials": [
-          "Užvalkalas iš natūralaus Tencel",
-          "Viršutinis Hypersupport sluoksnis – labai kvėpuojantis",
-          "Antras sluoksnis – atviros struktūros atminties putos",
-          "Trečias sluoksnis – aukštos kokybės minkštos šaltosios putos su 7 komforto zonomis",
-          "Ketvirtas sluoksnis – aukštos kokybės kietos šaltosios putos su 7 komforto zonomis",
-          "Užvalkalo apačioje yra neslystantis sluoksnis"
+          "Premium užvalkalas su TENCEL™ – švelnus, malonus liesti ir puikiai kvėpuojantis",
+          "Memory Foam – prisitaiko prie kūno kontūrų ir suteikia malonų apgaubimo pojūtį",
+          "ASLEEP Support Foam – elastingas sluoksnis, greitai reaguojantis į kūno judesius",
+          "Aukštos kokybės HR putos – elastingam komfortui ir tolygiam kūno prilaikymui",
+          "Tvirtas putų pagrindas – čiužinio stabilumui ir ilgaamžiškumui",
+          "Neslystantis apatinis sluoksnis – kad čiužinys stabiliai išliktų savo vietoje"
         ]
       },
       {
@@ -119,11 +119,11 @@
         "sections": [
           {
             "heading": "Pristatymas",
-            "body": "Asleep čiužinys pristatomas nemokamai patogioje 45x45x100 cm dėžėje. Jei užsakote darbo dieną iki 22:00, čiužinys tą pačią dieną perduodamas jūsų pasirinktam vežėjui. Asleep į namus pristatomas per 3 darbo dienas. Norite vėlesnio pristatymo? Datą galite pasirinkti mūsų pristatymo kalendoriuje."
+            "body": "ASLEEP čiužinį nemokamai pristatysime tiesiai į jūsų namus, patogiai supakuotą kompaktiškoje dėžėje. Įprastas pristatymo laikas – 3–7 darbo dienos. Norite čiužinį gauti vėliau? Užsakymo metu galėsite pasirinkti jums patogesnę pristatymo datą."
           },
           {
             "heading": "Nemokamas grąžinimas",
-            "body": "Išėmus Asleep iš dėžės, jo nebegalima sudėti atgal. Todėl, jei prašote grąžinimo, kurjeriai atvyksta paimti išskleisto čiužinio. Gavę jį, visą sumą grąžiname į jūsų sąskaitą per 6 darbo dienas."
+            "body": "Išpakavus čiužinį jo sutalpinti atgal į dėžę nereikės. Jei nuspręsite ASLEEP grąžinti, nemokamai pasirūpinsime išskleisto čiužinio paėmimu iš jūsų namų. Gavę grąžintą čiužinį, grąžinsime visą už jį sumokėtą sumą į jūsų sąskaitą"
           }
         ]
       },
@@ -132,11 +132,11 @@
         "sections": [
           {
             "heading": "120 naktų miego išbandymas",
-            "body": "Suteikiame 120 naktų Asleep čiužinio išbandymo laikotarpį. Jei Asleep jums netinka, grąžinimą lengvai užregistruojate internetu, o čiužinį paimame nemokamai. Nesijaudinkite – grąžinti čiužiniai atiduodami labdarai arba parduodami su nuolaida kaip atnaujinti. Grąžinti čiužiniai niekada neparduodami kaip nauji."
+            "body": "Suteikiame 120 naktų išbandymo laikotarpį, kad galėtumėte ASLEEP išbandyti ten, kur tai svarbiausia – savo namuose. Jei per šį laikotarpį nuspręsite, kad čiužinys jums netinka, užregistruokite grąžinimą, o mes nemokamai pasirūpinsime jo paėmimu. Grąžinti čiužiniai niekada neparduodami kaip nauji. Tinkamos būklės čiužiniai gali būti perduodami labdarai arba parduodami kaip atnaujinti."
           },
           {
             "heading": "10 metų garantija",
-            "body": "Dėl aukštos kokybės medžiagų garantuojame bent 10 metų patogaus miego. Jei įdubimas siekia 2,5 cm ar daugiau, gausite pakaitinį produktą."
+            "body": "ASLEEP čiužiniams suteikiame 10 metų garantiją. Ji skirta tam, kad galėtumėte būti ramūs dėl čiužinio kokybės ir ilgaamžiškumo daugelį metų."
           }
         ]
       },
@@ -145,40 +145,40 @@
         "sections": [
           {
             "heading": "Sertifikatai",
-            "body": "CertiPUR – savanoriška poliuretano putų aplinkosaugos, sveikatos ir saugumo savybių testavimo, analizės ir sertifikavimo programa. Ji nustato, kokių medžiagų negalima naudoti gamyboje, ir taiko griežtus limitus tam tikroms medžiagoms. Tai užtikrina, kad jūsų Asleep čiužinyje:",
+            "body": "ASLEEP čiužiniui naudojamos putos yra CertiPUR sertifikuotos. CertiPUR sertifikavimo programa nustato griežtus poliuretano putų sudėties, saugos ir emisijų reikalavimus:",
             "bullets": [
-              "Nėra sunkiųjų metalų, tokių kaip gyvsidabris, švinas ar kadmis",
-              "Nėra ftalatų ar plastifikatorių",
-              "Išskiriama mažai VOC (lakiųjų organinių junginių)"
+              "Sudėtyje neturi sunkiųjų metalų, tokių kaip gyvsidabris, švinas ar kadmis",
+              "Atitinka griežtus ftalatų naudojimo apribojimus",
+              "Pasižymi maža lakiųjų organinių junginių (VOC) emisija"
             ]
           },
           {
             "heading": "Priežiūra",
-            "body": "Čiužinio Tencel užvalkalą galima skalbti 60 °C temperatūroje. Taip Asleep išlieka higieniškas ir apsaugomas nuo dulkių erkučių."
+            "body": "Nuimamą ASLEEP čiužinio viršutinę užvalkalo dalį galima skalbti 40 °C temperatūroje. Tai leidžia lengvai palaikyti čiužinio švarą ir gaivą bei užtikrinti higienišką miego aplinką."
           }
         ]
       }
     ]
   },
   "infoSlider": {
-    "heading": "Reguliuojamas čiužinys",
+    "heading": "Čiužinys, sukurtas geresniam miegui",
     "skip": "Praleisti animaciją",
     "slides": [
       {
-        "title": "6 čiužiniai viename",
-        "body": "Mūsų čiužinys siūlo 6 komforto variantus. Gausite Matt 3 konfigūracijoje (vidutinis). Jei norite minkštesnio ar kietesnio, tiesiog atsekite užvalkalą ir apverskite sluoksnį."
+        "title": "Apgalvota 4 sluoksnių konstrukcija",
+        "body": "ASLEEP Original sudaro 4 kruopščiai parinkti skirtingų savybių putų sluoksniai. Memory Foam, didelio tankio elastingos putos, HR putos ir stabilus pagrindas veikia kartu, kad kiekvieną naktį būtų patogu."
       },
       {
-        "title": "Reguliuojamas kiekvienai pusei",
-        "body": "Dalijatės lova su kuo nors, kam tinka kitoks kietumas? Jokių problemų. Kiekvieną čiužinio pusę galite reguliuoti atskirai."
+        "title": "Skirtingas komfortas kiekvienam",
+        "body": "Jums patinka kietesnis čiužinys, o partneriui – minkštesnis? ASLEEP leidžia kiekvieną čiužinio pusę pritaikyti individualiai, todėl abiem nebereikia ieškoti kompromiso."
       },
       {
-        "title": "Tobula stuburo padėtis",
-        "body": "5 sluoksniai ir 7 komforto zonos užtikrina optimalią stuburo padėtį ir mažina spaudimo taškus. Nesvarbu, ar miegate ant nugaros, pilvo ar šono – Matt išlaiko pusiausvyrą."
+        "title": "Taisyklinga stuburo padėtis",
+        "body": "ASLEEP 4 sluoksnių konstrukcija padeda tolygiai paskirstyti kūno svorį ir sumažinti spaudimą jautriausiose vietose. Nesvarbu, ar miegate ant nugaros, šono ar pilvo – čiužinys padeda išlaikyti natūralią kūno padėtį visos nakties metu."
       },
       {
-        "title": "Aukščiausios kokybės ir ilgaamžiai sluoksniai",
-        "body": "Kūnui paremti pasirinkome geriausias medžiagas: Tencel, Hypersupport, atminties putas ir šaltąsias putas. Matt turi Oeko-Tex sertifikatą ir Consumentenbond Green Choice. Gerai nugarai ir planetai."
+        "title": "Aukščiausios kokybės medžiagos",
+        "body": "Atrinkome medžiagas, kuriomis galime pasitikėti: premium užvalkalą su TENCEL™ pluoštu, Memory Foam ir aukštos kokybės putų sluoksnius. ASLEEP naudojamos putos yra CertiPUR sertifikuotos, o čiužinys gaminamas Lietuvoje."
       }
     ]
   },
@@ -187,9 +187,9 @@
     "playButton": "Žiūrėti vaizdo įrašą"
   },
   "configurator": {
-    "overline": "Pritaikykite čiužinį sau",
-    "title": "Jūsų individualus čiužinys",
-    "cta": "Konfigūruokite čiužinį ir atraskite mūsų patarimus",
+    "overline": "PRITAIKYKITE SAVO ČIUŽINĮ",
+    "title": "Atraskite savo čiužinį",
+    "cta": "Sukurti savo čiužinį",
     "imageAlt": "Išskleistas Asleep čiužinio sluoksnių vaizdas",
     "bedTypeLabel": "Lovos tipas",
     "single": "Vienvietė",
@@ -204,7 +204,7 @@
     ]
   },
   "layers": {
-    "heading": "Inovacija viduje",
+    "heading": "ASLEEP technologija iš vidaus",
     "advantages": "Privalumai",
     "selectLayer": "Rodyti {title} detales",
     "close": "Uždaryti",
@@ -213,61 +213,61 @@
     "items": {
       "tencel": {
         "title": "Tencel",
-        "body": "Tencel gaminamas iš tvariai užaugintos eukalipto medienos – tai natūrali žaliava.",
-        "bodyExtra": "Viršutinis užvalkalas siūtas iš Tencel ir viskozės mišinio. Poliesterio pluoštas suteikia tvirtumo, todėl užvalkalą galima skalbti 60 °C temperatūroje.",
+        "body": "Tencel pluoštas išgaunamas iš atsakingai gaunamos medienos ir pasižymi švelniu, maloniu prisilietimu.",
+        "bodyExtra": "ASLEEP viršutiniame užvalkale Tencel derinamas su viskoze ir poliesteriu. Toks audinių derinys leidžia suderinti malonų paviršiaus pojūtį, praktiškumą ir ilgaamžiškumą. Nuimamą viršutinę užvalkalo dalį galima skalbti 40 °C temperatūroje.",
         "mediaAlt": "Tencel užvalkalo tekstūra iš arti",
         "advantages": [
-          "Reguliuoja drėgmę (150 % geriau nei medvilnė)",
-          "Hipoalerginis, antibakterinis",
-          "Puikus kvėpavimas",
-          "Šilkinis pojūtis",
-          "Temperatūros reguliavimas",
-          "Skalbiamas"
+          "Puikus drėgmės valdymas",
+          "Geras oro pralaidumas",
+          "Švelnus, malonus pojūtis",
+          "Padeda palaikyti komfortišką miego mikroklimatą",
+          "Hipoalerginis",
+          "Skalbiamas 40 °C"
         ]
       },
       "hypersupport": {
-        "title": "Hypersupport putos",
-        "body": "Hypersupport putos ne tik palaiko kūną. Šios inovatyvios putos su aksominiu paviršiumi taip pat vėdina.",
+        "title": "ASLEEP Support Foam",
+        "body": "ASLEEP Support Foam ne tik prilaiko kūną. Elastingos putos greitai reaguoja į kūno judesius ir padeda sukurti komfortišką, stabilų miego pagrindą.",
         "mediaAlt": "Hypersupport putos iš arti",
         "advantages": [
-          "Labai geras taškinis elastingumas puikiam kūno palaikymui",
+          "Puikus taškinis elastingumas kūno prilaikymui",
           "Atvira ląstelių struktūra oro cirkuliacijai",
-          "Geras drėgmės reguliavimas"
+          "Didelio tankio putų struktūra"
         ]
       },
       "memoryFoam": {
-        "title": "Atminties putos",
-        "body": "Mūsų atminties putos skiriasi nuo įprastų. Dalis žaliavų pakeista ricinos aliejumi. Jos prisitaiko prie kūno formos ir mažina spaudimo taškus.",
+        "title": "Memory Foam",
+        "body": "ASLEEP Memory Foam prisitaiko prie jūsų kūno formų ir padeda tolygiai paskirstyti kūno svorį. Veikiamos kūno šilumos putos prisitaiko prie individualių kūno kontūrų, todėl sumažėja spaudimas jautriausiose vietose ir sukuriamas malonus, apgaubiantis komforto pojūtis.",
         "mediaAlt": "Atminties putos iš arti",
         "advantages": [
-          "Paskirsto svorį",
-          "Puikiai izoliuoja judesius",
-          "Mažina spaudimo taškus",
-          "Prisitaiko prie kūno padėties pagal kūno temperatūrą",
-          "Geras vėdinimas dėl atviros ląstelių struktūros"
+          "Tolygiai paskirsto kūno svorį",
+          "Padeda sumažinti spaudimą jautriausiose kūno vietose",
+          "Prisitaiko prie individualių kūno kontūrų",
+          "Puikiai slopina partnerio judesių perdavimą",
+          "Suteikia malonų, apgaubiantį komforto pojūtį"
         ]
       },
       "coldFoamSoft": {
-        "title": "Minkštos šaltosios putos",
-        "body": "Šis pagrindo sluoksnis suteikia struktūrą ir padeda išlaikyti geresnę stuburo padėtį. Sukūrėme 7 komforto zonas, kad kūnas būtų taisyklingai palaikomas nepriklausomai nuo svorio.",
+        "title": "HR Comfort Foam",
+        "body": "Elastingas HR putų sluoksnis suteikia čiužiniui struktūrą ir padeda kūnui išlikti natūralioje padėtyje miego metu. Aukšto elastingumo putos greitai reaguoja į kūno judesius ir tolygiai paskirsto apkrovą, todėl komfortas išlieka stabilus visą naktį.",
         "mediaAlt": "Minkštos šaltosios putos iš arti",
         "advantages": [
-          "Optimali stuburo padėtis",
-          "Puikus kūno palaikymas",
-          "Apsaugo nuo įdubimo",
-          "Geras šilumos ir drėgmės reguliavimas"
+          "Padeda išlaikyti natūralią kūno padėtį",
+          "Tolygiai paskirsto kūno svorį",
+          "Padeda išlaikyti čiužinio formą ir stabilumą",
+          "Patvarios ir ilgaamžės putos"
         ]
       },
       "coldFoamFirm": {
-        "title": "Kietos šaltosios putos",
-        "body": "Kietos šaltosios putos yra stabilumo pagrindo sluoksnis. Dėl 7 komforto zonų kūnas gauna tinkamą palaikymą nepriklausomai nuo svorio.",
+        "title": "Base Support Foam",
+        "body": "Tvirtas ASLEEP bazinis putų sluoksnis suteikia čiužiniui stabilų pagrindą ir padeda išlaikyti jo struktūrą. Atsparios putos sukurtos taip, kad išlaikytų savo savybes ir užtikrintų stabilumą daugelį metų.",
         "mediaAlt": "Kietos šaltosios putos iš arti",
         "advantages": [
-          "Optimalus elastingumas",
-          "Ilgas tarnavimo laikas",
-          "Apsaugo nuo grimzdimo ir įdubimo",
-          "Drėgmės šalinimas ir šilumos reguliavimas",
-          "Stabilus palaikymas"
+          "Stabilus viso čiužinio pagrindas",
+          "Aukštas atsparumas deformacijai",
+          "Padeda išlaikyti čiužinio formą",
+          "Ilgaamžė putų struktūra",
+          "Stabilus kūno prilaikymas"
         ]
       },
       "comfortZones": {
@@ -292,32 +292,32 @@
     }
   },
   "difference": {
-    "heading": "Kas daro skirtumą",
+    "heading": "Kodėl ASLEEP?",
     "play": "Paleisti vaizdo įrašą",
     "pause": "Pristabdyti vaizdo įrašą",
     "blocks": [
       {
-        "title": "Gaminama vietoje",
-        "body": "Didžiuojamės, kad Matt sukurtas ir tobulinamas Europoje. Džiaugiamės dirbdami su partneriais, kurie dalijasi mūsų socialinėmis ir aplinkosaugos vertybėmis. Tikime, kad gamyba vietoje – geriausias būdas užtikrinti čiužinio kokybę ir sumažinti anglies pėdsaką."
+        "title": "Pagaminta Lietuvoje",
+        "body": "Didžiuojamės, kad ASLEEP čiužiniai kuriami ir gaminami Lietuvoje. Dirbame su vietiniais gamybos partneriais ir kruopščiai atrenkame kiekvieną medžiagą bei konstrukcijos elementą. Vietinė gamyba leidžia mums būti arčiau viso proceso – nuo pirmųjų prototipų iki galutinio čiužinio – ir užtikrinti kokybę, kurios tikimės iš kiekvieno ASLEEP."
       },
       {
-        "title": "Sukurtas kartu su TU Delft",
-        "body": "Pirmajam Matt čiužiniui sukurti, tobulinti ir išbandyti prireikė daugiau nei 15 mėnesių. Medžiagų sudėtis analizavome ir tyrėme kartu su TU Delft studentais. Pastaruosius 7 metus dirbome su pirmaujančiais Europos miego technologijų ekspertais ir rinkome visų klientų atsiliepimus, kad tobulintume produktus. Tai lėmė 60 mažesnių ir didesnių iteracijų, kurių rezultatas – čiužinys, kurį galite užsisakyti šiandien."
+        "title": "Sukurtas kartu su VU medicinos studentais",
+        "body": "Kurdami ASLEEP siekėme ne tiesiog pagaminti dar vieną čiužinį. Kartu su Vilniaus universiteto medicinos studentais analizavome miego ergonomiką, skirtingas medžiagas ir jų derinius bei tai, kaip čiužinio konstrukcija gali prisitaikyti prie skirtingų žmonių poreikių. Šios žinios buvo derinamos su prototipų kūrimu ir skirtingų putų kombinacijų testavimu. Taip palaipsniui suformavome ASLEEP daugiasluoksnę konstrukciją, kurią naudojame šiandien."
       },
       {
         "title": "Intensyviai testuotas",
-        "body": "Kad po daugelio metų Matt būtų toks pat patogus kaip pirmąją dieną, imituojame intensyvų naudojimą. 130 kg voleliu per Matt pervažiuojame 30 000 kartų. Taip esame tikri, kad Matt visada parodo geriausią savo pusę! Tai lemia putų kokybė ir griežta atranka. Kiekvienai putų partijai paimame kelis mėginius ir tikriname kokybę. Tik kai visi 4 testai teigiami, putos keliauja į pjovimo skyrių ir tampa Matt čiužiniu."
+        "body": "Norime, kad ASLEEP išliktų toks pat komfortiškas ne tik pirmąją naktį, bet ir po daugelio metų. Todėl čiužiniui naudojamos putos yra testuojamos dėl patvarumo, elastingumo ir atsparumo ilgalaikei apkrovai. Kiekvienam ASLEEP sluoksniui parenkamos aukštos kokybės, CertiPUR sertifikuotos putos, atitinkančios nustatytus kokybės ir saugos reikalavimus. Taip galime būti užtikrinti ne tik tuo, kaip ASLEEP jaučiasi šiandien, bet ir tuo, kaip jis tarnaus daugelį metų."
       }
     ]
   },
   "specs": {
-    "title": "Daugiau detalių",
+    "title": "Daugiau informacijos",
     "imageAlt": "Moteris sėdi ant sofos apsigaubusi antklode",
     "firmnessAlt": "Šeši čiužinio kietumo variantai",
     "items": [
       {
         "question": "Konstrukcija ir medžiagos",
-        "answer": "Čiužinio aukštis: 25 cm\n\nMatt sudarytas iš:\n- Viršutinis užvalkalas (1 cm)\n- Hypersupport (4 cm)\n- Atminties putos (4 cm)\n- Minkštos šaltosios putos (8 cm)\n- Kietos šaltosios putos (8 cm)\n- Neslystantis užvalkalas\n\nTankiai\nHypersupport: D40\nAtminties putos: D60\nŠaltosios putos: D40 (vidurkis)\n\nUžvalkalo sudėtis\nViršus/baltoji pusė: 19 % liocelis (tencel) / 19 % viskozė / 62 % poliesteris\nApačia su neslystančiu sluoksniu: 100 % poliesteris"
+        "answer": "Čiužinio aukštis: 25 cm\n\nAsleep sudarytas iš:\n- Viršutinis užvalkalas (1 cm)\n- Memory Foam (3 cm)\n- ASLEEP Support Foam (2 cm)\n- HR Comfort Foam (10 cm)\n- ASLEEP Base Foam (10 cm)\n- Neslystantis apatinis užvalkalo sluoksnis\n\nTankiai\nASLEEP Support Foam: D60\nMemory Foam: D45\nHR Comfort Foam: D30\n\nUžvalkalo sudėtis\nViršus/baltoji pusė: 19 % liocelis (tencel) / 19 % viskozė / 62 % poliesteris\nApačia su neslystančiu sluoksniu: 100 % poliesteris"
       },
       {
         "question": "Dydžiai ir svoriai",
@@ -325,33 +325,33 @@
       },
       {
         "question": "120 naktų nemokamas išbandymas",
-        "answer": "Suteikiame 120 naktų išbandymo laikotarpį jūsų Matt čiužiniui. Jei Matt jums netiks, grąžinimą galite užregistruoti internetu, o čiužinį paimsime nemokamai."
+        "answer": "Esame užtikrinti ASLEEP kokybe, todėl suteikiame jums 120 naktų išbandyti čiužinį savo namuose be jokios rizikos. Turėsite pakankamai laiko priprasti prie naujo čiužinio, atrasti jums tinkamiausią jo konfigūraciją ir nuspręsti, ar ASLEEP yra tinkamas būtent jums. Jei per 120 naktų nebūsite visiškai patenkinti, tiesiog susisiekite su mumis. Nemokamai paimsime čiužinį iš jūsų namų ir grąžinsime visą už jį sumokėtą sumą. 120 naktų išbandymo galimybė vienam klientui taikoma vieną kartą ir galioja pirmajam ASLEEP čiužinio užsakymui. Išsamias išbandymo ir grąžinimo sąlygas rasite mūsų grąžinimo taisyklėse."
       },
       {
         "question": "Svarstau tarp dviejų vienviečių ar vieno dviviečio čiužinio",
-        "answer": "Jei rinksitės du vienviečius čiužinius, jie bus atskiruose užvalkaluose. Tarp jų galite pajusti tarpą. Dvivietis čiužinys gaminamas kaip vienas gabalas, o kiekvieną pusę vis tiek galite reguliuoti skirtingu kietumu. Jei turite reguliuojamą lovos rėmą, rinkitės du vienviečius čiužinius. Tarpą prireikus galima uždengti mūsų split-topper."
+        "answer": "Pasirinkus du viengulius čiužinius, kiekvienas jų turės atskirą užvalkalą, todėl tarp čiužinių gali būti jaučiamas tarpas. Dvigubas ASLEEP čiužinys gaminamas kaip vienas čiužinys, tačiau kiekvienos jo pusės kietumą galima pritaikyti individualiai. Jums patinka kietesnis, o partneriui – minkštesnis? Nereikia ieškoti kompromiso – kiekvienas galite pasirinkti sau tinkamiausią komfortą."
       },
       {
         "question": "Ar galiu atiduoti seną čiužinį?",
-        "answer": "Matt čiužinys atkeliauja patogioje dėžėje ir siunčiamas paprastu siuntiniu. Deja, paprastas siuntinys senų čiužinių nepriima. Daugelyje savivaldybių stambiagabaričius atliekas galima užsakyti išvežti telefonu arba internetu. Taip pat galite patys nuvežti čiužinį į rūšiavimo aikštelę. Laikykite čiužinį sausą, kad jį būtų galima perdirbti."
+        "answer": "Šiuo metu seno čiužinio išvežimo paslaugos neteikiame. ASLEEP čiužinys pristatomas kompaktiškai supakuotas dėžėje, todėl jo pristatymui nereikalingas specializuotas baldų transportas. Seną čiužinį rekomenduojame perduoti stambiagabaričių atliekų surinkimui arba pristatyti į artimiausią didelių gabaritų atliekų surinkimo aikštelę. Konkrečias surinkimo sąlygas ir artimiausią vietą rasite savo savivaldybės atliekų tvarkytojo svetainėje."
       },
       {
         "question": "Skalbiamas užvalkalas",
-        "answer": "Viršutinis čiužinio sluoksnis su Tencel skalbiamas 60 °C temperatūroje. Tai padeda išlaikyti Matt higienišką ir nesudaro sąlygų dulkių erkėms. Mėlynoji dalis su neslystančiu sluoksniu skalbiama iki 30 °C.\n\nUžvalkalo sudėtis\nViršus/baltoji pusė: 19 % liocelis (tencel) / 19 % viskozė / 62 % poliesteris\nNeslystanti apačia: 100 % poliesteris\n\nUžvalkalo dalių negalima džiovinti džiovyklėje — jis susitrauks. Prieš skalbdami atidžiai perskaitykite skalbimo etiketę."
+        "answer": "ASLEEP čiužinio užvalkalas yra nuimamas. Viršutinę baltą užvalkalo dalį su TENCEL™ galima skalbti 40 °C temperatūroje.\n\nUžvalkalo sudėtis\nViršutinė / balta dalis: 19 % lyocell (TENCEL™) / 19 % viskozė / 62 % poliesteris\nApatinė neslystanti dalis: 100 % poliesteris\n\nSvarbu! Prieš skalbdami visada vadovaukitės užvalkalo priežiūros etiketėje pateiktomis instrukcijomis."
       },
       {
         "question": "Tinka visų tipų lovoms",
-        "answer": "Matt yra universalus čiužinys. Jis tinka grotelėms, boxspring, elektra reguliuojamam rėmui, tinkleliui, padėklams ir grindims.\n\nĮsitikinkite, kad dabartinis lovos rėmas yra geros būklės, be:\n- įdubimų\n- kreivumo\n- nusidėvėjimo\n\nDabartinis rėmas labai veikia jūsų komfortą ir naujojo Matt čiužinio kokybę."
+        "answer": "ASLEEP – universalus čiužinys. Jis tinka lovoms su grotelėmis, vientisu pagrindu, boxspring tipo lovoms ir reguliuojamiems lovų pagrindams. Svarbiausia, kad pagrindas būtų stabilus ir tinkamos būklės.\n\nĮsitikinkite, kad jūsų dabartinis lovos pagrindas yra geros būklės ir neturi šių požymių:\n\n• įlinkimų\n• nelygumų\n• pažeistų ar susidėvėjusių dalių\n\nLovos pagrindas turi didelę įtaką jūsų naujojo ASLEEP čiužinio komfortui ir miego kokybei."
       },
       {
         "question": "6 kietumai viename",
         "answer": "Žemiau matote 6 čiužinio kietumo variantus:",
         "image": "/images/product-specs/firmness.webp"
       },
-      {
-        "question": "Ar galiu naudoti Matt iš karto?",
-        "answer": "Išpakavus čiužinį, Matt reikia apie 48 valandų, kad visiškai išsiskleistų. Miegoti ant jo galite iš karto!\n\nAtkreipkite dėmesį į lovos rėmą. Svarbu, kad jis būtų geros būklės — be nusidėvėjimo, įdubimų ar kreivumo. Rėmo būklė labai veikia naująjį Matt čiužinį."
-      },
+     {
+  "question": "Ar galiu miegoti ant ASLEEP iš karto?",
+  "answer": "Išpakavus ASLEEP čiužinį, jam gali prireikti iki 48 valandų, kad visiškai atgautų savo formą. Tačiau miegoti ant jo galite iš karto!\n\nAtkreipkite dėmesį ir į savo lovos pagrindą. Svarbu, kad jis būtų geros būklės – lygus, stabilus, neįlinkęs ir neturėtų nusidėvėjimo požymių. Lovos pagrindo būklė gali turėti didelę įtaką jūsų naujojo ASLEEP čiužinio komfortui."
+},
       {
         "question": "Ar galiu pasirinkti pristatymo datą?",
         "answer": "Taip, tikrai. Atsiskaitymo metu per pristatymo kalendorių galite pasirinkti siuntimo datą."

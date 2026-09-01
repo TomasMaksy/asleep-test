@@ -1,15 +1,15 @@
 {
   "hero": {
-    "lineOne": "Puikus miegas,",
-    "lineTwo": "dviem būdais",
+    "lineOne": "Geresnis miegas",
+    "lineTwo": "prasideda čia",
     "lineThree": "",
-    "cta": "Atrasti čiužinius",
+    "cta": "Atrasti čiužinį",
     "awardsCaption": "Geriausiai įvertintas čiužinys"
   },
   "products": {
     "heading": [
-      "Puikus miegas,",
-      "dviem būdais"
+      "Sukurtas tavo miegu",
+      ""
     ],
     "items": [
       {
@@ -22,26 +22,26 @@
         "price": 699,
         "sizeLabel": "180 × 200 cm",
         "features": [
-          "Lorem ipsum dolor sit amet consectetur adipiscing elit",
-          "Sed do eiusmod tempor incididunt ut labore et dolore",
-          "Ut enim ad minim veniam quis nostrud exercitation",
-          "Ullamco laboris nisi ut aliquip ex ea commodo"
+          "Kruopščiai parinktas kelių putų sluoksnių derinys",
+          "Subalansuotas komfortas ir kūno atrama",
+          "Prisitaiko prie kūno ir miego pozicijos",
+          "10 metų garantija"
         ]
       },
       {
         "id": "hybrid",
-        "title": "Hybrid Pro",
+        "title": "Sukurk savo",
         "variant": "light",
         "image": "/images/product-hybrid.webp",
         "imageAlt": "Lorem ipsum hybrid mattress",
-        "cta": "Atrasti Hybrid Pro",
+        "cta": "Sukurti savo čiužinį",
         "price": 899,
         "sizeLabel": "180 × 200 cm",
         "features": [
-          "Duis aute irure dolor in reprehenderit in voluptate",
-          "Excepteur sint occaecat cupidatat non proident sunt",
-          "Officia deserunt mollit anim id est laborum",
-          "Lorem ipsum dolor sit amet consectetur adipiscing"
+          "Čiužinys, pritaikytas pagal jūsų poreikius",
+          "Pasirinkite jums tinkamiausią komfortą",
+          "Individualus čiužinio sluoksnių derinys",
+          "Sukonfigūruokite per kelias minutes"
         ]
       }
     ]
@@ -93,14 +93,14 @@
     "cta": "Visi atsiliepimai",
     "cards": [
       {
-        "quote": "Penkių žvaigždučių viešbučio patirtis",
+        "quote": "Pagaliau radau sau tinkamą čiužinį",
         "source": "google",
         "left": "-3.13%",
         "top": "51.66%",
         "width": "16.94%"
       },
       {
-        "quote": "Geras čiužinys nuo pirmos nakties",
+        "quote": "Rytais jaučiuosi daug geriau pailsėjęs",
         "source": "consumentenbond",
         "left": "83.40%",
         "top": "44.82%",
@@ -114,8 +114,8 @@
         "width": "15.83%"
       },
       {
-        "quote": "Geriausias miegas per metus",
-        "source": "consumentenbond",
+        "quote": "Komfortas nuo pirmos nakties",
+        "source": "asleep",
         "left": "16.60%",
         "top": "59.12%",
         "width": "16.94%"
@@ -136,7 +136,7 @@
       },
       {
         "quote": "Nuostabus čiužinys",
-        "source": "consumentenbond",
+        "source": "google",
         "left": "45.14%",
         "top": "18.75%",
         "width": "18.06%"
@@ -156,15 +156,15 @@
         "width": "20.07%"
       },
       {
-        "quote": "Teisingai išrinktas geriausiu teste",
+        "quote": "Kokybė jaučiasi vos atsigulus",
         "source": "asleep",
         "left": "38.61%",
         "top": "61.52%",
         "width": "20.07%"
       },
       {
-        "quote": "Niekada neberekomenduočiau kito čiužinio",
-        "source": "consumentenbond",
+        "quote": "Nesitikėjau pajusti tokio skirtumo",
+        "source": "google",
         "left": "31.32%",
         "top": "81.15%",
         "width": "18.06%"
@@ -339,23 +339,23 @@
     "items": [
       {
         "icon": "/images/icons/price.svg",
-        "title": "The innovative sleep experience",
-        "body": "We researched, analysed and tested the best materials to revolutionize your sleep experience."
+        "title": "Geresnis miegas, apgalvotas iki detalių",
+        "body": "Kruopščiai rinkome, analizavome ir testavome medžiagas, kad sukurtume komfortą, kurį pajusite kiekvieną naktį."
       },
       {
         "icon": "/images/icons/map.svg",
-        "title": "Handcrafted in Europe",
-        "body": "With an eye for detail, we design quality bedding products from durable materials, here in the Baltics."
+        "title": "Pagaminta Lietuvoje",
+        "body": "Kuriame ir gaminame ASLEEP Lietuvoje, daug dėmesio skirdami kiekvienai detalei – nuo kruopščiai parinktų medžiagų iki galutinio komforto."
       },
       {
         "icon": "/images/icons/piggy.svg",
-        "title": "Better price, better quality",
-        "body": "No commercial chit chat, long queues or unrealistic delivery time. We cut the unnecessary crap to sell Matt at a fair price."
+        "title": "Aukštesnė kokybė. Sąžininga kaina.",
+        "body": "Parduodame tiesiogiai, todėl atsisakome nereikalingų tarpininkų ir jų antkainių. Daugiau investuojame į tai, kas svarbiausia – patį produktą."
       },
       {
         "icon": "/images/icons/thumb.svg",
-        "title": "100% satisfaction guaranteed",
-        "body": "Shipping is free and fast. We are happy to lend Matt during a 120 day period and to offer you a 10 year warranty."
+        "title": "Kokybė, kuria pasitikime",
+        "body": "Išbandykite ASLEEP savo namuose. Jei jis jums netiks, galėsite jį grąžinti. Be to, čiužiniui suteikiame ilgalaikę garantiją."
       }
     ]
   },
@@ -404,24 +404,24 @@
   "support": [
     {
       "icon": "/images/icons/headset.png",
-      "title": "Susirašykite su mumis",
-      "body": "Our Dreamteam is ready to help you with your questions.",
+      "title": "Susisiekite su mumis",
+      "body": "Turite klausimų? Mūsų komanda pasiruošusi padėti.",
       "cta": "Pradėti pokalbį",
       "href": "#"
     },
     {
       "icon": "/images/icons/box.png",
       "title": "Dažniausiai užduodami klausimai",
-      "body": "We bundled most of the common questions for you.",
+      "body": "Atsakymus į dažniausiai kylančius klausimus rasite vienoje vietoje.",
       "cta": "Peržiūrėti DUK",
       "href": "#"
     },
     {
       "icon": "/images/icons/shield.png",
-      "title": "Skambinkite mums",
-      "body": "Our Dreamteam helps you to find the perfect mattress.",
-      "cta": "Skambinti +370",
-      "href": "tel:+31202615296"
+      "title": "Paskambinkite mums",
+      "body": "Padėsime išsirinkti jums tinkamiausią čiužinį ir atsakysime į visus klausimus.",
+      "cta": "Skambinti +37061467580",
+      "href": "tel:+37061467580"
     }
   ]
 }

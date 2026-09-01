@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import {
@@ -14,8 +14,10 @@ import { getSiteUrl } from "@/lib/site-url";
 import { cn } from "@/lib/utils";
 import "../globals.css";
 
-const outfit = Outfit({
-  subsets: ["latin", "latin-ext"],
+const outfit = localFont({
+  src: "../fonts/Outfit-Variable.ttf",
+  weight: "100 900",
+  style: "normal",
   variable: "--font-outfit",
   display: "swap",
 });
@@ -68,7 +70,10 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html className={cn(outfit.variable, "h-full antialiased")} lang={locale}>
+    <html
+      className={cn(outfit.variable, outfit.className, "h-full antialiased")}
+      lang={locale}
+    >
       <body className="relative min-h-full font-sans">
         <NextIntlClientProvider messages={messages}>
           <RevealObserver />
