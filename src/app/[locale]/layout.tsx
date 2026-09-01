@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import "../globals.css";
 
 const outfit = Outfit({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   variable: "--font-outfit",
   display: "swap",
 });

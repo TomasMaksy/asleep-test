@@ -33,6 +33,8 @@ bun install
 bun run dev
 ```
 
+The first `bun run dev` needs an internet connection so Next can download the Outfit font. After that it is cached.
+
 - Lithuanian homepage: [http://localhost:3000/lt](http://localhost:3000/lt)
 - English homepage: [http://localhost:3000/en](http://localhost:3000/en)
 - Product: `/lt/products/original` and `/en/products/original`
