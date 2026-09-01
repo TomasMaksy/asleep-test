@@ -1,72 +1,72 @@
 {
   "metadata": {
     "title": "Asleep Original Mattress | Asleep",
-    "description": "Adjustable mattress with 6 firmness options. Premium materials, 120-night trial, 10-year warranty, free shipping."
+    "description": "Adjustable mattress with 6 firmness levels. Premium materials, 120-night trial, 10-year warranty and free delivery."
   },
   "hero": {
-    "title": "The adjustable mattress",
+    "title": "A mattress for better sleep",
     "subtitle": "Asleep Original",
-    "rating": "4,6/5",
+    "rating": "4.6/5",
     "seeReviews": "See reviews",
-    "description": "The best rated mattress of the Baltics is adjustable. Do you want to make the mattress more firm or even softer? Just unzip the mattress and change the firmness whenever you want.",
+    "description": "The best mattress in the Baltics — designed for better sleep. Carefully selected foam layers adapt to your body and provide an optimal balance of comfort and support throughout the night.",
     "features": [
-      "Rated 13 times in a row as best in the test by the Consumers' Association",
-      "For all body types, sleeping positions and bed bases",
-      "Fully adjustable, 6 firmnesses in 1 mattress",
-      "Designed in the Baltics with students from TU Delft",
-      "120 night sleep trial",
-      "Free shipping and returns"
+      "Multi-layer construction with high-quality foams",
+      "Suitable for all body types, sleeping positions and bed bases",
+      "Developed together with Vilnius University medical students",
+      "Made in Lithuania",
+      "120-night sleep trial",
+      "Free delivery and returns"
     ],
     "sizeLabel": "Select your size:",
-    "heightLabel": "Height: 25cm",
+    "heightLabel": "Height: 25 cm",
     "sizeSheet": {
       "single": "Single",
       "double": "Double",
-      "slackHint": "We recommend keeping 20 cm of slack above your height measurement.",
-      "viewDoubleSizes": "View the double sizes",
-      "viewSingleSizes": "View the single sizes",
+      "slackHint": "We recommend allowing 20 cm more than your height.",
+      "viewDoubleSizes": "View double sizes",
+      "viewSingleSizes": "View single sizes",
       "close": "Close size selector"
     },
     "variants": {
       "plus": {
         "title": "45% off the Original Mattress Plus",
-        "description": "The Original Mattress with a Hypoallergenic Cover"
+        "description": "Original Mattress with a hypoallergenic cover"
       },
       "original": {
-        "title": "Original mattress",
-        "description": "Standard cover - Comfortable with a silky-soft Tencel layer."
+        "title": "Original Mattress",
+        "description": "Standard cover — comfortable, with a soft Tencel layer."
       }
     },
-    "saveLabel": "Save: {amount}",
-    "saveBadge": "save 45%",
-    "deliveryNote": "On stock, delivery: 5-8 business days",
-    "installment": "Pay in 3 parts of {price}",
+    "saveLabel": "You save: {amount}",
+    "saveBadge": "−45%",
+    "deliveryNote": "In stock, delivery: 5–8 business days",
+    "installment": "Pay in 3 instalments of {price}",
     "addToCart": "Add",
     "stickyBar": {
       "plusName": "Asleep Original Plus Mattress",
       "originalName": "Asleep Original Mattress",
       "addToBasket": "Add to basket"
     },
-    "configurator": "Start the configurator",
+    "configurator": "Create your mattress",
     "zoomLabel": "Zoom image",
     "gallery": {
       "heroAlt": "Asleep Original mattress in a bedroom",
-      "packshotAlt": "Asleep Original mattress packshot",
+      "packshotAlt": "Asleep Original mattress",
       "lifestyleAlt": "Couple relaxing on the Asleep Original mattress",
-      "benefitsAlt": "Winning benefits according to Consumentenbond",
+      "benefitsAlt": "Asleep Original mattress benefits",
       "layersAlt": "Asleep mattress layers animation",
       "pauseAnimation": "Pause layers animation",
       "playAnimation": "Play layers animation",
       "zoomLabel": "Zoom image"
     },
     "addons": {
-      "heading": "Add popular add-ons",
-      "addLabel": "Add {name} to cart",
+      "heading": "Popular add-ons",
+      "addLabel": "Add {name} to basket",
       "items": [
         {
           "id": "mattress-protector",
-          "title": "The Mattress Protector",
-          "description": "Prevent stains on your new mattress",
+          "title": "Mattress Protector",
+          "description": "Protect your new mattress from stains",
           "size": "Size: 80x190",
           "price": 45,
           "compareAt": 50,
@@ -75,8 +75,8 @@
         },
         {
           "id": "original-pillow",
-          "title": "The Original Pillow",
-          "description": "Prevent neck pain",
+          "title": "Original Pillow",
+          "description": "Support your neck while you sleep",
           "size": "",
           "price": 89,
           "compareAt": null,
@@ -85,8 +85,8 @@
         },
         {
           "id": "original-topper",
-          "title": "The Asleep topper",
-          "description": "Add extra comfort",
+          "title": "Asleep Topper",
+          "description": "Extra comfort",
           "size": "",
           "price": null,
           "compareAt": null,
@@ -97,33 +97,33 @@
       ]
     },
     "awards": {
-      "heading": "The best rated mattress of the Baltics.",
+      "heading": "The best-rated mattress in the Baltics.",
       "imageAlt": "Asleep awards and ratings"
     },
     "faq": [
       {
         "question": "Details",
-        "answer": "The Asleep mattress is 25 cm high, has 4 foam layers, and a premium cover. All our foams are produced in Europe and are CertiPUR and Oeko-Tex certified. Each production batch undergoes extensive testing to meet the highest standards. The glue used is water-based, and no animal products are used.",
+        "answer": "ASLEEP Original is a 25 cm high mattress made from 4 different foam layers and a premium cover. The mattress is made in Lithuania using certified, carefully selected materials. Every element of the construction — from the internal foams to the removable cover — is chosen with quality, durability and everyday use in mind.",
         "materialsHeading": "Materials",
         "materials": [
-          "The cover is made from natural Tencel",
-          "Top layer of highly breathable Hypersupport",
-          "Second layer consists of open-cell memory foam",
-          "Third layer is made of high-quality soft cold foam with 7 comfort zones",
-          "Fourth layer is made of high-quality firm cold foam with 7 comfort zones",
-          "The cover has an anti-slip layer so it stays securely in place on any surface"
+          "Premium cover with TENCEL™ — soft, pleasant to the touch and highly breathable",
+          "Memory Foam — adapts to the contours of your body and provides a comfortable enveloping feel",
+          "ASLEEP Support Foam — a responsive layer that quickly reacts to body movement",
+          "High-quality HR foam — for resilient comfort and even body support",
+          "Firm foam base — for mattress stability and durability",
+          "Non-slip bottom layer — helps keep the mattress securely in place"
         ]
       },
       {
         "question": "Free delivery and returns",
         "sections": [
           {
-            "heading": "Shipping",
-            "body": "The Asleep mattress is delivered free of charge in a convenient box measuring 45x45x100 cm. If you order on a weekday before 10:00 PM, your mattress will be handed over to your chosen carrier the same day. Asleep will then be delivered to your home within 3 working days. Prefer a later delivery? You can choose a date via our delivery calendar."
+            "heading": "Delivery",
+            "body": "We deliver your ASLEEP mattress to your home free of charge, conveniently packed in a compact box. Standard delivery takes 3–7 business days. Prefer to receive your mattress later? You can select a more convenient delivery date during checkout."
           },
           {
-            "heading": "Free Returns",
-            "body": "Once Asleep is out of the box, it won’t fit back in. That’s why, if you request a return, our couriers will come by to pick up the unfolded mattress. Once received, we’ll refund the full amount to your account within 6 working days."
+            "heading": "Free returns",
+            "body": "Once the mattress has been unpacked, you won't need to fit it back into the box. If you decide to return ASLEEP, we'll arrange free collection of the fully expanded mattress from your home. Once we receive the returned mattress, we'll refund the full amount paid to your account."
           }
         ]
       },
@@ -132,11 +132,11 @@
         "sections": [
           {
             "heading": "120-night sleep trial",
-            "body": "We offer a 120-night trial period for your Asleep mattress. If Asleep isn’t the right fit for you, you can easily register your return online, and we’ll pick up the mattress free of charge. No need to feel guilty, returned mattresses are either donated to charity or sold at a discount as refurbished. Returned mattresses are never sold as new."
+            "body": "We give you 120 nights to try ASLEEP where it matters most — in your own home. If you decide during this period that the mattress isn't right for you, register a return and we'll arrange free collection. Returned mattresses are never sold as new. Mattresses in suitable condition may be donated to charity or sold as refurbished."
           },
           {
             "heading": "10-year warranty",
-            "body": "Thanks to the high-quality materials we use, we can guarantee at least 10 years of comfortable sleep. In case of sagging of 2.5 cm or more, you’ll receive a replacement product."
+            "body": "ASLEEP mattresses come with a 10-year warranty, giving you long-term confidence in the mattress's quality and durability."
           }
         ]
       },
@@ -145,51 +145,51 @@
         "sections": [
           {
             "heading": "Certifications",
-            "body": "CertiPUR is a voluntary testing, analysis, and certification program for the environmental, health, and safety properties of polyurethane foam. It identifies substances that must not be used in the production of polyurethane foams and sets strict limits for certain components. This ensures that your Asleep mattress:",
+            "body": "The foams used in the ASLEEP mattress are CertiPUR certified. The CertiPUR certification programme sets strict requirements for polyurethane foam composition, safety and emissions:",
             "bullets": [
-              "Contains no heavy metals such as mercury, lead, or cadmium",
-              "Contains no phthalates or plasticizers",
-              "Emits low levels of VOCs (volatile organic compounds)"
+              "Contains no heavy metals such as mercury, lead or cadmium",
+              "Complies with strict restrictions on the use of phthalates",
+              "Low emissions of volatile organic compounds (VOCs)"
             ]
           },
           {
             "heading": "Care",
-            "body": "The Tencel cover of the mattress is washable at 60°C. This keeps Asleep hygienic and prevents dust mites from settling."
+            "body": "The removable top section of the ASLEEP mattress cover can be washed at 40°C, making it easy to keep the mattress clean and fresh and maintain a hygienic sleep environment."
           }
         ]
       }
     ]
   },
   "infoSlider": {
-    "heading": "The adjustable mattress",
+    "heading": "A mattress designed for better sleep",
     "skip": "Skip animation",
     "slides": [
       {
-        "title": "6 mattresses in 1",
-        "body": "Our mattress offers 6 comfort options. You'll receive Matt at your place in configuration 3 (medium). If you like it softer or harder, you can easily unzip the cover and turn a layer to adjust the mattress."
+        "title": "Thoughtful 4-layer construction",
+        "body": "ASLEEP Original consists of 4 carefully selected foam layers with different properties. Memory Foam, high-density responsive foam, HR foam and a stable base work together to provide comfort every night."
       },
       {
-        "title": "Individually adjustable",
-        "body": "You share your bed with someone who doesn't have the same taste? No worries, we got your back! You can adjust Matt to your own liking on each side of the mattress."
+        "title": "Different comfort for each person",
+        "body": "Prefer a firmer mattress while your partner likes it softer? ASLEEP allows each side of the mattress to be adjusted individually, so neither of you has to compromise."
       },
       {
-        "title": "Perfect spine alignment",
-        "body": "Our 5 layers and our 7 comfort zones guarantee an optimal spine alignment and help to reduce pressure points. Whether you're lying on your back, belly or side, Matt keeps you in balance."
+        "title": "Natural spinal alignment",
+        "body": "ASLEEP's 4-layer construction helps distribute body weight evenly and reduce pressure in sensitive areas. Whether you sleep on your back, side or stomach, the mattress helps your body maintain a natural position throughout the night."
       },
       {
-        "title": "Highest quality and durable layers",
-        "body": "We selected only the best materials to support your body : tencel, hypersupport, memory foams and cold foams. Matt is Oeko Tex certified, Green Choice Consumentenbond. Good for your back and the planet!"
+        "title": "Premium-quality materials",
+        "body": "We selected materials we can rely on: a premium cover with TENCEL™ fibre, Memory Foam and high-quality foam layers. The foams used in ASLEEP are CertiPUR certified, and the mattress is made in Lithuania."
       }
     ]
   },
   "video": {
-    "label": "See how to adjust me",
+    "label": "See how to adjust your mattress",
     "playButton": "Watch video"
   },
   "configurator": {
-    "overline": "Personalize your mattress",
-    "title": "Your custom mattress",
-    "cta": "Configure your mattress and discover our advice",
+    "overline": "CUSTOMISE YOUR MATTRESS",
+    "title": "Find your mattress",
+    "cta": "Create your mattress",
     "imageAlt": "Exploded view of Asleep mattress layers",
     "bedTypeLabel": "Bed type",
     "single": "Single",
@@ -204,7 +204,7 @@
     ]
   },
   "layers": {
-    "heading": "The innovation inside",
+    "heading": "Inside ASLEEP technology",
     "advantages": "Advantages",
     "selectLayer": "Show {title} details",
     "close": "Close",
@@ -213,148 +213,148 @@
     "items": {
       "tencel": {
         "title": "Tencel",
-        "body": "Made from sustainably produced eucalyptus wood, Tencel is a natural raw material.",
-        "bodyExtra": "Our top cover consists of a mix of Tencel and viscose. We combine this with polyester fibre to give it extra strength and make the cover washable at 60 degrees.",
+        "body": "Tencel fibre is made from responsibly sourced wood and has a soft, pleasant feel.",
+        "bodyExtra": "In the ASLEEP top cover, Tencel is blended with viscose and polyester. This combination balances a pleasant surface feel, practicality and durability. The removable top section of the cover can be washed at 40°C.",
         "mediaAlt": "Close-up of the Tencel cover texture",
         "advantages": [
-          "Regulate humidity (150% more than cotton)",
-          "Anti-allergic, anti-bacterial",
-          "High breathability",
-          "Silky feel",
-          "Temperature regulation",
-          "Washable"
+          "Excellent moisture management",
+          "Good breathability",
+          "Soft, pleasant feel",
+          "Helps maintain a comfortable sleep microclimate",
+          "Hypoallergenic",
+          "Washable at 40°C"
         ]
       },
       "hypersupport": {
-        "title": "Hypersupport foam",
-        "body": "Our hypersupport foam is here to support your body but not only! This innovative foam with a velvety surface also ventilates.",
-        "mediaAlt": "Close-up of hypersupport foam",
+        "title": "ASLEEP Support Foam",
+        "body": "ASLEEP Support Foam does more than support your body. The responsive foam reacts quickly to movement and helps create a comfortable, stable sleep surface.",
+        "mediaAlt": "Close-up of ASLEEP Support Foam",
         "advantages": [
-          "Very good point elasticity to provide an excellent body support",
-          "Open cell structure to ensure air circulation",
-          "Good moisture regulation"
+          "Excellent point elasticity for body support",
+          "Open-cell structure for air circulation",
+          "High-density foam structure"
         ]
       },
       "memoryFoam": {
-        "title": "Memory foam",
-        "body": "Our memory foam is different than the average memory foam. We replaced some of the raw materials with Ricinus, a vegetal oil. It is made to adapt to your shape and to reduce pressure points.",
-        "mediaAlt": "Close-up of memory foam",
+        "title": "Memory Foam",
+        "body": "ASLEEP Memory Foam adapts to the shape of your body and helps distribute body weight evenly. Responding to body heat, the foam conforms to your individual contours, helping reduce pressure in sensitive areas and creating a comfortable, enveloping feel.",
+        "mediaAlt": "Close-up of Memory Foam",
         "advantages": [
-          "Distributes the weight",
-          "Great motion isolation",
-          "Reduces the number of pressure points",
-          "Forms itself to each posture of the body through body temperature",
-          "Good ventilation due to open cell structure"
+          "Distributes body weight evenly",
+          "Helps reduce pressure in sensitive areas",
+          "Adapts to individual body contours",
+          "Excellent motion isolation",
+          "Provides a comfortable, enveloping feel"
         ]
       },
       "coldFoamSoft": {
-        "title": "Cold foam soft",
-        "body": "This base layer ensures structure and promote better spine alignment. We developed 7 comfort zones to give your body the perfect alignment, regardless of your weight.",
-        "mediaAlt": "Close-up of soft cold foam",
+        "title": "HR Comfort Foam",
+        "body": "The responsive HR foam layer gives the mattress structure and helps the body maintain a natural position during sleep. High-resilience foam reacts quickly to movement and distributes load evenly, helping comfort remain consistent throughout the night.",
+        "mediaAlt": "Close-up of HR Comfort Foam",
         "advantages": [
-          "Optimal spine alignment",
-          "Excellent body support",
-          "Avoid sagging",
-          "Good heat and moisture regulation"
+          "Helps maintain a natural body position",
+          "Distributes body weight evenly",
+          "Helps maintain mattress shape and stability",
+          "Durable, long-lasting foam"
         ]
       },
       "coldFoamFirm": {
-        "title": "Cold foam firm",
-        "body": "Our firm cold foam is the stability base layer. Thanks to its 7 comfort zones it gives your body the right support, regardless of your weight.",
-        "mediaAlt": "Close-up of firm cold foam",
+        "title": "Base Support Foam",
+        "body": "The firm ASLEEP base foam layer provides a stable foundation and helps maintain the mattress structure. The resilient foam is designed to retain its properties and provide stability for years.",
+        "mediaAlt": "Close-up of Base Support Foam",
         "advantages": [
-          "Optimal resilience",
-          "Long lifespan",
-          "Prevent sinking and sagging",
-          "Moisture removal and heat regulation",
-          "Stable support"
+          "Stable foundation for the entire mattress",
+          "High resistance to deformation",
+          "Helps maintain the mattress shape",
+          "Long-lasting foam structure",
+          "Stable body support"
         ]
       },
       "comfortZones": {
         "title": "Comfort zones",
-        "body": "Hand in hand with our test center, we designed 7 unique comfort zones to provide the best support where your body needs it. It's a complicated story, but some parts of your body need more support than others.",
+        "body": "Together with a testing centre, we developed 7 unique comfort zones to provide support where your body needs it. Different parts of the body require different levels of support.",
         "advantages": [
-          "Reduce pressure",
-          "Provide a balanced ergonomic posture",
-          "Keep your spine in its natural s-shape at all times."
+          "Reduces pressure",
+          "Supports balanced ergonomic posture",
+          "Helps maintain the spine's natural S-shape"
         ]
       },
       "nonSlip": {
         "title": "Non-slip layer",
-        "body": "If you ever play hide and seek and you hide under the bed, you will see that we have also thought carefully about the bottom of the mattress. Our non-slip layer helps to regulate movements and ensures the mattress stays in place.",
+        "body": "We've thought carefully about the underside of the mattress too. The non-slip layer helps limit movement and keeps the mattress securely in place.",
         "mediaAlt": "Non-slip layer on the bottom of the mattress"
       },
       "cover": {
         "title": "Cover",
-        "body": "The woven cover is made of premium textile. The fibers of the cover ensure optimal ventilation. You can wash the blue part of the cover at 40°C. Do not tumble dry.",
+        "body": "The woven cover is made from premium textiles. Its fibres provide good ventilation. The blue section can be washed at 40°C. Do not tumble dry.",
         "mediaAlt": "Mattress cover fabric"
       }
     }
   },
   "difference": {
-    "heading": "What makes the difference",
+    "heading": "Why ASLEEP?",
     "play": "Play video",
     "pause": "Pause video",
     "blocks": [
       {
-        "title": "Made locally",
-        "body": "We're proud that Matt is designed and developed here in Europe. We are glad to work with partners who share our social and environmental values. We do believe that producing locally is the best way to ensure the quality of our mattress and to reduce our carbon footprint."
+        "title": "Made in Lithuania",
+        "body": "We're proud that ASLEEP mattresses are designed and made in Lithuania. We work with local manufacturing partners and carefully select every material and construction element. Local production keeps us close to the entire process — from the first prototypes to the finished mattress — and helps us maintain the quality we expect from every ASLEEP."
       },
       {
-        "title": "Developed hand in hand with TU Delft",
-        "body": "It took us more than 15 months to design, develop and test the first Matt mattress. We analysed and researched various materials compositions hand in hand with TU Delft Students. The last 7 years we worked together with Europe's leading experts on sleep technology and collected feedback of all out customers to improve our products. This leaded to 60 iterations small and big which resulted in the mattress that you can order today."
+        "title": "Developed together with VU medical students",
+        "body": "When developing ASLEEP, our goal wasn't simply to make another mattress. Together with Vilnius University medical students, we analysed sleep ergonomics, different materials and their combinations, and how mattress construction can adapt to different people's needs. We combined these insights with prototyping and testing different foam combinations. Step by step, this shaped the multi-layer ASLEEP construction we use today."
       },
       {
         "title": "Intensively tested",
-        "body": "To make sure that after years of hard work Matt is still as comfortable as on the first day, we mimic intensive use. With a roller of 130 kilos we roll over Matt 30,000 times. This way we know for sure that Matt always shows his best side! This is due to our foams quality but also to our strong selectivity. For every foam production we take several samples to check the quality. Only when all 4 tests are positive the foam goes to the cutting department to be changed into a Matt."
+        "body": "We want ASLEEP to remain just as comfortable after years of use as it is on the first night. That's why the foams used in the mattress are tested for durability, resilience and resistance to long-term loading. Every ASLEEP layer uses high-quality, CertiPUR-certified foams that meet defined quality and safety requirements. This gives us confidence not only in how ASLEEP feels today, but in how it will perform for years to come."
       }
     ]
   },
   "specs": {
-    "title": "More details",
-    "imageAlt": "Woman relaxing on a sofa wrapped in a duvet",
-    "firmnessAlt": "Six firmness options of the mattress",
+    "title": "More information",
+    "imageAlt": "Woman sitting on a sofa wrapped in a blanket",
+    "firmnessAlt": "Six mattress firmness options",
     "items": [
       {
-        "question": "Build up and materials",
-        "answer": "Height of the mattress: 25cm\n\nMatt is made with:\n- Top side cover (1cm)\n- Hypersupport (4cm)\n- Memory foam (4cm)\n- Cold foam soft (8cm)\n- Cold foam hard (8cm)\n- Non-slip cover\n\nDensities\nHypersupport: D40\nMemory Foam: D60\nCold foam: D40 (average)\n\nCover composition\nTop side/white side: 19% Lyocell (tencel) / 19% viscose / 62% Polyester\nUnderside with anti-slip: 100% Polyester"
+        "question": "Construction and materials",
+        "answer": "Mattress height: 25 cm\n\nAsleep consists of:\n- Top cover (1 cm)\n- Memory Foam (3 cm)\n- ASLEEP Support Foam (2 cm)\n- HR Comfort Foam (10 cm)\n- ASLEEP Base Foam (10 cm)\n- Non-slip bottom cover layer\n\nDensities\nASLEEP Support Foam: D60\nMemory Foam: D45\nHR Comfort Foam: D30\n\nCover composition\nTop/white side: 19% lyocell (Tencel) / 19% viscose / 62% polyester\nNon-slip underside: 100% polyester"
       },
       {
         "question": "Sizes and weights",
         "answer": "80x190x25 cm (17 kg)\n80x200x25 cm (18 kg)\n80x210x25 cm (19 kg)\n80x220x25 cm (20 kg)\n90x190x25 cm (18 kg)\n90x200x25 cm (20 kg)\n90x210x25 cm (21 kg)\n90x220x25 cm (22 kg)\n100x200x25 cm (23 kg)\n100x210x25 cm (24 kg)\n100x220x25 cm (26 kg)\n120x190x25 cm (24 kg)\n120x200x25 cm (25 kg)\n140x190x25 cm (28 kg)\n140x200x25 cm (29 kg)\n160x190x25 cm (30 kg)\n160x200x25 cm (32 kg)\n160x210x25 cm (34 kg)\n160x220x25 cm (35 kg)\n180x200x25 cm (36 kg)\n180x210x25 cm (38 kg)\n180x220x25 cm (40 kg)\n200x200x25 cm (40 kg)"
       },
       {
-        "question": "120 nights free trial",
-        "answer": "We offer a 120-night trial period for your Matt mattress. If Matt isn’t the right fit for you, you can easily register your return online, and we’ll pick up the mattress free of charge."
+        "question": "120-night free trial",
+        "answer": "We're confident in ASLEEP's quality, so we give you 120 nights to try the mattress at home with no risk. You'll have plenty of time to adjust to your new mattress, find the configuration that suits you best and decide whether ASLEEP is right for you. If you're not completely satisfied within 120 nights, simply contact us. We'll collect the mattress from your home free of charge and refund the full amount you paid. The 120-night trial is available once per customer and applies to the first ASLEEP mattress order. Full trial and return terms can be found in our returns policy."
       },
       {
-        "question": "I hesitate between two single mattresses or one double mattress",
-        "answer": "If you go for two single mattresses, they come in two separate covers. You might feel a gap between them. The double mattress is made in one piece, and you can also adjust each side with different firmness levels. And if you have an adjustable bed base? Make sure to go for two single mattresses. In this case, the gap can be covered with our split-topper if needed."
+        "question": "I'm choosing between two single mattresses and one double mattress",
+        "answer": "If you choose two single mattresses, each will have its own cover, so you may feel a gap between them. A double ASLEEP mattress is made as one mattress, while the firmness of each side can still be adjusted individually. Prefer it firmer while your partner likes it softer? There's no need to compromise — each of you can choose the comfort that suits you best."
       },
       {
-        "question": "Can I give back my old mattress?",
-        "answer": "The Matt mattress comes in a handy box so that it can be sent with regular parcel post. Unfortunately, regular parcel post does not accept returns of old mattresses. In most municipalities you can make an appointment via the website or telephone to have bulky waste collected. You can also take bulky waste to the recycling center yourself. Make sure your mattress stays dry so it can be recycled."
+        "question": "Can you take away my old mattress?",
+        "answer": "We currently don't offer an old mattress removal service. The ASLEEP mattress is delivered compactly packed in a box, so no specialised furniture transport is required. We recommend arranging bulky waste collection for your old mattress or taking it to your nearest bulky waste collection site. Check your local waste management provider's website for collection conditions and the nearest location."
       },
       {
         "question": "Washable cover",
-        "answer": "The top layer of the mattress with Tencel is washable at 60°C. This keeps Matt hygienic and gives dust mites no chance. The blue part with anti-slip is washable up to 30°C.\n\nCover composition\nTop/white side: 19% lyocell (tencel) / 19% viscose / 62% polyester\nNon-slip bottom: 100% Polyester\n\nThe parts of the cover should not be put in the dryer. This will cause the cover to shrink. Read the washing label carefully before washing."
+        "answer": "The ASLEEP mattress cover is removable. The white top section with TENCEL™ can be washed at 40°C.\n\nCover composition\nTop / white section: 19% lyocell (TENCEL™) / 19% viscose / 62% polyester\nNon-slip bottom section: 100% polyester\n\nImportant! Always follow the care instructions on the cover label before washing."
       },
       {
         "question": "Suitable for all bed types",
-        "answer": "Matt is a universal mattress. It is compatible with a slatted base, a box spring, an electrically adjustable base, a mesh base, a number of pallets and the ground.\n\nMake sure your current bed base is in good condition, with no signs of:\n- sagging\n- it isn’t straight\n- wear\n\nThe current base has a lot of influence on your comfort and the quality of your new Matt mattress."
+        "answer": "ASLEEP is a versatile mattress. It is suitable for slatted bases, solid bases, boxspring beds and adjustable bed bases. The most important thing is that the base is stable and in good condition.\n\nMake sure your current bed base is in good condition and shows no signs of:\n\n• sagging\n• unevenness\n• damaged or worn parts\n\nYour bed base can have a significant impact on the comfort and sleep quality of your new ASLEEP mattress."
       },
       {
-        "question": "6 firmness in 1",
-        "answer": "Below you can see the 6 firmness options of the mattress:",
+        "question": "6 firmness levels in one",
+        "answer": "Below you can see the 6 mattress firmness options:",
         "image": "/images/product-specs/firmness.webp"
       },
       {
-        "question": "Can I use Matt right away?",
-        "answer": "Once you unpack the mattress, Matt needs about 48 hours to fully expand. You can sleep on it right away, though!\n\nPlease pay attention to your bed base. It’s important your base is in good condition, with no signs of wear, sagging, or sitting uneven on the floor. The condition of your bed base has a lot of influence on your new Matt mattress."
+        "question": "Can I sleep on ASLEEP straight away?",
+        "answer": "After unpacking, the ASLEEP mattress may need up to 48 hours to fully regain its shape. However, you can sleep on it straight away!\n\nPlease also pay attention to your bed base. It should be in good condition — flat, stable, free from sagging and without signs of wear. The condition of your bed base can have a significant impact on the comfort of your new ASLEEP mattress."
       },
       {
-        "question": "Can I chose a delivery date?",
-        "answer": "That is certainly possible. Using our delivery calendar in the checkout, you can set your own shipping date."
+        "question": "Can I choose a delivery date?",
+        "answer": "Yes. During checkout, you can use the delivery calendar to select your preferred shipping date."
       }
     ]
   },
@@ -367,22 +367,22 @@
       },
       {
         "title": "Excellent!",
-        "description": "My wife and I never slept so well before, perfect confort.",
+        "description": "My wife and I have never slept this well — perfect comfort.",
         "rating": 5
       },
       {
         "title": "5/5",
-        "description": "The quality is excellent, never had a better mattress before.",
+        "description": "Excellent quality — I've never had a better mattress.",
         "rating": 5
       },
       {
-        "title": "great product & amazing customer service!",
-        "description": "I sleep better than ever before. 10/10 - highly recommend!",
+        "title": "Great product and amazing service!",
+        "description": "I'm sleeping better than ever. 10/10 — highly recommended!",
         "rating": 5
       },
       {
         "title": "High-quality mattress",
-        "description": "I really sleep better, it's very pleasant.",
+        "description": "I'm genuinely sleeping better. Very comfortable.",
         "rating": 5
       }
     ]
@@ -399,26 +399,26 @@
     ],
     "original": {
       "name": "Asleep Original",
-      "tagline": "The best awarded mattress of the Baltics",
+      "tagline": "The most awarded mattress in the Baltics",
       "values": [
         "Foam mattress",
         "6 combinations based on your weight",
         "",
         "",
         "",
-        "10 years"
+        "10 metų"
       ]
     },
     "hybrid": {
       "name": "Hybrid Pro",
-      "tagline": "Personalized mattress with more than 15,000 configurations",
+      "tagline": "Custom mattress with more than 15,000 configurations",
       "values": [
         "Hybrid mattress",
         "More than 15,000 configurations",
         "",
         "",
         "",
-        "10 years"
+        "10 metų"
       ]
     }
   },
@@ -445,7 +445,7 @@
         "price": "472,50",
         "features": [
           "1 duvet",
-          "1 fitted sheet",
+          "1 cover",
           "1 or 2 pillows",
           "1 bedsheet"
         ]
@@ -453,27 +453,27 @@
     ]
   },
   "related": {
-    "heading": "Perfect with the Matt mattress",
+    "heading": "Perfect with your ASLEEP mattress",
     "items": [
       {
         "id": "boxspring",
-        "title": "The Original Boxspring",
-        "description": "1000 pocket springs\nProduced in the Baltics\nThe best and most durable materials"
+        "title": "Original Boxspring",
+        "description": "1000 pocket springs\nMade in the Baltics\nPremium, durable materials"
       },
       {
         "id": "pillow",
-        "title": "The Original Pillow",
-        "description": "For side and back sleepers\nMemory foam and cold foam pillow\nBreathable\nWashable cover\n30 night sleep trial"
+        "title": "Original Pillow",
+        "description": "For side and back sleepers\nMemory foam and cold foam pillow\nBreathable\nWashable cover\n30-night sleep trial"
       },
       {
         "id": "duvet",
-        "title": "The Cloud Duvet",
-        "description": "Sustainable blanket certified Oeko-Tex\nAll seasons\nMade from Organic Cotton, Tencel and recycled plastic bottle Cloud Fiber"
+        "title": "Cloud Duvet",
+        "description": "Sustainable Oeko-Tex certified duvet\nSuitable for all seasons\nMade from organic cotton, Tencel and Cloud Fiber from recycled plastic bottles"
       },
       {
         "id": "topper",
         "title": "Original Topper",
-        "description": "2 firmness levels, you decide the comfort\nHypersupport & memory foam\n30 night sleep trial"
+        "description": "2 firmness levels — you choose the comfort\nASLEEP Support Foam and Memory Foam\n30-night sleep trial"
       }
     ]
   }

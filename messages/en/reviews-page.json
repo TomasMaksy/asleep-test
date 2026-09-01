@@ -1,12 +1,12 @@
 {
   "metadata": {
     "title": "Reviews | Asleep",
-    "description": "Read what customers say about Asleep mattresses. Ratings, stories, and press coverage."
+    "description": "Read what customers say about Asleep mattresses. Ratings, stories and experiences."
   },
   "hero": {
-    "title": "Don't judge a mattress by its box.",
-    "body": "To us, Asleep is perfect and we'll do everything possible to get your relationship with Asleep off to a great start. We, and many future Asleep users with us, are looking forward to your adventures together!",
-    "seeAll": "See all reviews",
+    "title": "Your sleep says it best",
+    "body": "The true ASLEEP experience begins when you sleep on it. That's why what matters most to us isn't what we say about our mattress, but what the people who sleep on it every night have to say.",
+    "seeAll": "Read reviews",
     "share": "Share your experience",
     "rating": "4.8 out of 5 stars",
     "ratings": [
@@ -25,13 +25,13 @@
     ]
   },
   "shareSheet": {
-    "title": "Tell us what you think of Asleep here",
+    "title": "Tell us what you think about Asleep",
     "close": "Close review form",
     "nameLabel": "Name*",
     "namePlaceholder": "Name Surname",
-    "emailLabel": "E-mail*",
-    "emailPlaceholder": "E-mail",
-    "productLabel": "Which product do you want to review?*",
+    "emailLabel": "Email*",
+    "emailPlaceholder": "Email",
+    "productLabel": "Which product would you like to review?*",
     "products": [
       "Asleep Original Mattress",
       "Asleep Hybrid Pro Mattress",
@@ -47,7 +47,7 @@
     "send": "Send",
     "sending": "Sending…",
     "successTitle": "Thanks for sharing!",
-    "successBody": "We’ve received your review. It helps other sleepers find their perfect mattress.",
+    "successBody": "We've received your review. It helps others find their perfect mattress.",
     "done": "Done"
   },
   "carousel": {
@@ -55,48 +55,48 @@
     "next": "Next reviews",
     "items": [
       {
-        "title": "Fast delivery, great service",
-        "body": "I was a bit skeptical about a memory-foam pillow, but this Asleep pillow changed my mind — beautiful material with comfort I can still adjust. Customer service is also quick, involved, and flexible!",
+        "title": "You can feel the quality from the first night",
+        "body": "I noticed the difference from my old mattress straight away. The comfort feels great, my body is well supported, and I wake up feeling more rested.",
         "date": "25 August 2026"
       },
       {
         "title": "Very happy with my new mattress",
-        "body": "I've finally found what's perfect for my needs in terms of comfort, and I'm delighted. I would have liked to hear about Asleep sooner.",
+        "body": "I've finally found something that suits me perfectly in terms of comfort, and I'm delighted. I only wish I'd discovered Asleep sooner.",
         "date": "22 August 2026"
       },
       {
         "title": "No more overheating at night",
-        "body": "The ventilation system really works — I no longer wake up feeling too hot at night. Plus, the materials feel premium and sustainable, which matters a lot to me. You can feel the quality. Five stars from me!",
+        "body": "The ventilation really works — I no longer wake up feeling too hot at night. The materials feel premium and sustainable too, which is important to me. You can feel the quality. Five stars!",
         "date": "20 August 2026"
       },
       {
         "title": "The best support I've ever felt in a mattress",
-        "body": "I've tried several 'premium' mattresses before, but nothing comes close. You can feel it was designed with real sleep science behind it. The support is amazing and I fall asleep faster and deeper.",
+        "body": "I've tried several \"premium\" mattresses, but nothing compares. You can feel that it was developed with real sleep science in mind. The support is amazing — I fall asleep faster and sleep more deeply.",
         "date": "19 August 2026"
       },
       {
-        "title": "Back pain gone after just one night!",
-        "body": "After sleeping on Asleep for just one night, I woke up without any back pain for the first time in months. It truly adapts to your body and offers just the right balance between firmness and comfort. Delivery was fast and customer service was super helpful. Highly recommend!",
+        "title": "Back pain disappeared after the first night!",
+        "body": "After my first night on Asleep, I woke up without back pain for the first time in months. It really adapts to the body and provides the right balance of firmness and comfort. Delivery was fast and customer service was very helpful. Highly recommended!",
         "date": "18 August 2026"
       },
       {
-        "title": "Perfect for couples with different comfort needs",
-        "body": "I was a bit skeptical at first, but the 120-day trial gave me the confidence to try it out. Best decision ever. My wife prefers a softer feel, while I like it firmer. This mattress somehow works perfectly for both of us. Impressive!",
+        "title": "Perfect for couples with different needs",
+        "body": "I was skeptical at first, but the 120-night trial gave me the confidence to try it. Best decision. My wife prefers a softer mattress, while I like it firmer. Somehow, this mattress works for both of us. Impressive!",
         "date": "18 August 2026"
       },
       {
         "title": "Love it!",
-        "body": "Its adaptability has reconciled me with foam mattresses: I've finally been able to adjust a mattress to the firmness I like.",
+        "body": "Its adjustability completely changed my mind about foam mattresses: I can finally set the firmness exactly the way I like it.",
         "date": "17 August 2026"
       },
       {
         "title": "Perfect for my back!",
-        "body": "I've finally found the perfect support for my back. I fall asleep much faster and wake up far less during the night.",
+        "body": "I've finally found the perfect support for my back. I fall asleep much faster and wake up far less often during the night.",
         "date": "17 August 2026"
       },
       {
-        "title": "Fulfills its functions",
-        "body": "Adds an extra touch of comfort that's very nice.",
+        "title": "Does exactly what it should",
+        "body": "It adds an extra level of comfort that feels really nice.",
         "date": "5 August 2026"
       }
     ]

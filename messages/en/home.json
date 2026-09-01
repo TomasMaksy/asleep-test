@@ -1,15 +1,15 @@
 {
   "hero": {
-    "lineOne": "Perfect sleep,",
-    "lineTwo": "two ways",
+    "lineOne": "Better sleep",
+    "lineTwo": "starts here",
     "lineThree": "",
-    "cta": "Discover the Original Mattress",
-    "awardsCaption": "The best rated mattress of the Baltics"
+    "cta": "Discover the mattress",
+    "awardsCaption": "Best-rated mattress"
   },
   "products": {
     "heading": [
-      "Perfect sleep,",
-      "two ways"
+      "Made for your sleep",
+      ""
     ],
     "items": [
       {
@@ -17,31 +17,31 @@
         "title": "Original",
         "variant": "dark",
         "image": "/images/product-original.webp",
-        "imageAlt": "Asleep Original mattress",
-        "cta": "Discover the Original Mattress",
+        "imageAlt": "ASLEEP Original mattress",
+        "cta": "Discover Original",
         "price": 699,
         "sizeLabel": "180 × 200 cm",
         "features": [
-          "Rated best mattress by the Consumers' Association 13 times in a row",
-          "Fully adjustable, 6 firmness levels in 1 mattress",
-          "Designed in the Baltics with students from TU Delft",
-          "High-quality foams and a 10-year warranty"
+          "A carefully selected combination of multiple foam layers",
+          "Balanced comfort and body support",
+          "Adapts to your body and sleeping position",
+          "10-year warranty"
         ]
       },
       {
         "id": "hybrid",
-        "title": "Hybrid Pro",
+        "title": "Create your own",
         "variant": "light",
         "image": "/images/product-hybrid.webp",
-        "imageAlt": "Asleep Hybrid Pro mattress",
-        "cta": "Discover the Hybrid Pro Mattress",
+        "imageAlt": "Custom ASLEEP mattress",
+        "cta": "Create your mattress",
         "price": 899,
         "sizeLabel": "180 × 200 cm",
         "features": [
-          "Personalized mattress with more than 15,000 configurations",
-          "10 premium pocket spring modules in 5 firmness levels",
-          "Developed by scientists from Custom8",
-          "Rated with an 8.5 by the Consumers' Association on comfort"
+          "A mattress tailored to your needs",
+          "Choose the comfort that suits you best",
+          "An individual combination of mattress layers",
+          "Configure it in just a few minutes"
         ]
       }
     ]
@@ -50,141 +50,141 @@
     "heading": "Discover our bundles",
     "items": [
       {
-        "title": "Bed bundle",
-        "badge": "Save 35%",
+        "title": "Lorem ipsum",
+        "badge": "Lorem 35%",
         "image": "/images/bundle-1.jpg",
         "features": [
-          "1 original mattress",
-          "1 boxspring",
-          "1 topper",
-          "1 or 2 original pillows",
-          "1 cloud duvet",
-          "1 bedsheet"
+          "Lorem ipsum dolor",
+          "Sit amet consectetur",
+          "Adipiscing elit sed",
+          "Eiusmod tempor",
+          "Incididunt ut labore",
+          "Dolore magna aliqua"
         ]
       },
       {
-        "title": "Mattress bundle",
-        "badge": "Save 40%",
+        "title": "Dolor sit amet",
+        "badge": "Lorem 40%",
         "image": "/images/bundle-2.jpg",
         "features": [
-          "1 or 2 original pillows",
-          "1 cloud duvet",
-          "1 bedsheet",
-          "1 original mattress",
-          "1 mattress protector"
+          "Ut enim ad minim",
+          "Veniam quis nostrud",
+          "Exercitation ullamco",
+          "Laboris nisi ut",
+          "Aliquip ex ea"
         ]
       },
       {
-        "title": "The adjustable mattress",
-        "badge": "Save 45%",
+        "title": "Consectetur adipiscing",
+        "badge": "Lorem 45%",
         "image": "/images/bundle-3.jpg",
         "features": [
-          "6 firmness levels",
-          "120 days sleep trial",
-          "Free shipping",
-          "Free returns"
+          "Commodo consequat",
+          "Duis aute irure",
+          "Dolor in reprehenderit",
+          "Voluptate velit esse"
         ]
       }
     ]
   },
   "reviews": {
-    "stat": "40.000+",
+    "stat": "40,000+",
     "caption": "happy customers",
     "cta": "See all reviews",
     "cards": [
       {
-        "quote": "five star hotel experience",
+        "quote": "Finally found the right mattress for me",
         "source": "google",
         "left": "-3.13%",
         "top": "51.66%",
         "width": "16.94%"
       },
       {
-        "quote": "Good mattress from the first night",
+        "quote": "I feel much more rested in the morning",
         "source": "consumentenbond",
         "left": "83.40%",
         "top": "44.82%",
         "width": "18.06%"
       },
       {
-        "quote": "I don't wake up tired anymore",
+        "quote": "I no longer wake up feeling tired",
         "source": "google",
         "left": "67.29%",
         "top": "69.04%",
         "width": "15.83%"
       },
       {
-        "quote": "The best sleep in years",
-        "source": "consumentenbond",
+        "quote": "Comfort from the very first night",
+        "source": "asleep",
         "left": "16.60%",
         "top": "59.12%",
         "width": "16.94%"
       },
       {
-        "quote": "Pleasant and fast delivery",
+        "quote": "Smooth and fast delivery",
         "source": "asleep",
         "left": "61.42%",
         "top": "50.39%",
         "width": "20.07%"
       },
       {
-        "quote": "Very good and well thought out mattress.",
+        "quote": "A very good, well-thought-out mattress.",
         "source": "google",
         "left": "0.28%",
         "top": "20.31%",
         "width": "15.83%"
       },
       {
-        "quote": "Wonderful mattress",
-        "source": "consumentenbond",
+        "quote": "An amazing mattress",
+        "source": "google",
         "left": "45.14%",
         "top": "18.75%",
         "width": "18.06%"
       },
       {
-        "quote": "Haven't slept so well in a long time",
+        "quote": "I haven't slept this well in a long time",
         "source": "consumentenbond",
         "left": "2.57%",
         "top": "-3.61%",
         "width": "18.06%"
       },
       {
-        "quote": "No more back problems",
+        "quote": "No more back pain",
         "source": "asleep",
         "left": "13.78%",
         "top": "39.45%",
         "width": "20.07%"
       },
       {
-        "quote": "Fairly chosen as the best in the test",
+        "quote": "You can feel the quality as soon as you lie down",
         "source": "asleep",
         "left": "38.61%",
         "top": "61.52%",
         "width": "20.07%"
       },
       {
-        "quote": "Would never recommend any other mattress again",
-        "source": "consumentenbond",
+        "quote": "I didn't expect to feel such a difference",
+        "source": "google",
         "left": "31.32%",
         "top": "81.15%",
         "width": "18.06%"
       },
       {
-        "quote": "Support at its best",
+        "quote": "Top-level support",
         "source": "asleep",
         "left": "22.57%",
         "top": "6.25%",
         "width": "20.07%"
       },
       {
-        "quote": "Customer support is on point",
+        "quote": "Excellent customer service",
         "source": "asleep",
         "left": "59.62%",
         "top": "89.65%",
         "width": "20.07%"
       },
       {
-        "quote": "Backpain is gone",
+        "quote": "My back pain is gone",
         "source": "asleep",
         "left": "84.34%",
         "top": "75.39%",
@@ -198,35 +198,35 @@
         "width": "20.07%"
       },
       {
-        "quote": "The perfect comfort",
+        "quote": "Perfect comfort",
         "source": "consumentenbond",
         "left": "45.42%",
         "top": "-3.58%",
         "width": "16.94%"
       },
       {
-        "quote": "Mattress that makes me feeling refreshed.",
+        "quote": "A mattress that leaves me feeling rested.",
         "source": "google",
         "left": "65.83%",
         "top": "25.49%",
         "width": "16.94%"
       },
       {
-        "quote": "Don't look any further!",
+        "quote": "No need to look any further!",
         "source": "google",
         "left": "85.21%",
         "top": "17.77%",
         "width": "16.94%"
       },
       {
-        "quote": "Fantastic mattress, would recommend it to anyone!",
+        "quote": "Fantastic mattress — I would recommend it to anyone!",
         "source": "asleep",
         "left": "2.71%",
         "top": "79.10%",
         "width": "20.07%"
       },
       {
-        "quote": "Sleeping is resting again.",
+        "quote": "Sleep feels restful again.",
         "source": "google",
         "left": "25.35%",
         "top": "25.00%",
@@ -235,14 +235,14 @@
     ],
     "cardsMobile": [
       {
-        "quote": "Wonderful mattress",
+        "quote": "An amazing mattress",
         "source": "consumentenbond",
         "left": "-21.54%",
         "top": "61.49%",
         "width": "66.67%"
       },
       {
-        "quote": "Mattress that makes me feeling refreshed.",
+        "quote": "A mattress that leaves me feeling rested.",
         "source": "google",
         "left": "60.51%",
         "top": "16.59%",
@@ -256,35 +256,35 @@
         "width": "74.11%"
       },
       {
-        "quote": "Sleeping is resting again.",
+        "quote": "Sleep feels restful again.",
         "source": "google",
         "left": "-11.03%",
         "top": "18.13%",
         "width": "58.46%"
       },
       {
-        "quote": "Pleasant and fast delivery",
+        "quote": "Smooth and fast delivery",
         "source": "asleep",
         "left": "55.13%",
         "top": "65.40%",
         "width": "62.55%"
       },
       {
-        "quote": "Fairly chosen as the best in the test",
+        "quote": "Deservedly rated best in the test",
         "source": "asleep",
         "left": "13.85%",
         "top": "88.27%",
         "width": "74.11%"
       },
       {
-        "quote": "No more back problems",
+        "quote": "No more back pain",
         "source": "asleep",
         "left": "-51.16%",
         "top": "39.34%",
         "width": "74.11%"
       },
       {
-        "quote": "Very good and well thought out mattress.",
+        "quote": "A very good, well-thought-out mattress.",
         "source": "google",
         "left": "77.44%",
         "top": "46.56%",
@@ -298,7 +298,7 @@
     }
   },
   "bedroom": {
-    "heading": "Make your bedroom complete.",
+    "heading": "Complete your bedroom.",
     "items": [
       {
         "label": "Adjustable mattress",
@@ -309,7 +309,7 @@
         "offset": 200
       },
       {
-        "label": "Boxspring",
+        "label": "Boxspring bed",
         "src": "/images/bedroom-2.jpg",
         "alt": "Boxspring bed",
         "href": "#",
@@ -317,9 +317,9 @@
         "offset": 400
       },
       {
-        "label": "The pillow",
+        "label": "Pillow",
         "src": "/images/bedroom-3.jpg",
-        "alt": "The pillow",
+        "alt": "Pillow",
         "href": "#",
         "className": "row-start-3 lg:col-start-4 lg:row-start-auto",
         "offset": 100
@@ -339,28 +339,28 @@
     "items": [
       {
         "icon": "/images/icons/price.svg",
-        "title": "The innovative sleep experience",
-        "body": "We researched, analysed and tested the best materials to revolutionize your sleep experience."
+        "title": "Better sleep, considered down to every detail",
+        "body": "We carefully selected, analysed and tested materials to create comfort you can feel every night."
       },
       {
         "icon": "/images/icons/map.svg",
-        "title": "Handcrafted in Europe",
-        "body": "With an eye for detail, we design quality bedding products from durable materials, here in the Baltics."
+        "title": "Made in Lithuania",
+        "body": "We design and manufacture ASLEEP in Lithuania, paying close attention to every detail — from carefully selected materials to the final feel."
       },
       {
         "icon": "/images/icons/piggy.svg",
-        "title": "Better price, better quality",
-        "body": "No commercial chit chat, long queues or unrealistic delivery time. We cut the unnecessary crap to sell Asleep at a fair price."
+        "title": "Higher quality. Fair price.",
+        "body": "We sell directly, cutting out unnecessary middlemen and their mark-ups. That means we can invest more in what matters most — the product itself."
       },
       {
         "icon": "/images/icons/thumb.svg",
-        "title": "100% satisfaction guaranteed",
-        "body": "Shipping is free and fast. We are happy to let you try Asleep during a 120-day trial and to offer you a 10-year warranty."
+        "title": "Quality we believe in",
+        "body": "Try ASLEEP in your own home. If it isn't right for you, you can return it. Every mattress also comes with a long-term warranty."
       }
     ]
   },
   "media": {
-    "heading": "In the media",
+    "heading": "In the press",
     "tabs": [
       "Press",
       "Awards"
@@ -404,24 +404,24 @@
   "support": [
     {
       "icon": "/images/icons/headset.png",
-      "title": "Chat with us",
-      "body": "Our Dreamteam is ready to help you with your questions.",
-      "cta": "Start chat",
+      "title": "Contact us",
+      "body": "Have a question? Our team is ready to help.",
+      "cta": "Start a conversation",
       "href": "#"
     },
     {
       "icon": "/images/icons/box.png",
       "title": "Frequently asked questions",
-      "body": "We bundled most of the common questions for you.",
-      "cta": "Check our FAQ",
+      "body": "Find answers to the most common questions in one place.",
+      "cta": "View FAQ",
       "href": "#"
     },
     {
       "icon": "/images/icons/shield.png",
       "title": "Give us a call",
-      "body": "Our Dreamteam helps you to find the perfect mattress.",
-      "cta": "Call +31 20 261 5296",
-      "href": "tel:+31202615296"
+      "body": "We'll help you find the mattress that suits you best and answer any questions you may have.",
+      "cta": "Call +37061467580",
+      "href": "tel:+37061467580"
     }
   ]
 }
