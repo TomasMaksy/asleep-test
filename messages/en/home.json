@@ -17,7 +17,7 @@
         "title": "Original",
         "variant": "dark",
         "image": "/images/product-original.webp",
-        "imageAlt": "ASLEEP Original mattress",
+        "imageAlt": "asleep Original mattress",
         "cta": "Discover Original",
         "price": 699,
         "sizeLabel": "180 × 200 cm",
@@ -33,7 +33,7 @@
         "title": "Create your own",
         "variant": "light",
         "image": "/images/product-hybrid.webp",
-        "imageAlt": "Custom ASLEEP mattress",
+        "imageAlt": "Custom asleep mattress",
         "cta": "Create your mattress",
         "price": 899,
         "sizeLabel": "180 × 200 cm",
@@ -345,7 +345,7 @@
       {
         "icon": "/images/icons/map.svg",
         "title": "Made in Lithuania",
-        "body": "We design and manufacture ASLEEP in Lithuania, paying close attention to every detail — from carefully selected materials to the final feel."
+        "body": "We design and manufacture asleep in Lithuania, paying close attention to every detail — from carefully selected materials to the final feel."
       },
       {
         "icon": "/images/icons/piggy.svg",
@@ -355,7 +355,7 @@
       {
         "icon": "/images/icons/thumb.svg",
         "title": "Quality we believe in",
-        "body": "Try ASLEEP in your own home. If it isn't right for you, you can return it. Every mattress also comes with a long-term warranty."
+        "body": "Try asleep in your own home. If it isn't right for you, you can return it. Every mattress also comes with a long-term warranty."
       }
     ]
   },

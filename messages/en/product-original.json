@@ -103,12 +103,12 @@
     "faq": [
       {
         "question": "Details",
-        "answer": "ASLEEP Original is a 25 cm high mattress made from 4 different foam layers and a premium cover. The mattress is made in Lithuania using certified, carefully selected materials. Every element of the construction — from the internal foams to the removable cover — is chosen with quality, durability and everyday use in mind.",
+        "answer": "asleep Original is a 25 cm high mattress made from 4 different foam layers and a premium cover. The mattress is made in Lithuania using certified, carefully selected materials. Every element of the construction — from the internal foams to the removable cover — is chosen with quality, durability and everyday use in mind.",
         "materialsHeading": "Materials",
         "materials": [
           "Premium cover with TENCEL™ — soft, pleasant to the touch and highly breathable",
           "Memory Foam — adapts to the contours of your body and provides a comfortable enveloping feel",
-          "ASLEEP Support Foam — a responsive layer that quickly reacts to body movement",
+          "asleep Support Foam — a responsive layer that quickly reacts to body movement",
           "High-quality HR foam — for resilient comfort and even body support",
           "Firm foam base — for mattress stability and durability",
           "Non-slip bottom layer — helps keep the mattress securely in place"
@@ -119,11 +119,11 @@
         "sections": [
           {
             "heading": "Delivery",
-            "body": "We deliver your ASLEEP mattress to your home free of charge, conveniently packed in a compact box. Standard delivery takes 3–7 business days. Prefer to receive your mattress later? You can select a more convenient delivery date during checkout."
+            "body": "We deliver your asleep mattress to your home free of charge, conveniently packed in a compact box. Standard delivery takes 3–7 business days. Prefer to receive your mattress later? You can select a more convenient delivery date during checkout."
           },
           {
             "heading": "Free returns",
-            "body": "Once the mattress has been unpacked, you won't need to fit it back into the box. If you decide to return ASLEEP, we'll arrange free collection of the fully expanded mattress from your home. Once we receive the returned mattress, we'll refund the full amount paid to your account."
+            "body": "Once the mattress has been unpacked, you won't need to fit it back into the box. If you decide to return asleep, we'll arrange free collection of the fully expanded mattress from your home. Once we receive the returned mattress, we'll refund the full amount paid to your account."
           }
         ]
       },
@@ -132,11 +132,11 @@
         "sections": [
           {
             "heading": "120-night sleep trial",
-            "body": "We give you 120 nights to try ASLEEP where it matters most — in your own home. If you decide during this period that the mattress isn't right for you, register a return and we'll arrange free collection. Returned mattresses are never sold as new. Mattresses in suitable condition may be donated to charity or sold as refurbished."
+            "body": "We give you 120 nights to try asleep where it matters most — in your own home. If you decide during this period that the mattress isn't right for you, register a return and we'll arrange free collection. Returned mattresses are never sold as new. Mattresses in suitable condition may be donated to charity or sold as refurbished."
           },
           {
             "heading": "10-year warranty",
-            "body": "ASLEEP mattresses come with a 10-year warranty, giving you long-term confidence in the mattress's quality and durability."
+            "body": "asleep mattresses come with a 10-year warranty, giving you long-term confidence in the mattress's quality and durability."
           }
         ]
       },
@@ -145,7 +145,7 @@
         "sections": [
           {
             "heading": "Certifications",
-            "body": "The foams used in the ASLEEP mattress are CertiPUR certified. The CertiPUR certification programme sets strict requirements for polyurethane foam composition, safety and emissions:",
+            "body": "The foams used in the asleep mattress are CertiPUR certified. The CertiPUR certification programme sets strict requirements for polyurethane foam composition, safety and emissions:",
             "bullets": [
               "Contains no heavy metals such as mercury, lead or cadmium",
               "Complies with strict restrictions on the use of phthalates",
@@ -154,7 +154,7 @@
           },
           {
             "heading": "Care",
-            "body": "The removable top section of the ASLEEP mattress cover can be washed at 40°C, making it easy to keep the mattress clean and fresh and maintain a hygienic sleep environment."
+            "body": "The removable top section of the asleep mattress cover can be washed at 40°C, making it easy to keep the mattress clean and fresh and maintain a hygienic sleep environment."
           }
         ]
       }
@@ -166,19 +166,19 @@
     "slides": [
       {
         "title": "Thoughtful 4-layer construction",
-        "body": "ASLEEP Original consists of 4 carefully selected foam layers with different properties. Memory Foam, high-density responsive foam, HR foam and a stable base work together to provide comfort every night."
+        "body": "asleep Original consists of 4 carefully selected foam layers with different properties. Memory Foam, high-density responsive foam, HR foam and a stable base work together to provide comfort every night."
       },
       {
         "title": "Different comfort for each person",
-        "body": "Prefer a firmer mattress while your partner likes it softer? ASLEEP allows each side of the mattress to be adjusted individually, so neither of you has to compromise."
+        "body": "Prefer a firmer mattress while your partner likes it softer? asleep allows each side of the mattress to be adjusted individually, so neither of you has to compromise."
       },
       {
         "title": "Natural spinal alignment",
-        "body": "ASLEEP's 4-layer construction helps distribute body weight evenly and reduce pressure in sensitive areas. Whether you sleep on your back, side or stomach, the mattress helps your body maintain a natural position throughout the night."
+        "body": "asleep's 4-layer construction helps distribute body weight evenly and reduce pressure in sensitive areas. Whether you sleep on your back, side or stomach, the mattress helps your body maintain a natural position throughout the night."
       },
       {
         "title": "Premium-quality materials",
-        "body": "We selected materials we can rely on: a premium cover with TENCEL™ fibre, Memory Foam and high-quality foam layers. The foams used in ASLEEP are CertiPUR certified, and the mattress is made in Lithuania."
+        "body": "We selected materials we can rely on: a premium cover with TENCEL™ fibre, Memory Foam and high-quality foam layers. The foams used in asleep are CertiPUR certified, and the mattress is made in Lithuania."
       }
     ]
   },
@@ -204,7 +204,7 @@
     ]
   },
   "layers": {
-    "heading": "Inside ASLEEP technology",
+    "heading": "Inside asleep technology",
     "advantages": "Advantages",
     "selectLayer": "Show {title} details",
     "close": "Close",
@@ -214,7 +214,7 @@
       "tencel": {
         "title": "Tencel",
         "body": "Tencel fibre is made from responsibly sourced wood and has a soft, pleasant feel.",
-        "bodyExtra": "In the ASLEEP top cover, Tencel is blended with viscose and polyester. This combination balances a pleasant surface feel, practicality and durability. The removable top section of the cover can be washed at 40°C.",
+        "bodyExtra": "In the asleep top cover, Tencel is blended with viscose and polyester. This combination balances a pleasant surface feel, practicality and durability. The removable top section of the cover can be washed at 40°C.",
         "mediaAlt": "Close-up of the Tencel cover texture",
         "advantages": [
           "Excellent moisture management",
@@ -226,9 +226,9 @@
         ]
       },
       "hypersupport": {
-        "title": "ASLEEP Support Foam",
-        "body": "ASLEEP Support Foam does more than support your body. The responsive foam reacts quickly to movement and helps create a comfortable, stable sleep surface.",
-        "mediaAlt": "Close-up of ASLEEP Support Foam",
+        "title": "asleep Support Foam",
+        "body": "asleep Support Foam does more than support your body. The responsive foam reacts quickly to movement and helps create a comfortable, stable sleep surface.",
+        "mediaAlt": "Close-up of asleep Support Foam",
         "advantages": [
           "Excellent point elasticity for body support",
           "Open-cell structure for air circulation",
@@ -237,7 +237,7 @@
       },
       "memoryFoam": {
         "title": "Memory Foam",
-        "body": "ASLEEP Memory Foam adapts to the shape of your body and helps distribute body weight evenly. Responding to body heat, the foam conforms to your individual contours, helping reduce pressure in sensitive areas and creating a comfortable, enveloping feel.",
+        "body": "asleep Memory Foam adapts to the shape of your body and helps distribute body weight evenly. Responding to body heat, the foam conforms to your individual contours, helping reduce pressure in sensitive areas and creating a comfortable, enveloping feel.",
         "mediaAlt": "Close-up of Memory Foam",
         "advantages": [
           "Distributes body weight evenly",
@@ -260,7 +260,7 @@
       },
       "coldFoamFirm": {
         "title": "Base Support Foam",
-        "body": "The firm ASLEEP base foam layer provides a stable foundation and helps maintain the mattress structure. The resilient foam is designed to retain its properties and provide stability for years.",
+        "body": "The firm asleep base foam layer provides a stable foundation and helps maintain the mattress structure. The resilient foam is designed to retain its properties and provide stability for years.",
         "mediaAlt": "Close-up of Base Support Foam",
         "advantages": [
           "Stable foundation for the entire mattress",
@@ -292,21 +292,21 @@
     }
   },
   "difference": {
-    "heading": "Why ASLEEP?",
+    "heading": "Why asleep?",
     "play": "Play video",
     "pause": "Pause video",
     "blocks": [
       {
         "title": "Made in Lithuania",
-        "body": "We're proud that ASLEEP mattresses are designed and made in Lithuania. We work with local manufacturing partners and carefully select every material and construction element. Local production keeps us close to the entire process — from the first prototypes to the finished mattress — and helps us maintain the quality we expect from every ASLEEP."
+        "body": "We're proud that asleep mattresses are designed and made in Lithuania. We work with local manufacturing partners and carefully select every material and construction element. Local production keeps us close to the entire process — from the first prototypes to the finished mattress — and helps us maintain the quality we expect from every asleep."
       },
       {
         "title": "Developed together with VU medical students",
-        "body": "When developing ASLEEP, our goal wasn't simply to make another mattress. Together with Vilnius University medical students, we analysed sleep ergonomics, different materials and their combinations, and how mattress construction can adapt to different people's needs. We combined these insights with prototyping and testing different foam combinations. Step by step, this shaped the multi-layer ASLEEP construction we use today."
+        "body": "When developing asleep, our goal wasn't simply to make another mattress. Together with Vilnius University medical students, we analysed sleep ergonomics, different materials and their combinations, and how mattress construction can adapt to different people's needs. We combined these insights with prototyping and testing different foam combinations. Step by step, this shaped the multi-layer asleep construction we use today."
       },
       {
         "title": "Intensively tested",
-        "body": "We want ASLEEP to remain just as comfortable after years of use as it is on the first night. That's why the foams used in the mattress are tested for durability, resilience and resistance to long-term loading. Every ASLEEP layer uses high-quality, CertiPUR-certified foams that meet defined quality and safety requirements. This gives us confidence not only in how ASLEEP feels today, but in how it will perform for years to come."
+        "body": "We want asleep to remain just as comfortable after years of use as it is on the first night. That's why the foams used in the mattress are tested for durability, resilience and resistance to long-term loading. Every asleep layer uses high-quality, CertiPUR-certified foams that meet defined quality and safety requirements. This gives us confidence not only in how asleep feels today, but in how it will perform for years to come."
       }
     ]
   },
@@ -317,7 +317,7 @@
     "items": [
       {
         "question": "Construction and materials",
-        "answer": "Mattress height: 25 cm\n\nAsleep consists of:\n- Top cover (1 cm)\n- Memory Foam (3 cm)\n- ASLEEP Support Foam (2 cm)\n- HR Comfort Foam (10 cm)\n- ASLEEP Base Foam (10 cm)\n- Non-slip bottom cover layer\n\nDensities\nASLEEP Support Foam: D60\nMemory Foam: D45\nHR Comfort Foam: D30\n\nCover composition\nTop/white side: 19% lyocell (Tencel) / 19% viscose / 62% polyester\nNon-slip underside: 100% polyester"
+        "answer": "Mattress height: 25 cm\n\nAsleep consists of:\n- Top cover (1 cm)\n- Memory Foam (3 cm)\n- asleep Support Foam (2 cm)\n- HR Comfort Foam (10 cm)\n- asleep Base Foam (10 cm)\n- Non-slip bottom cover layer\n\nDensities\nASLEEP Support Foam: D60\nMemory Foam: D45\nHR Comfort Foam: D30\n\nCover composition\nTop/white side: 19% lyocell (Tencel) / 19% viscose / 62% polyester\nNon-slip underside: 100% polyester"
       },
       {
         "question": "Sizes and weights",
@@ -325,23 +325,23 @@
       },
       {
         "question": "120-night free trial",
-        "answer": "We're confident in ASLEEP's quality, so we give you 120 nights to try the mattress at home with no risk. You'll have plenty of time to adjust to your new mattress, find the configuration that suits you best and decide whether ASLEEP is right for you. If you're not completely satisfied within 120 nights, simply contact us. We'll collect the mattress from your home free of charge and refund the full amount you paid. The 120-night trial is available once per customer and applies to the first ASLEEP mattress order. Full trial and return terms can be found in our returns policy."
+        "answer": "We're confident in asleep's quality, so we give you 120 nights to try the mattress at home with no risk. You'll have plenty of time to adjust to your new mattress, find the configuration that suits you best and decide whether asleep is right for you. If you're not completely satisfied within 120 nights, simply contact us. We'll collect the mattress from your home free of charge and refund the full amount you paid. The 120-night trial is available once per customer and applies to the first asleep mattress order. Full trial and return terms can be found in our returns policy."
       },
       {
         "question": "I'm choosing between two single mattresses and one double mattress",
-        "answer": "If you choose two single mattresses, each will have its own cover, so you may feel a gap between them. A double ASLEEP mattress is made as one mattress, while the firmness of each side can still be adjusted individually. Prefer it firmer while your partner likes it softer? There's no need to compromise — each of you can choose the comfort that suits you best."
+        "answer": "If you choose two single mattresses, each will have its own cover, so you may feel a gap between them. A double asleep mattress is made as one mattress, while the firmness of each side can still be adjusted individually. Prefer it firmer while your partner likes it softer? There's no need to compromise — each of you can choose the comfort that suits you best."
       },
       {
         "question": "Can you take away my old mattress?",
-        "answer": "We currently don't offer an old mattress removal service. The ASLEEP mattress is delivered compactly packed in a box, so no specialised furniture transport is required. We recommend arranging bulky waste collection for your old mattress or taking it to your nearest bulky waste collection site. Check your local waste management provider's website for collection conditions and the nearest location."
+        "answer": "We currently don't offer an old mattress removal service. The asleep mattress is delivered compactly packed in a box, so no specialised furniture transport is required. We recommend arranging bulky waste collection for your old mattress or taking it to your nearest bulky waste collection site. Check your local waste management provider's website for collection conditions and the nearest location."
       },
       {
         "question": "Washable cover",
-        "answer": "The ASLEEP mattress cover is removable. The white top section with TENCEL™ can be washed at 40°C.\n\nCover composition\nTop / white section: 19% lyocell (TENCEL™) / 19% viscose / 62% polyester\nNon-slip bottom section: 100% polyester\n\nImportant! Always follow the care instructions on the cover label before washing."
+        "answer": "The asleep mattress cover is removable. The white top section with TENCEL™ can be washed at 40°C.\n\nCover composition\nTop / white section: 19% lyocell (TENCEL™) / 19% viscose / 62% polyester\nNon-slip bottom section: 100% polyester\n\nImportant! Always follow the care instructions on the cover label before washing."
       },
       {
         "question": "Suitable for all bed types",
-        "answer": "ASLEEP is a versatile mattress. It is suitable for slatted bases, solid bases, boxspring beds and adjustable bed bases. The most important thing is that the base is stable and in good condition.\n\nMake sure your current bed base is in good condition and shows no signs of:\n\n• sagging\n• unevenness\n• damaged or worn parts\n\nYour bed base can have a significant impact on the comfort and sleep quality of your new ASLEEP mattress."
+        "answer": "asleep is a versatile mattress. It is suitable for slatted bases, solid bases, boxspring beds and adjustable bed bases. The most important thing is that the base is stable and in good condition.\n\nMake sure your current bed base is in good condition and shows no signs of:\n\n• sagging\n• unevenness\n• damaged or worn parts\n\nYour bed base can have a significant impact on the comfort and sleep quality of your new asleep mattress."
       },
       {
         "question": "6 firmness levels in one",
@@ -349,8 +349,8 @@
         "image": "/images/product-specs/firmness.webp"
       },
       {
-        "question": "Can I sleep on ASLEEP straight away?",
-        "answer": "After unpacking, the ASLEEP mattress may need up to 48 hours to fully regain its shape. However, you can sleep on it straight away!\n\nPlease also pay attention to your bed base. It should be in good condition — flat, stable, free from sagging and without signs of wear. The condition of your bed base can have a significant impact on the comfort of your new ASLEEP mattress."
+        "question": "Can I sleep on asleep straight away?",
+        "answer": "After unpacking, the asleep mattress may need up to 48 hours to fully regain its shape. However, you can sleep on it straight away!\n\nPlease also pay attention to your bed base. It should be in good condition — flat, stable, free from sagging and without signs of wear. The condition of your bed base can have a significant impact on the comfort of your new asleep mattress."
       },
       {
         "question": "Can I choose a delivery date?",
@@ -453,7 +453,7 @@
     ]
   },
   "related": {
-    "heading": "Perfect with your ASLEEP mattress",
+    "heading": "Perfect with your asleep mattress",
     "items": [
       {
         "id": "boxspring",
