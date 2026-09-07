@@ -10,6 +10,7 @@ const ngrokHost = process.env.NEXT_PUBLIC_BASE_HOST?.replace(
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  reactStrictMode: false,
   devIndicators: false,
   allowedDevOrigins: [...(ngrokHost ? [ngrokHost] : []), "*.ngrok-free.dev"],
   images: {

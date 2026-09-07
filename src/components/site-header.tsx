@@ -9,11 +9,41 @@ import { cn } from "@/lib/utils";
 
 type SiteHeaderProps = {
   theme?: "transparent" | "solid";
+  variant?: "full" | "minimal";
 };
 
-export async function SiteHeader({ theme = "transparent" }: SiteHeaderProps) {
+export async function SiteHeader({
+  theme = "transparent",
+  variant = "full",
+}: SiteHeaderProps) {
+  const isMinimal = variant === "minimal";
+  const isSolid = theme === "solid" || isMinimal;
+
+  if (isMinimal) {
+    return (
+      <>
+        <header
+          className="fixed inset-x-0 top-0 z-50 bg-white text-brand-dark shadow-[0px_4px_20px_0px_#00000008] transition-[color,translate] duration-300 ease-out data-[hidden=true]:pointer-events-none data-[hidden=true]:-translate-y-full"
+          data-hidden="false"
+          data-scrolled="true"
+          id="site-header"
+        >
+          <div className="relative mx-auto flex h-16 w-full items-center px-4 lg:h-20 lg:px-5 xl:max-w-[1440px] xl:px-10 2xl:max-w-[2000px]">
+            <Link aria-label="Home" className="shrink-0" href="/">
+              <Logo className="duration-150" variant="dark" />
+            </Link>
+            <div className="ml-auto flex items-center gap-2 xl:gap-5">
+              <LanguageSwitcher compactOnMobile solid />
+              <CartBagButton compactOnMobile solid />
+            </div>
+          </div>
+        </header>
+        <HeaderScroll />
+      </>
+    );
+  }
+
   const t = await getTranslations("nav");
-  const isSolid = theme === "solid";
 
   const navLinks = t.raw("links") as Array<{
     label: string;

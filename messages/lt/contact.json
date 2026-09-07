@@ -1,0 +1,71 @@
+{
+  "metadata": {
+    "title": "Kontaktai | Asleep",
+    "description": "Rašykite, skambinkite arba susisiekite su Asleep komanda Vilniuje. Padėsime išsirinkti tinkamą čiužinį."
+  },
+  "title": "Kontaktai",
+  "hero": {
+    "badge": "Kontaktai",
+    "heading": "Kuo galime padėti?",
+    "body": "Mūsų komanda visada pasiruošusi padėti — parašykite arba paskambinkite."
+  },
+  "methods": [
+    {
+      "id": "email",
+      "icon": "mail",
+      "title": "El. paštas",
+      "cta": "info@asleep.lt",
+      "href": "mailto:info@asleep.lt"
+    },
+    {
+      "id": "phone",
+      "icon": "phone",
+      "title": "Telefonas",
+      "cta": "+370 614 67580",
+      "href": "tel:+37061467580"
+    },
+    {
+      "id": "location",
+      "icon": "map",
+      "title": "Adresas",
+      "cta": "Vilnius, Lietuva",
+      "href": "https://www.google.com/maps/search/?api=1&query=Vilnius%2C+Lithuania"
+    }
+  ],
+  "form": {
+    "heading": "Parašykite mums",
+    "body": "Parašykite, kuo galime padėti. Paprastai atsakome per vieną darbo dieną.",
+    "nameLabel": "Vardas",
+    "namePlaceholder": "Jūsų vardas",
+    "emailLabel": "El. paštas",
+    "emailPlaceholder": "you@email.com",
+    "phoneLabel": "Telefonas",
+    "phoneOptional": "neprivaloma",
+    "phonePlaceholder": "+370 …",
+    "messageLabel": "Žinutė",
+    "messagePlaceholder": "Kuo galime padėti?",
+    "submit": "Siųsti žinutę",
+    "sending": "Siunčiama…",
+    "successTitle": "Žinutė išsiųsta",
+    "successBody": "Ačiū — susisieksime el. paštu {email}.",
+    "errors": {
+      "name": "Įveskite savo vardą.",
+      "emailRequired": "Įveskite el. pašto adresą.",
+      "emailInvalid": "Įveskite galiojantį el. pašto adresą.",
+      "message": "Įveskite žinutę.",
+      "generic": "Įvyko klaida. Bandykite dar kartą.",
+      "network": "Tinklo klaida. Patikrinkite ryšį ir bandykite dar kartą."
+    }
+  },
+  "email": {
+    "customerSubject": "Gavome jūsų žinutę",
+    "customerBody": "Sveiki, {name},\n\nAčiū, kad parašėte Asleep. Gavome jūsų žinutę ir netrukus atsakysime.\n\nJūsų žinutė:\n\n{message}\n\nAtsakykite į šį laišką, jei norite ką nors pridėti.\n\n— Asleep\ninfo@asleep.lt",
+    "inboxSubject": "Žinutė svetainėje nuo {name}",
+    "inboxBody": "{name} parašė per svetainę:\n\n{message}\n\nEl. paštas: {email}",
+    "inboxPhone": "Telefonas: {phone}",
+    "inboxCart": "Krepšelis:"
+  },
+  "faq": {
+    "heading": "Dažniausiai užduodami klausimai"
+  }
+}

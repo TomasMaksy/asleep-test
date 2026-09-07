@@ -20,6 +20,9 @@ Read `COPY.md` before editing copy. Supported locales: `lt` (default), `en`. URL
 | Homepage | `messages/{locale}/home.json` |
 | Original product page | `messages/{locale}/product-original.json` |
 | Reviews page | `messages/{locale}/reviews-page.json` |
+| Contact page | `messages/{locale}/contact.json` |
+| Configurator | `messages/{locale}/configurator.json` |
+| Checkout | `messages/{locale}/checkout.json` |
 | Long-form pages, products, blog | `content/` (future) |
 
 Files are merged in `src/i18n/request.ts`. Page files keep their in-app namespace (`productOriginal`, `reviewsPage`). Home keys stay top-level (`hero`, `products`, …).

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { STATIC_IMAGE_CACHE_VERSION } from "@/lib/static-image-url";
 import { cn } from "@/lib/utils";
 
 type Slide = {
@@ -8,7 +9,7 @@ type Slide = {
   body: string;
 };
 
-const FRAME_COUNT = 251;
+const FRAME_COUNT = 278;
 const LAST_FRAME = FRAME_COUNT - 1;
 const CANVAS_WIDTH = 1126;
 const CANVAS_HEIGHT = 880;
@@ -16,7 +17,7 @@ const PRELOAD_WINDOW = 25;
 const SCROLL_OFFSET = 300;
 
 function frameSrc(index: number) {
-  return `/images/original-scroll/SCROLL_${String(index).padStart(5, "0")}.jpg`;
+  return `/images/original-scroll/SCROLL_${String(index).padStart(5, "0")}.jpg?v=${STATIC_IMAGE_CACHE_VERSION}`;
 }
 
 function clamp(value: number, min: number, max: number) {

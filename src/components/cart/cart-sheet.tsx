@@ -4,12 +4,14 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
+import { Link } from "@/i18n/navigation";
 import {
   formatEuro,
   selectCartCount,
   selectCartSubtotal,
   useCartStore,
 } from "@/lib/cart-store";
+import { useConfiguratorOverlayStore } from "@/lib/configurator-overlay-store";
 import { cn } from "@/lib/utils";
 
 const sheetTransition = {
@@ -66,7 +68,7 @@ function CartLineItem({
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="font-bold text-base text-brand-dark leading-snug">
-              {name}
+              {name.replaceAll("Asleep", "asleep")}
             </p>
             {variant ? (
               <p className="pt-0.5 text-brand-dark/55 text-rg">{variant}</p>
@@ -232,18 +234,33 @@ export function CartSheet() {
               ) : null}
 
               <div className="flex flex-col gap-3">
-                <button
-                  className={cn(
-                    "inline-flex h-12 w-full cursor-pointer items-center justify-center rounded-full bg-[#1A478A] font-sans text-base text-white transition-colors duration-300",
-                    empty
-                      ? "cursor-not-allowed opacity-40"
-                      : "hover:bg-[#2B2D41]",
-                  )}
-                  disabled={empty}
-                  type="button"
-                >
-                  {t("checkout")}
-                </button>
+                {empty ? (
+                  <button
+                    className="inline-flex h-12 w-full cursor-not-allowed items-center justify-center rounded-full bg-[#1A478A] font-sans text-base text-white opacity-40"
+                    disabled
+                    type="button"
+                  >
+                    {t("checkout")}
+                  </button>
+                ) : (
+                  <Link
+                    className="inline-flex h-12 w-full cursor-pointer items-center justify-center rounded-full bg-[#1A478A] font-sans text-base text-white transition-colors duration-300 hover:bg-[#2B2D41]"
+                    href="/checkout"
+                    onClick={(event) => {
+                      closeCart();
+                      if (!useConfiguratorOverlayStore.getState().isOpen) {
+                        return;
+                      }
+                      event.preventDefault();
+                      useConfiguratorOverlayStore.getState().setOpen(false);
+                      window.location.assign(
+                        (event.currentTarget as HTMLAnchorElement).href,
+                      );
+                    }}
+                  >
+                    {t("checkout")}
+                  </Link>
+                )}
                 <button
                   className="cursor-pointer py-1 text-center text-brand-dark/50 text-rg underline transition-colors hover:text-brand-dark"
                   onClick={closeCart}

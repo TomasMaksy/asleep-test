@@ -1,41 +1,33 @@
 "use client";
 
 import { Minus, Plus, SquarePen } from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { ProductStickyBuyBar } from "@/app/[locale]/products/original/product-sticky-buy-bar";
-import { AnimatedRadioIndicator } from "@/components/product/animated-radio-indicator";
+import { ConfiguratorLink } from "@/components/configurator/configurator-link";
 import { ProductSizeSheet } from "@/components/product/product-size-sheet";
-import { Link } from "@/i18n/navigation";
 import { useCartStore } from "@/lib/cart-store";
+import { useOriginalSizeStore } from "@/lib/product-original-size-store";
 import {
-  DEFAULT_MATTRESS_SIZE_ID,
   formatInstallmentPrice,
   formatMattPrice,
   getMattressSize,
-  type MattressSizeId,
+  packshotSrc,
 } from "@/lib/product-original-sizes";
-import { cn } from "@/lib/utils";
-
-type Variant = "plus" | "original";
 
 export function ProductBuyBox() {
   const t = useTranslations("productOriginal.hero");
-  const [variant, setVariant] = useState<Variant>("plus");
   const [quantity, setQuantity] = useState(1);
-  const [sizeId, setSizeId] = useState<MattressSizeId>(
-    DEFAULT_MATTRESS_SIZE_ID,
-  );
+  const sizeId = useOriginalSizeStore((state) => state.sizeId);
+  const setSizeId = useOriginalSizeStore((state) => state.setSizeId);
   const [sizeOpen, setSizeOpen] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
   const openCart = useCartStore((s) => s.openCart);
   const closeCart = useCartStore((s) => s.closeCart);
 
   const size = getMattressSize(sizeId);
-  const isPlus = variant === "plus";
-  const compareCents = size.compareCents;
-  const activeCents = isPlus ? size.plusCents : size.originalCents;
-  const saveCents = compareCents - size.plusCents;
+  const activeCents = size.originalCents;
   const installmentPrice = formatInstallmentPrice(activeCents);
 
   function openSizeSheet() {
@@ -44,17 +36,13 @@ export function ProductBuyBox() {
   }
 
   function handleAddToCart() {
-    const variantLabel = isPlus
-      ? t("variants.plus.title")
-      : t("variants.original.title");
-
     addItem(
       {
-        id: `matt-original-${sizeId}-${variant}`,
+        id: `matt-original-${sizeId}`,
         name: t("subtitle"),
         price: activeCents / 100,
-        image: "/images/product-original-hero-lifestyle.webp",
-        variant: `${size.label} · ${variantLabel}`,
+        image: packshotSrc(sizeId),
+        variant: size.label,
       },
       quantity,
     );
@@ -100,47 +88,11 @@ export function ProductBuyBox() {
         selectedId={sizeId}
       />
 
-      <fieldset className="mb-5 flex flex-wrap gap-3 border-0 p-0">
-        <legend className="sr-only">Mattress type</legend>
-
-        <VariantCard
-          compareAtPrice={formatMattPrice(compareCents)}
-          description={t("variants.plus.description")}
-          onSelect={() => setVariant("plus")}
-          price={formatMattPrice(size.plusCents)}
-          save={t("saveLabel", { amount: formatMattPrice(saveCents) })}
-          selected={isPlus}
-          title={t("variants.plus.title")}
-        />
-
-        <VariantCard
-          description={t("variants.original.description")}
-          onSelect={() => setVariant("original")}
-          price={formatMattPrice(size.originalCents)}
-          selected={!isPlus}
-          title={t("variants.original.title")}
-        />
-      </fieldset>
-
       <div className="mb-4 rounded-2xl border border-grey bg-surface p-4">
         <div className="mb-0 min-h-8">
-          {isPlus ? (
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-brand-dark/50 text-sm line-through md:text-base md:leading-none">
-                {formatMattPrice(compareCents)}
-              </span>
-              <span className="font-bold text-brand-dark text-sm md:text-base md:leading-none">
-                {formatMattPrice(activeCents)}
-              </span>
-              <span className="flex h-fit items-center justify-center whitespace-nowrap bg-red-600 px-2 font-bold text-sm text-white">
-                {t("saveBadge")}
-              </span>
-            </div>
-          ) : (
-            <span className="font-bold text-brand-dark text-sm md:text-base md:leading-none">
-              {formatMattPrice(activeCents)}
-            </span>
-          )}
+          <span className="font-bold text-brand-dark text-sm md:text-base md:leading-none">
+            {formatMattPrice(activeCents)}
+          </span>
         </div>
 
         <p className="mt-4 flex items-center gap-2 text-brand-dark text-sm">
@@ -149,7 +101,7 @@ export function ProductBuyBox() {
         </p>
 
         <p className="mt-2 flex items-center gap-2 text-brand-dark text-sm">
-          <KlarnaMark />
+          <InbankMark />
           <span>{t("installment", { price: installmentPrice })}</span>
           <InfoIcon />
         </p>
@@ -170,103 +122,21 @@ export function ProductBuyBox() {
         </div>
       </div>
 
-      <Link
-        className="mb-8 flex h-12 w-full items-center justify-center gap-3 rounded-full border border-brand bg-transparent font-normal text-base text-brand transition-colors hover:bg-brand-muted/30"
-        href="/configurator"
-      >
+      <ConfiguratorLink className="mb-8 flex h-12 w-full items-center justify-center gap-3 rounded-full border border-brand bg-transparent font-normal text-base text-brand transition-colors hover:bg-brand-muted/30">
         <SquarePen className="size-4" strokeWidth={1.75} />
         {t("configurator")}
-      </Link>
+      </ConfiguratorLink>
 
       <ProductStickyBuyBar
         activeCents={activeCents}
-        compareCents={compareCents}
-        isPlus={isPlus}
         observeId="product-info-slider"
         onAddToCart={handleAddToCart}
         onOpenSize={openSizeSheet}
-        productName={
-          isPlus ? t("stickyBar.plusName") : t("stickyBar.originalName")
-        }
+        packshotSrc={packshotSrc(sizeId)}
+        productName={t("stickyBar.originalName")}
         sizeLabel={size.label}
       />
     </div>
-  );
-}
-
-function VariantCard({
-  title,
-  description,
-  price,
-  compareAtPrice,
-  save,
-  selected,
-  onSelect,
-}: {
-  title: string;
-  description: string;
-  price: string;
-  compareAtPrice?: string;
-  save?: string;
-  selected: boolean;
-  onSelect: () => void;
-}) {
-  return (
-    <label
-      className={cn(
-        "flex w-full cursor-pointer flex-col gap-2 rounded border p-4 pr-3 text-sm leading-normal transition-colors",
-        selected
-          ? "border-brand-dark bg-brand-muted"
-          : "border-grey bg-white hover:border-[#c5cad8]",
-      )}
-    >
-      <input
-        checked={selected}
-        className="peer sr-only"
-        name="variant"
-        onChange={onSelect}
-        type="radio"
-      />
-      <span className="flex w-full gap-x-3">
-        <span className="flex w-4 shrink-0 items-start">
-          <AnimatedRadioIndicator selected={selected} size="sm" />
-        </span>
-        <span className="flex w-full min-w-0 flex-col gap-3">
-          <span className="flex w-full gap-x-3">
-            <span className="flex min-w-0 flex-1 flex-col gap-2">
-              <p className="font-bold text-brand-dark leading-[130%]">
-                {title}
-              </p>
-              <p className="text-[#7c7c7c] leading-[130%] lg:whitespace-nowrap">
-                {description}
-              </p>
-            </span>
-            <span className="ml-auto flex shrink-0 flex-col items-end">
-              {compareAtPrice ? (
-                <>
-                  <span className="text-sm leading-[16px] line-through opacity-50">
-                    {compareAtPrice}
-                  </span>
-                  <span className="font-bold text-sm leading-[16px]">
-                    {price}
-                  </span>
-                  {save ? (
-                    <span className="mt-2 rounded bg-brand-dark px-2 py-1 font-bold text-[14px] text-white leading-[16px]">
-                      {save}
-                    </span>
-                  ) : null}
-                </>
-              ) : (
-                <span className="pb-1 font-bold text-sm leading-normal md:pb-0">
-                  {price}
-                </span>
-              )}
-            </span>
-          </span>
-        </span>
-      </span>
-      <div aria-hidden="true" className="flex flex-col gap-2" />
-    </label>
   );
 }
 
@@ -344,11 +214,15 @@ function StockIcon() {
   );
 }
 
-function KlarnaMark() {
+function InbankMark() {
   return (
-    <span className="font-bold text-[#ffb3c7] text-base tracking-normal">
-      Klarna.
-    </span>
+    <Image
+      alt="Inbank"
+      className="h-5 w-auto shrink-0 rounded-md"
+      height={136}
+      src="/images/payments/inbank.webp"
+      width={300}
+    />
   );
 }
 

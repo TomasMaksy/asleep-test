@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { AddToCartButton } from "@/components/cart/add-to-cart-button";
+import { ConfiguratorLink } from "@/components/configurator/configurator-link";
 import { ProductsParallax } from "@/components/effects/products-parallax";
 import { CheckItem } from "@/components/ui/check-item";
 import { Link } from "@/i18n/navigation";
@@ -108,17 +108,9 @@ export async function ProductsSection() {
                             {product.cta}
                           </Link>
                         ) : (
-                          <AddToCartButton
-                            product={{
-                              id: product.id,
-                              name: product.title,
-                              price: product.price,
-                              image: product.image,
-                              variant: product.sizeLabel,
-                            }}
-                          >
+                          <ConfiguratorLink className="relative z-10 inline-flex h-10 shrink-0 items-center justify-center rounded-full bg-white px-6 font-sans text-[#1A478A] text-[0.875rem] leading-[1.8] tracking-normal transition-colors duration-300 hover:bg-brand-muted">
                             {product.cta}
-                          </AddToCartButton>
+                          </ConfiguratorLink>
                         )}
                       </div>
                     </article>

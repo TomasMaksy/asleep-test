@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { AnimatedRadioIndicator } from "@/components/product/animated-radio-indicator";
 import type { MattressSizeId } from "@/lib/product-original-sizes";
 
-const CLOSE_DELAY_MS = 280;
+const CLOSE_DELAY_MS = 500;
 
 type SizeOption = {
   id: MattressSizeId;

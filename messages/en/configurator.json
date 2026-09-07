@@ -1,0 +1,78 @@
+{
+  "metadata": {
+    "title": "Create your mattress | Asleep",
+    "description": "Configure your Asleep Original mattress: pick a size, tell us your weight and sleep preference, and see the recommended firmness."
+  },
+  "sizeTitle": "How big should Asleep be?",
+  "selectSize": "Select your size",
+  "single": "Single",
+  "double": "Double",
+  "sizeHint": "We recommend allowing 20 cm more than your height.",
+  "openSize": "Open size selector",
+  "closeSize": "Close size selector",
+  "whoTitle": "Who is the mattress for?",
+  "alone": "Alone",
+  "together": "Together",
+  "weightTitle": "Your weight and sleep preference",
+  "weightTitleTogether": "Your weight and sleep preference",
+  "partnerWeightTitle": "Weight and sleep preference of partner",
+  "you": "You",
+  "partner": "Partner",
+  "weightSuffix": "kg",
+  "soft": "Soft",
+  "medium": "Medium",
+  "firm": "Firm",
+  "perfectFor": "Perfect for 80% of people",
+  "confirm": "Confirm",
+  "goBack": "Go back",
+  "overlayLabel": "Mattress configurator",
+  "previousQuestion": "Previous question",
+  "resultTitle": "View the result",
+  "yourResult": "Your result",
+  "partnerResult": "Your partner's result",
+  "configuration": "configuration {number}",
+  "readMore": "Read more",
+  "readLess": "Read less",
+  "addToBasket": "Add to basket",
+  "videoAria": "Mattress firmness animation",
+  "updatingMattress": "Updating your mattress",
+  "mindTheGapTitle": "Mind the gap",
+  "mindTheGapBody": "For this combination we recommend two single mattresses. The top layer of a double Asleep is not split, so a large firmness difference between sides can feel like a ridge in the middle.",
+  "resultSolo": "This is the setup we recommend for you.",
+  "resultMatch": "You make a great pair — one double mattress, with each side set to the comfort you each prefer.",
+  "resultNoMatch": "Your firmness settings are too far apart for one double mattress. We recommend two singles so each of you can sleep on your own setup.",
+  "scale": [
+    "Extra soft",
+    "Soft",
+    "Medium",
+    "Medium/firm",
+    "Firm",
+    "Extra firm"
+  ],
+  "advice": [
+    {
+      "text": "This is the most yielding setup. Side sleepers and lighter bodies usually feel the most pressure relief here, with the shoulders and hips able to sink in.",
+      "more": "If you wake up on your side and like a plush, cloud-like feel, start here. You can always unzip Asleep later and step up a level if you want more support."
+    },
+    {
+      "text": "A plush feel with a little more structure underneath. Good if you want softness without losing alignment.",
+      "more": "This is a common choice for mixed sleep positions. If extra soft feels like too much sink, this is the next step up."
+    },
+    {
+      "text": "Asleep arrives in this configuration. It balances cushioning and support for most sleepers and sleeping positions.",
+      "more": "If you are unsure, sleep on this setup first. After a few nights you can unzip the cover and turn a layer if you want it softer or firmer."
+    },
+    {
+      "text": "A step firmer than the default. You still get some give on top, with a more stable base for the hips and lower back.",
+      "more": "Back sleepers and people who like a 'on the mattress' feel often land here. It is also a good middle ground when two sleepers are close but not identical."
+    },
+    {
+      "text": "A supportive setup with less sink. Back and stomach sleepers, and heavier bodies, often prefer this.",
+      "more": "If you tend to overheat or dislike a hug from the foam, firmer layers keep you higher on the surface while the comfort zones still follow your spine."
+    },
+    {
+      "text": "The most supportive combination. Choose this if you want to lie on top of the mattress rather than in it.",
+      "more": "This is the setup for people who like a very stable, hotel-firm feel. You can still move a layer later if it turns out to be more than you need."
+    }
+  ]
+}

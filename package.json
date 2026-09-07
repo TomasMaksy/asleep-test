@@ -13,6 +13,8 @@
     "images:hero": "cd public/images && cwebp -q 85 hero-banner-desktop.png -o hero-banner-desktop.webp && cwebp -q 85 hero-banner-mobile.png -o hero-banner-mobile.webp && cwebp -q 85 hero-people.png -o hero-people.webp"
   },
   "dependencies": {
+    "@stripe/react-stripe-js": "^6.9.0",
+    "@stripe/stripe-js": "^9.15.0",
     "clsx": "^2.1.1",
     "lucide-react": "^1.32.0",
     "motion": "^13.1.1",
@@ -20,6 +22,7 @@
     "next-intl": "^4.13.7",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "stripe": "^22.6.1",
     "tailwind-merge": "^3.6.0",
     "zustand": "^5.0.15"
   },

@@ -49,18 +49,18 @@ const SLICES: Slice[] = [
     hotspotX: "20%",
   },
   {
-    id: "hypersupport",
-    src: "/images/product-layers/laag2.png",
-    width: 2300,
-    height: 130,
-    hotspotX: "30%",
-  },
-  {
     id: "memoryFoam",
     src: "/images/product-layers/laag3.png",
     width: 2300,
     height: 130,
     hotspotX: "12%",
+  },
+  {
+    id: "hypersupport",
+    src: "/images/product-layers/laag2.png",
+    width: 2300,
+    height: 130,
+    hotspotX: "30%",
   },
   {
     id: "coldFoamSoft",
@@ -92,8 +92,8 @@ const EXTRA_HOTSPOTS = [
 
 const NAV_IDS = [
   "tencel",
-  "hypersupport",
   "memoryFoam",
+  "hypersupport",
   "coldFoamSoft",
   "coldFoamFirm",
   "nonSlip",
@@ -311,24 +311,6 @@ function LayerCopy({
           </ul>
         </>
       ) : null}
-    </div>
-  );
-}
-
-function LayerPanel({
-  advantagesLabel,
-  item,
-}: {
-  advantagesLabel: string;
-  item: LayerItem;
-}) {
-  return (
-    <div className="flex flex-col pr-1">
-      <LayerCopy advantagesLabel={advantagesLabel} item={item} />
-      <LayerMedia
-        className="mt-3 aspect-video w-full shrink-0 rounded-[28px] lg:rounded-[40px]"
-        item={item}
-      />
     </div>
   );
 }
@@ -657,39 +639,60 @@ export function ProductLayers({
   return (
     <section
       aria-labelledby={headingId}
-      className="flex flex-col overflow-x-hidden bg-brand-muted py-12 pb-28 lg:py-8 lg:pb-10"
+      className="flex flex-col overflow-x-hidden bg-brand-muted py-16 pb-28 lg:pt-24 lg:pb-16"
       id="product-layers"
       ref={rootRef}
     >
       <div className="mx-auto flex w-full max-w-[1440px] flex-col">
         <h2
-          className="reveal heading mb-8 shrink-0 px-5 text-center text-brand-dark lg:mb-6"
+          className="reveal heading mb-12 shrink-0 px-5 py-4 text-center text-brand-dark lg:mb-16 lg:py-6"
           id={headingId}
         >
           {heading}
         </h2>
 
-        <div className="relative flex flex-col items-stretch gap-8 px-5 lg:flex-row lg:items-start lg:gap-10 lg:px-10 xl:px-16">
-          <div className="relative z-10 hidden w-[40%] shrink-0 lg:block">
-            <AnimatePresence mode="wait">
-              {selected ? (
-                <motion.div
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 24 }}
-                  initial={reduceMotion ? false : { opacity: 0, x: -48 }}
-                  key={selected.id}
-                  transition={reduceMotion ? { duration: 0 } : panelTransition}
-                >
-                  <LayerPanel
-                    advantagesLabel={advantagesLabel}
-                    item={selected}
-                  />
-                </motion.div>
-              ) : null}
-            </AnimatePresence>
+        <div className="relative flex flex-col items-stretch gap-8 px-5 lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start lg:gap-10 lg:px-10 xl:px-16">
+          <div className="relative z-10 hidden lg:block">
+            <div className="grid">
+              {navItems.map((item) => {
+                const active = selected?.id === item.id;
+                return (
+                  <motion.div
+                    animate={{ opacity: active ? 1 : 0 }}
+                    aria-hidden={!active}
+                    className="col-start-1 row-start-1"
+                    inert={!active ? true : undefined}
+                    initial={false}
+                    key={item.id}
+                    style={{ pointerEvents: active ? "auto" : "none" }}
+                    transition={
+                      reduceMotion ? { duration: 0 } : panelTransition
+                    }
+                  >
+                    <div className="flex flex-col pr-1">
+                      <LayerCopy
+                        advantagesLabel={advantagesLabel}
+                        item={item}
+                      />
+                      {active ? (
+                        <LayerMedia
+                          className="mt-3 aspect-video w-full shrink-0 rounded-[28px] lg:rounded-[40px]"
+                          item={item}
+                        />
+                      ) : (
+                        <div
+                          aria-hidden="true"
+                          className="mt-3 aspect-video w-full shrink-0"
+                        />
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="relative z-20 flex w-full items-start justify-start overflow-visible lg:w-[60%]">
+          <div className="relative z-20 flex w-full items-start justify-start overflow-visible">
             <div className="product-layers-stack w-[160%] max-w-none select-none lg:w-[56rem] xl:w-[64rem] 2xl:w-[72rem]">
               {SLICES.map((slice, index) => {
                 const extras = EXTRA_HOTSPOTS.filter(

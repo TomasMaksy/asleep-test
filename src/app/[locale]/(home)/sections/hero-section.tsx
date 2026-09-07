@@ -1,7 +1,19 @@
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/routing";
 import { staticImageUrl } from "@/lib/static-image-url";
+
+const HERO_TYPE: Record<Locale, { desktop: string; mobile: string }> = {
+  en: {
+    desktop: "top-[23.4%] w-[54%] text-[7.4cqw]",
+    mobile: "top-[29.8%] w-[94%] text-[14cqw]",
+  },
+  lt: {
+    desktop: "top-[23.4%] w-[60%] text-[7.4cqw]",
+    mobile: "top-[29.8%] w-[98%] text-[12.5cqw]",
+  },
+};
 
 const HERO_DESKTOP = staticImageUrl("/images/hero-banner-desktop.webp");
 const HERO_MOBILE = staticImageUrl("/images/hero-banner-mobile.webp");
@@ -25,7 +37,7 @@ async function HeroHeadline({
       </h1>
       <div className="hero-enter-left absolute inset-0 z-10">
         <p aria-hidden="true" className={typeClassName}>
-          <span className="block">{t("lineOne")}</span>
+          <span className="block whitespace-nowrap">{t("lineOne")}</span>
         </p>
       </div>
       <div className={`pointer-events-none absolute z-20 ${peopleClassName}`}>
@@ -40,9 +52,13 @@ async function HeroHeadline({
       </div>
       <div className="hero-enter-right absolute inset-0 z-30">
         <p aria-hidden="true" className={typeClassName}>
-          <span className="invisible block">{t("lineOne")}</span>
-          <span className="block">{t("lineTwo")}</span>
-          {lineThree ? <span className="block">{lineThree}</span> : null}
+          <span className="invisible block whitespace-nowrap">
+            {t("lineOne")}
+          </span>
+          <span className="block whitespace-nowrap">{t("lineTwo")}</span>
+          {lineThree ? (
+            <span className="block whitespace-nowrap">{lineThree}</span>
+          ) : null}
         </p>
       </div>
     </>
@@ -50,7 +66,9 @@ async function HeroHeadline({
 }
 
 export async function HeroSection() {
+  const locale = (await getLocale()) as Locale;
   const t = await getTranslations("hero");
+  const type = HERO_TYPE[locale];
 
   return (
     <section className="relative flex h-(--hero-height) flex-col items-center overflow-hidden bg-[#1A478A] pb-8 lg:-mt-5">
@@ -81,7 +99,7 @@ export async function HeroSection() {
           />
           <HeroHeadline
             peopleClassName="left-[29.42%] top-[23.07%] w-[43.45%]"
-            textClassName="top-[23.4%] w-[54%] text-[7.4cqw]"
+            textClassName={type.desktop}
           />
         </div>
 
@@ -95,7 +113,7 @@ export async function HeroSection() {
           />
           <HeroHeadline
             peopleClassName="-left-[2.06%] top-[30.19%] w-[100.92%]"
-            textClassName="top-[29.8%] w-[94%] text-[14cqw]"
+            textClassName={type.mobile}
           />
         </div>
       </div>

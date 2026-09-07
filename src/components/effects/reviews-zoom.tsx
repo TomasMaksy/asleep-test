@@ -2,8 +2,10 @@
 
 import { type ReactNode, useEffect, useRef } from "react";
 
-const SCALE_START = 1.8;
+const SCALE_START = 1.5;
+const SCALE_START_MOBILE = 1.28;
 const SCALE_END = 1;
+const MOBILE_MAX_WIDTH = 768;
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
@@ -31,7 +33,9 @@ export function ReviewsZoom({ children }: { children: ReactNode }) {
       const rect = section.getBoundingClientRect();
       const vh = window.innerHeight;
       const progress = clamp((vh - rect.top) / (vh + rect.height), 0, 1);
-      const scale = SCALE_START + (SCALE_END - SCALE_START) * progress;
+      const scaleStart =
+        window.innerWidth < MOBILE_MAX_WIDTH ? SCALE_START_MOBILE : SCALE_START;
+      const scale = scaleStart + (SCALE_END - scaleStart) * progress;
       wall.style.transform = `scale(${scale})`;
     };
 

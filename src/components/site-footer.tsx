@@ -95,6 +95,16 @@ export async function SiteFooter() {
   );
 }
 
+function hrefForFooterLink(label: string) {
+  if (label === "Contact" || label === "Kontaktai") {
+    return "/contact";
+  }
+  if (label === "FAQ" || label === "DUK") {
+    return "/contact#faq";
+  }
+  return "#";
+}
+
 function FooterColumn({
   column,
   className,
@@ -113,7 +123,7 @@ function FooterColumn({
             className="list-none text-rg text-white leading-[1.85]"
             key={link}
           >
-            <Link className="hover:underline" href="#">
+            <Link className="hover:underline" href={hrefForFooterLink(link)}>
               {link}
             </Link>
           </li>

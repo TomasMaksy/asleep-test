@@ -6,8 +6,8 @@ import {
 
 const ITEM_IDS = [
   "tencel",
-  "hypersupport",
   "memoryFoam",
+  "hypersupport",
   "coldFoamSoft",
   "coldFoamFirm",
   "comfortZones",

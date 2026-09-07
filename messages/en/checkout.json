@@ -1,0 +1,128 @@
+{
+  "metadata": {
+    "title": "Checkout | Asleep",
+    "description": "Complete your Asleep order."
+  },
+  "expressTitle": "Express checkout",
+  "expressUnavailable": "This payment method isn’t available yet. Please pay with card.",
+  "or": "OR",
+  "contact": {
+    "title": "Contact",
+    "email": "Email",
+    "newsletter": "Email me with news and offers"
+  },
+  "delivery": {
+    "title": "Delivery",
+    "country": "Country",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "address": "Address",
+    "apartment": "Apartment",
+    "apartmentOptional": "optional",
+    "postalCode": "Postal code",
+    "city": "City",
+    "phone": "Phone",
+    "phoneHelp": "In case we need to contact you about your order"
+  },
+  "countries": {
+    "LT": "Lithuania",
+    "LV": "Latvia",
+    "EE": "Estonia"
+  },
+  "shipping": {
+    "title": "Shipping method",
+    "standard": {
+      "title": "Standard delivery",
+      "hint": "3–7 business days"
+    },
+    "express": {
+      "title": "Express delivery",
+      "hint": "1–2 business days"
+    },
+    "free": "FREE"
+  },
+  "payment": {
+    "title": "Payment",
+    "secure": "All transactions are secure and encrypted",
+    "card": "Credit card",
+    "cardNumber": "Card number",
+    "expiry": "Expiration date (MM / YY)",
+    "cvc": "Security code",
+    "nameOnCard": "Name on card",
+    "billing": "Billing address",
+    "billingSame": "Same as shipping address"
+  },
+  "remember": {
+    "title": "Remember me",
+    "body": "Save my information for a faster checkout"
+  },
+  "payNow": "Pay now",
+  "processing": "Processing",
+  "returnToCart": "Go back",
+  "errors": {
+    "emailRequired": "Enter an email",
+    "emailInvalid": "Enter a valid email",
+    "firstName": "Enter a first name",
+    "lastName": "Enter a last name",
+    "address": "Enter an address",
+    "city": "Enter a city",
+    "postal": "Enter a valid postal code",
+    "phone": "Enter a valid phone number",
+    "cardNumber": "Enter a valid card number",
+    "expiry": "Enter a valid expiration date",
+    "cvc": "Enter a valid security code",
+    "nameOnCard": "Enter your name as it appears on the card",
+    "discount": "Enter a valid discount code",
+    "billingAddress": "Enter a billing address",
+    "billingCity": "Enter a city",
+    "billingPostal": "Enter a valid postal code"
+  },
+  "summary": {
+    "title": "Order summary",
+    "hide": "Hide order summary",
+    "show": "Show order summary",
+    "discount": "Discount code or gift card",
+    "apply": "Apply",
+    "discountLine": "Discount",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "shippingTbd": "Calculated at next step",
+    "total": "Total",
+    "taxIncluded": "Including {amount} VAT",
+    "currency": "EUR",
+    "inStock": "In stock, 5–8 business days delivery"
+  },
+  "closed": {
+    "title": "We're not accepting new orders yet",
+    "body": "Thank you for going all the way to checkout. Asleep isn't taking orders right now.\n\nYou have not been charged.\n\nClick below and we'll email you the moment we open.",
+    "cta": "Email me when we open",
+    "saving": "Saving…",
+    "successTitle": "You're on the list",
+    "successBody": "You have not been charged. We'll write to {email} as soon as orders open.",
+    "home": "Back to the shop"
+  },
+  "thanks": {
+    "metaTitle": "Thank you | Asleep",
+    "metaDescription": "Your Asleep checkout is complete.",
+    "kicker": "We're sorry",
+    "title": "Thank you, {name}",
+    "titleAnonymous": "Thank you",
+    "notCharged": "You have not been charged",
+    "body": "Asleep isn't taking orders yet. Nothing left your account. We'll email {email} the moment we open.",
+    "home": "Back to the shop"
+  },
+  "empty": {
+    "title": "Your cart is empty",
+    "body": "Add a mattress to your cart before checking out.",
+    "cta": "Continue shopping"
+  },
+  "footer": {
+    "privacy": "Privacy policy",
+    "terms": "Terms of service",
+    "refund": "Refund policy"
+  },
+  "email": {
+    "inboxSubject": "Checkout completed: {name}",
+    "inboxBody": "{name} completed checkout.\n\nEmail: {email}\nPhone: {phone}\n\nNo payment was captured. Card details were not stored."
+  }
+}

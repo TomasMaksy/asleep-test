@@ -1,0 +1,71 @@
+{
+  "metadata": {
+    "title": "Contact us | Asleep",
+    "description": "Email, call or write to the Asleep team in Vilnius. We'll help you find the right mattress."
+  },
+  "title": "Contact us",
+  "hero": {
+    "badge": "Contact",
+    "heading": "How can we help you today?",
+    "body": "Our team is just a message or a call away."
+  },
+  "methods": [
+    {
+      "id": "email",
+      "icon": "mail",
+      "title": "Email",
+      "cta": "info@asleep.lt",
+      "href": "mailto:info@asleep.lt"
+    },
+    {
+      "id": "phone",
+      "icon": "phone",
+      "title": "Phone",
+      "cta": "+370 614 67580",
+      "href": "tel:+37061467580"
+    },
+    {
+      "id": "location",
+      "icon": "map",
+      "title": "Location",
+      "cta": "Vilnius, Lithuania",
+      "href": "https://www.google.com/maps/search/?api=1&query=Vilnius%2C+Lithuania"
+    }
+  ],
+  "form": {
+    "heading": "Send a message",
+    "body": "Tell us what you need — we usually reply within one business day.",
+    "nameLabel": "Name",
+    "namePlaceholder": "Your name",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@email.com",
+    "phoneLabel": "Phone",
+    "phoneOptional": "optional",
+    "phonePlaceholder": "+370 …",
+    "messageLabel": "Message",
+    "messagePlaceholder": "How can we help?",
+    "submit": "Send message",
+    "sending": "Sending…",
+    "successTitle": "Message sent",
+    "successBody": "Thanks — we'll get back to you at {email}.",
+    "errors": {
+      "name": "Please enter your name.",
+      "emailRequired": "Please enter your email address.",
+      "emailInvalid": "Please enter a valid email address.",
+      "message": "Please enter a message.",
+      "generic": "Something went wrong. Please try again.",
+      "network": "Network error. Check your connection and try again."
+    }
+  },
+  "email": {
+    "customerSubject": "We received your message",
+    "customerBody": "Hi {name},\n\nThanks for writing to Asleep. We've received your message and will get back to you soon.\n\nYour message:\n\n{message}\n\nReply to this email if you'd like to add anything.\n\n— Asleep\ninfo@asleep.lt",
+    "inboxSubject": "Website message from {name}",
+    "inboxBody": "{name} wrote via the website:\n\n{message}\n\nEmail: {email}",
+    "inboxPhone": "Phone: {phone}",
+    "inboxCart": "Cart:"
+  },
+  "faq": {
+    "heading": "Frequently asked questions"
+  }
+}

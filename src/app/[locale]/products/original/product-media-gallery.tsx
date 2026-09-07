@@ -10,16 +10,20 @@ import {
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { useOriginalSizeStore } from "@/lib/product-original-size-store";
+import {
+  layersAnimationSrc,
+  type MattressSizeId,
+  packshotSrc,
+} from "@/lib/product-original-sizes";
 import { staticImageUrl } from "@/lib/static-image-url";
 import { cn } from "@/lib/utils";
 
 const GALLERY = {
   hero: "/images/product-gallery/hero-square.png",
-  packshot: "/images/product-gallery/packshot.jpg",
   lifestyle: "/images/product-gallery/lifestyle.jpg",
   benefits: "/images/product-gallery/benefits.jpg",
-  layersVideo: "/images/product-gallery/layers-animation.mp4",
-  layersThumb: "/images/configurator/section.png",
+  layersThumb: "/images/configurator/section.webp",
 } as const;
 
 type SlideId = "hero" | "packshot" | "lifestyle" | "layers" | "benefits";
@@ -38,43 +42,53 @@ type Slide = {
   objectPosition?: string;
 };
 
-const SLIDES: Slide[] = [
-  {
-    id: "hero",
-    type: "image",
-    src: GALLERY.hero,
-    thumb: GALLERY.hero,
-    altKey: "heroAlt",
-  },
-  {
-    id: "packshot",
-    type: "image",
-    src: GALLERY.packshot,
-    thumb: GALLERY.packshot,
-    altKey: "packshotAlt",
-  },
-  {
-    id: "lifestyle",
-    type: "image",
-    src: GALLERY.lifestyle,
-    thumb: GALLERY.lifestyle,
-    altKey: "lifestyleAlt",
-  },
-  {
-    id: "layers",
-    type: "video",
-    src: GALLERY.layersVideo,
-    thumb: GALLERY.layersThumb,
-    altKey: "layersAlt",
-  },
-  {
-    id: "benefits",
-    type: "image",
-    src: GALLERY.benefits,
-    thumb: GALLERY.benefits,
-    altKey: "benefitsAlt",
-    objectPosition: "object-top",
-  },
+function gallerySlides(packshot: string, layersVideo: string): Slide[] {
+  return [
+    {
+      id: "hero",
+      type: "image",
+      src: GALLERY.hero,
+      thumb: GALLERY.hero,
+      altKey: "heroAlt",
+    },
+    {
+      id: "packshot",
+      type: "image",
+      src: packshot,
+      thumb: packshot,
+      altKey: "packshotAlt",
+    },
+    {
+      id: "lifestyle",
+      type: "image",
+      src: GALLERY.lifestyle,
+      thumb: GALLERY.lifestyle,
+      altKey: "lifestyleAlt",
+    },
+    {
+      id: "layers",
+      type: "video",
+      src: layersVideo,
+      thumb: GALLERY.layersThumb,
+      altKey: "layersAlt",
+    },
+    {
+      id: "benefits",
+      type: "image",
+      src: GALLERY.benefits,
+      thumb: GALLERY.benefits,
+      altKey: "benefitsAlt",
+      objectPosition: "object-top",
+    },
+  ];
+}
+
+const SLIDE_ORDER: SlideId[] = [
+  "hero",
+  "packshot",
+  "lifestyle",
+  "layers",
+  "benefits",
 ];
 
 const slideTransition = {
@@ -101,20 +115,22 @@ const mainSlideVariants = {
 };
 
 function slideDirection(fromId: SlideId, toId: SlideId) {
-  const from = SLIDES.findIndex((slide) => slide.id === fromId);
-  const to = SLIDES.findIndex((slide) => slide.id === toId);
-  if (from === SLIDES.length - 1 && to === 0) return 1;
-  if (from === 0 && to === SLIDES.length - 1) return -1;
+  const from = SLIDE_ORDER.indexOf(fromId);
+  const to = SLIDE_ORDER.indexOf(toId);
+  if (from === SLIDE_ORDER.length - 1 && to === 0) return 1;
+  if (from === 0 && to === SLIDE_ORDER.length - 1) return -1;
   return to >= from ? 1 : -1;
 }
 
 function LayersVideo({
   pauseLabel,
   playLabel,
+  src,
   className,
 }: {
   pauseLabel: string;
   playLabel: string;
+  src: string;
   className?: string;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -137,12 +153,12 @@ function LayersVideo({
     <div className={cn("relative overflow-hidden bg-[#f0f0f0]", className)}>
       <video
         autoPlay
-        className="absolute inset-0 size-full object-cover"
+        className="absolute inset-0 size-full object-cover contrast-[1.05] saturate-[1.06]"
         loop
         muted
         playsInline
         ref={videoRef}
-        src={staticImageUrl(GALLERY.layersVideo)}
+        src={staticImageUrl(src)}
       />
 
       <button
@@ -226,13 +242,23 @@ function ZoomButton({ label }: { label: string }) {
 const AUTOPLAY_MS = 5000;
 const CLICK_PAUSE_MS = 7000;
 
-function MobileGallery({ awardAlt }: { awardAlt: string }) {
+function MobileGallery({
+  awardAlt,
+  packshot,
+  sizeId,
+}: {
+  awardAlt: string;
+  packshot: string;
+  sizeId: MattressSizeId;
+}) {
   const t = useTranslations("productOriginal.hero.gallery");
   const reduceMotion = useReducedMotion();
   const [activeId, setActiveId] = useState<SlideId>("hero");
   const [direction, setDirection] = useState(1);
   const pauseAutoplayRef = useRef<() => void>(() => {});
-  const active = SLIDES.find((slide) => slide.id === activeId) ?? SLIDES[0];
+  const previousSizeId = useRef(sizeId);
+  const slides = gallerySlides(packshot, layersAnimationSrc(sizeId));
+  const active = slides.find((slide) => slide.id === activeId) ?? slides[0];
   const duration = reduceMotion ? 0 : slideTransition.duration;
 
   function goTo(nextId: SlideId) {
@@ -242,6 +268,16 @@ function MobileGallery({ awardAlt }: { awardAlt: string }) {
     }
     pauseAutoplayRef.current();
   }
+
+  useEffect(() => {
+    if (previousSizeId.current === sizeId) {
+      return;
+    }
+    previousSizeId.current = sizeId;
+    setDirection(1);
+    setActiveId("packshot");
+    pauseAutoplayRef.current();
+  }, [sizeId]);
 
   useEffect(() => {
     if (reduceMotion) {
@@ -263,8 +299,8 @@ function MobileGallery({ awardAlt }: { awardAlt: string }) {
       timer = window.setTimeout(() => {
         setDirection(1);
         setActiveId((current) => {
-          const index = SLIDES.findIndex((slide) => slide.id === current);
-          return SLIDES[(index + 1) % SLIDES.length]?.id ?? "hero";
+          const index = SLIDE_ORDER.indexOf(current);
+          return SLIDE_ORDER[(index + 1) % SLIDE_ORDER.length] ?? "hero";
         });
         schedule(AUTOPLAY_MS);
       }, delayMs);
@@ -296,8 +332,10 @@ function MobileGallery({ awardAlt }: { awardAlt: string }) {
             {active.type === "video" ? (
               <LayersVideo
                 className="absolute inset-0 size-full"
+                key={active.src}
                 pauseLabel={t("pauseAnimation")}
                 playLabel={t("playAnimation")}
+                src={active.src}
               />
             ) : (
               <Image
@@ -308,7 +346,7 @@ function MobileGallery({ awardAlt }: { awardAlt: string }) {
                 )}
                 fill
                 priority={active.id === "hero"}
-                sizes="100vw"
+                sizes="(min-width: 1024px) 55vw, 100vw"
                 src={staticImageUrl(active.src)}
               />
             )}
@@ -320,6 +358,7 @@ function MobileGallery({ awardAlt }: { awardAlt: string }) {
                   className="h-auto w-full"
                   height={192}
                   src={staticImageUrl("/images/13-time-award.png")}
+                  style={{ height: "auto" }}
                   width={112}
                 />
               </div>
@@ -327,15 +366,13 @@ function MobileGallery({ awardAlt }: { awardAlt: string }) {
           </motion.div>
         </AnimatePresence>
 
-        {active.type === "image" ? (
-          <ZoomButton label={t("zoomLabel")} />
-        ) : null}
+        {active.type === "image" ? <ZoomButton label={t("zoomLabel")} /> : null}
       </div>
 
       <div className="relative px-5 pb-1">
         <LayoutGroup id="mobile-gallery-thumbs">
           <div className="scrollbar-none flex gap-2 overflow-x-auto">
-            {SLIDES.map((slide) => {
+            {slides.map((slide) => {
               const selected = slide.id === activeId;
               return (
                 <button
@@ -377,19 +414,44 @@ function MobileGallery({ awardAlt }: { awardAlt: string }) {
   );
 }
 
-function DesktopGallery({ awardAlt }: { awardAlt: string }) {
+function DesktopGallery({
+  awardAlt,
+  packshot,
+  sizeId,
+}: {
+  awardAlt: string;
+  packshot: string;
+  sizeId: MattressSizeId;
+}) {
   const t = useTranslations("productOriginal.hero.gallery");
+  const previousSizeId = useRef(sizeId);
+  const [sizeActive, setSizeActive] = useState(false);
+
+  useEffect(() => {
+    if (previousSizeId.current === sizeId) {
+      return;
+    }
+    previousSizeId.current = sizeId;
+    setSizeActive(true);
+  }, [sizeId]);
+
+  const mainSrc = sizeActive ? packshot : GALLERY.hero;
+  const mainAlt = sizeActive ? t("packshotAlt") : t("heroAlt");
+  const tileSrc = sizeActive ? GALLERY.hero : packshot;
+  const tileAlt = sizeActive ? t("heroAlt") : t("packshotAlt");
+  const layersVideo = layersAnimationSrc(sizeId);
 
   return (
     <div className="flex w-full flex-col gap-3">
       <div className="relative w-full bg-surface pt-[100%]">
         <Image
-          alt={t("heroAlt")}
+          alt={mainAlt}
           className="object-cover object-center"
           fill
+          key={mainSrc}
           priority
           sizes="(min-width: 1024px) 55vw, 100vw"
-          src={staticImageUrl(GALLERY.hero)}
+          src={staticImageUrl(mainSrc)}
         />
 
         <div className="pointer-events-none absolute top-0 left-5 z-10 w-28 lg:left-10">
@@ -399,6 +461,7 @@ function DesktopGallery({ awardAlt }: { awardAlt: string }) {
             height={192}
             priority
             src={staticImageUrl("/images/13-time-award.png")}
+            style={{ height: "auto" }}
             width={112}
           />
         </div>
@@ -407,12 +470,14 @@ function DesktopGallery({ awardAlt }: { awardAlt: string }) {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <GalleryTile alt={t("packshotAlt")} priority src={GALLERY.packshot} />
+        <GalleryTile alt={tileAlt} priority src={tileSrc} />
         <GalleryTile alt={t("lifestyleAlt")} src={GALLERY.lifestyle} />
         <LayersVideo
           className="aspect-390/488"
+          key={layersVideo}
           pauseLabel={t("pauseAnimation")}
           playLabel={t("playAnimation")}
+          src={layersVideo}
         />
         <GalleryTile
           alt={t("benefitsAlt")}
@@ -425,13 +490,24 @@ function DesktopGallery({ awardAlt }: { awardAlt: string }) {
 }
 
 export function ProductMediaGallery({ awardAlt }: { awardAlt: string }) {
+  const sizeId = useOriginalSizeStore((state) => state.sizeId);
+  const packshot = packshotSrc(sizeId);
+
   return (
     <>
       <div className="lg:hidden">
-        <MobileGallery awardAlt={awardAlt} />
+        <MobileGallery
+          awardAlt={awardAlt}
+          packshot={packshot}
+          sizeId={sizeId}
+        />
       </div>
       <div className="hidden lg:block">
-        <DesktopGallery awardAlt={awardAlt} />
+        <DesktopGallery
+          awardAlt={awardAlt}
+          packshot={packshot}
+          sizeId={sizeId}
+        />
       </div>
     </>
   );

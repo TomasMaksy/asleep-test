@@ -1,0 +1,128 @@
+{
+  "metadata": {
+    "title": "Apmokėjimas | Asleep",
+    "description": "Užbaikite Asleep užsakymą."
+  },
+  "expressTitle": "Greitasis apmokėjimas",
+  "expressUnavailable": "Šis mokėjimo būdas dar neveikia. Mokėkite kortele.",
+  "or": "ARBA",
+  "contact": {
+    "title": "Kontaktinė informacija",
+    "email": "El. paštas",
+    "newsletter": "Siųsti naujienas ir pasiūlymus"
+  },
+  "delivery": {
+    "title": "Pristatymas",
+    "country": "Šalis",
+    "firstName": "Vardas",
+    "lastName": "Pavardė",
+    "address": "Adresas",
+    "apartment": "Butas",
+    "apartmentOptional": "neprivaloma",
+    "postalCode": "Pašto kodas",
+    "city": "Miestas",
+    "phone": "Telefonas",
+    "phoneHelp": "Jei reikės susisiekti dėl užsakymo"
+  },
+  "countries": {
+    "LT": "Lietuva",
+    "LV": "Latvija",
+    "EE": "Estija"
+  },
+  "shipping": {
+    "title": "Pristatymo būdas",
+    "standard": {
+      "title": "Standartinis pristatymas",
+      "hint": "3–7 darbo dienos"
+    },
+    "express": {
+      "title": "Skubus pristatymas",
+      "hint": "1–2 darbo dienos"
+    },
+    "free": "NEMOKAMAI"
+  },
+  "payment": {
+    "title": "Mokėjimas",
+    "secure": "Visi mokėjimai saugūs ir šifruoti",
+    "card": "Kredito kortelė",
+    "cardNumber": "Kortelės numeris",
+    "expiry": "Galiojimo data (MM / YY)",
+    "cvc": "Apsaugos kodas",
+    "nameOnCard": "Vardas ant kortelės",
+    "billing": "Sąskaitos adresas",
+    "billingSame": "Toks pats kaip pristatymo adresas"
+  },
+  "remember": {
+    "title": "Prisiminti mane",
+    "body": "Išsaugoti mano duomenis greitesniam apmokėjimui"
+  },
+  "payNow": "Mokėti dabar",
+  "processing": "Apdorojama",
+  "returnToCart": "Grįžti",
+  "errors": {
+    "emailRequired": "Įveskite el. paštą",
+    "emailInvalid": "Įveskite galiojantį el. paštą",
+    "firstName": "Įveskite vardą",
+    "lastName": "Įveskite pavardę",
+    "address": "Įveskite adresą",
+    "city": "Įveskite miestą",
+    "postal": "Įveskite galiojantį pašto kodą",
+    "phone": "Įveskite galiojantį telefono numerį",
+    "cardNumber": "Įveskite galiojantį kortelės numerį",
+    "expiry": "Įveskite galiojančią datą",
+    "cvc": "Įveskite galiojantį apsaugos kodą",
+    "nameOnCard": "Įveskite vardą taip, kaip parašyta ant kortelės",
+    "discount": "Įveskite galiojantį nuolaidos kodą",
+    "billingAddress": "Įveskite sąskaitos adresą",
+    "billingCity": "Įveskite miestą",
+    "billingPostal": "Įveskite galiojantį pašto kodą"
+  },
+  "summary": {
+    "title": "Užsakymo suvestinė",
+    "hide": "Slėpti užsakymo suvestinę",
+    "show": "Rodyti užsakymo suvestinę",
+    "discount": "Nuolaidos kodas arba dovanų kortelė",
+    "apply": "Pritaikyti",
+    "discountLine": "Nuolaida",
+    "subtotal": "Tarpinė suma",
+    "shipping": "Pristatymas",
+    "shippingTbd": "Apskaičiuosime kitame žingsnyje",
+    "total": "Suma",
+    "taxIncluded": "Įskaitant {amount} PVM",
+    "currency": "EUR",
+    "inStock": "Yra sandėlyje, pristatymas per 5–8 darbo dienas"
+  },
+  "closed": {
+    "title": "Šiuo metu nepriimame naujų užsakymų",
+    "body": "Ačiū, kad nuėjote iki apmokėjimo. Asleep dabar nepriima užsakymų.\n\nJūsų kortelė nebuvo apmokestinta.\n\nSpustelėkite žemiau — parašysime, kai tik pradėsime.",
+    "cta": "Praneškite, kai pradėsite",
+    "saving": "Saugoma…",
+    "successTitle": "Esate sąraše",
+    "successBody": "Jūsų kortelė nebuvo apmokestinta. Parašysime adresu {email}, kai tik pradėsime priimti užsakymus.",
+    "home": "Grįžti į parduotuvę"
+  },
+  "thanks": {
+    "metaTitle": "Ačiū | Asleep",
+    "metaDescription": "Jūsų Asleep apmokėjimas baigtas.",
+    "kicker": "Atsiprašome",
+    "title": "Ačiū, {name}",
+    "titleAnonymous": "Ačiū",
+    "notCharged": "Jūsų kortelė nebuvo apmokestinta",
+    "body": "Asleep dar nepriima užsakymų. Iš jūsų sąskaitos nieko nenuskaičiavome. Parašysime adresu {email}, kai tik pradėsime.",
+    "home": "Grįžti į parduotuvę"
+  },
+  "empty": {
+    "title": "Jūsų krepšelis tuščias",
+    "body": "Prieš apmokėjimą įdėkite čiužinį į krepšelį.",
+    "cta": "Tęsti apsipirkimą"
+  },
+  "footer": {
+    "privacy": "Privatumo politika",
+    "terms": "Naudojimo sąlygos",
+    "refund": "Grąžinimo politika"
+  },
+  "email": {
+    "inboxSubject": "Apmokėjimas baigtas: {name}",
+    "inboxBody": "{name} užbaigė apmokėjimą.\n\nEl. paštas: {email}\nTelefonas: {phone}\n\nMokėjimas nebuvo nuskaičiuotas. Kortelės duomenys nebuvo išsaugoti."
+  }
+}

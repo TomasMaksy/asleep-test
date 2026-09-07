@@ -1,9 +1,8 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { ProductAddons } from "@/app/[locale]/products/original/product-addons";
 import {
-  type ProductFaqItem,
   ProductFaqAccordion,
+  type ProductFaqItem,
 } from "@/app/[locale]/products/original/product-faq-accordion";
 import { staticImageUrl } from "@/lib/static-image-url";
 
@@ -13,8 +12,6 @@ export async function ProductPurchaseExtras() {
 
   return (
     <div className="mt-0">
-      <ProductAddons />
-
       <div className="mb-7 max-w-full overflow-visible">
         <div className="inline-block max-w-full">
           <p className="mb-4 font-bold text-base text-brand-dark leading-snug">
@@ -30,7 +27,7 @@ export async function ProductPurchaseExtras() {
         </div>
       </div>
 
-      <ProductFaqAccordion items={faq} />
+      <ProductFaqAccordion defaultOpenIndex={0} items={faq} />
     </div>
   );
 }

@@ -4,8 +4,6 @@ import { ReviewsZoom } from "@/components/effects/reviews-zoom";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
-const SCALE_START = 1.8;
-
 type ReviewSource = "asleep" | "google" | "consumentenbond";
 
 type ReviewCardData = {
@@ -19,6 +17,47 @@ type ReviewCardData = {
 type SourceLabels = Record<ReviewSource, string>;
 
 const STAR_KEYS = ["s1", "s2", "s3", "s4", "s5"] as const;
+const CARD_SIZE = 0.75;
+const CARD_SIZE_MOBILE = 0.58;
+const DESKTOP_SPREAD_X = 0.88;
+const DESKTOP_SPREAD_Y = 0.9;
+const MOBILE_SPREAD_X = 1.14;
+const MOBILE_SPREAD_Y = 1.06;
+const TYPICAL_CARD_HEIGHT = 16;
+
+function parsePercent(value: string) {
+  return Number.parseFloat(value);
+}
+
+/** Shrink a card around its center so more quotes fit on screen with room to fly in. */
+function layoutCard(
+  card: ReviewCardData,
+  size: number,
+  spreadX = 1,
+  spreadY = 1,
+): ReviewCardData {
+  const left = parsePercent(card.left);
+  const top = parsePercent(card.top);
+  const width = parsePercent(card.width);
+  const nextWidth = width * size;
+  const centerX = left + width / 2;
+  const centerY = top + TYPICAL_CARD_HEIGHT / 2;
+  let nextLeft = centerX - nextWidth / 2;
+  let nextTop = centerY - (TYPICAL_CARD_HEIGHT * size) / 2;
+
+  if (spreadX !== 1 || spreadY !== 1) {
+    const laidOutCenterX = nextLeft + nextWidth / 2;
+    nextLeft = 50 + (laidOutCenterX - 50) * spreadX - nextWidth / 2;
+    nextTop = 50 + (nextTop - 50) * spreadY;
+  }
+
+  return {
+    ...card,
+    left: `${nextLeft.toFixed(2)}%`,
+    top: `${nextTop.toFixed(2)}%`,
+    width: `${nextWidth.toFixed(2)}%`,
+  };
+}
 
 function Stars() {
   return (
@@ -75,21 +114,21 @@ function ReviewCard({
 }) {
   return (
     <article
-      className="absolute rounded-[24px] bg-white p-4 shadow-[0_2px_16px_rgba(0,0,0,0.04)] md:p-5"
+      className="absolute origin-center rounded-[20px] bg-white p-3.5 shadow-[0_2px_16px_rgba(0,0,0,0.04)] md:rounded-3xl md:p-4"
       style={{
         left: card.left,
         top: card.top,
         width: card.width,
       }}
     >
-      <div className="mb-3 flex items-start justify-between gap-2">
+      <div className="mb-2.5 flex items-start justify-between gap-2">
         <Stars />
         <SourceBadge source={card.source} />
       </div>
-      <p className="font-bold font-heading text-brand-dark text-sm leading-snug md:text-base">
+      <p className="font-bold font-heading text-base text-brand-dark leading-snug md:text-lg">
         {card.quote}
       </p>
-      <p className="mt-3 text-[#afafaf] text-xs md:text-sm">
+      <p className="mt-2.5 text-[#afafaf] text-xs md:text-sm">
         {sourceLabels[card.source]}
       </p>
     </article>
@@ -114,30 +153,29 @@ export async function ReviewsSection({
     <ReviewsZoom>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 left-0 z-20 w-[25%] bg-[linear-gradient(90deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:w-[20%]"
+        className="pointer-events-none absolute inset-y-0 left-0 z-20 w-[16%] bg-[linear-gradient(90deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:w-[20%]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[12.5%] w-full bg-[linear-gradient(0deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:h-[30%]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[10%] w-full bg-[linear-gradient(0deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:h-[30%]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[12.5%] w-full bg-[linear-gradient(180deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:h-[30%]"
+        className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[10%] w-full bg-[linear-gradient(180deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:h-[30%]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-0 z-20 w-[25%] bg-[linear-gradient(-90deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:w-[20%]"
+        className="pointer-events-none absolute inset-y-0 right-0 z-20 w-[16%] bg-[linear-gradient(-90deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:w-[20%]"
       />
 
       <div
-        className="absolute inset-0 h-full w-full will-change-transform"
+        className="absolute inset-0 h-full w-full origin-center will-change-transform max-md:scale-[1.28] md:scale-[1.5]"
         data-reviews-wall=""
-        style={{ transform: `scale(${SCALE_START})` }}
       >
         <div className="absolute inset-0 hidden md:block">
           {cards.map((card) => (
             <ReviewCard
-              card={card}
+              card={layoutCard(card, CARD_SIZE, DESKTOP_SPREAD_X, DESKTOP_SPREAD_Y)}
               key={`d-${card.quote}-${card.left}`}
               sourceLabels={sourceLabels}
             />
@@ -146,7 +184,7 @@ export async function ReviewsSection({
         <div className="absolute inset-0 md:hidden">
           {cardsMobile.map((card) => (
             <ReviewCard
-              card={card}
+              card={layoutCard(card, CARD_SIZE_MOBILE, MOBILE_SPREAD_X, MOBILE_SPREAD_Y)}
               key={`m-${card.quote}-${card.left}`}
               sourceLabels={sourceLabels}
             />

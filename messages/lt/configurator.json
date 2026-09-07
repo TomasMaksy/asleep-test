@@ -1,0 +1,78 @@
+{
+  "metadata": {
+    "title": "Sukurkite savo čiužinį | Asleep",
+    "description": "Konfigūruokite Asleep Original čiužinį: pasirinkite dydį, nurodykite svorį ir miego pageidavimus ir pamatykite rekomenduojamą kietumą."
+  },
+  "sizeTitle": "Kokio dydžio turi būti Asleep?",
+  "selectSize": "Pasirinkite dydį",
+  "single": "Vienvietė",
+  "double": "Dvivietė",
+  "sizeHint": "Rekomenduojame palikti apie 20 cm daugiau nei jūsų ūgis.",
+  "openSize": "Atidaryti dydžio pasirinkimą",
+  "closeSize": "Uždaryti dydžio pasirinkimą",
+  "whoTitle": "Kam skirtas čiužinys?",
+  "alone": "Vienam",
+  "together": "Kartu",
+  "weightTitle": "Jūsų svoris ir miego pageidavimai",
+  "weightTitleTogether": "Jūsų svoris ir miego pageidavimai",
+  "partnerWeightTitle": "Partnerio svoris ir miego pageidavimai",
+  "you": "Jūs",
+  "partner": "Partneris",
+  "weightSuffix": "kg",
+  "soft": "Minkšta",
+  "medium": "Vidutinė",
+  "firm": "Kieta",
+  "perfectFor": "Tinka 80 % žmonių",
+  "confirm": "Patvirtinti",
+  "goBack": "Grįžti",
+  "overlayLabel": "Čiužinio konfigūratorius",
+  "previousQuestion": "Ankstesnis klausimas",
+  "resultTitle": "Peržiūrėkite rezultatą",
+  "yourResult": "Jūsų rezultatas",
+  "partnerResult": "Partnerio rezultatas",
+  "configuration": "konfigūracija {number}",
+  "readMore": "Skaityti daugiau",
+  "readLess": "Skaityti mažiau",
+  "addToBasket": "Į krepšelį",
+  "videoAria": "Čiužinio kietumo animacija",
+  "updatingMattress": "Atnaujiname čiužinį",
+  "mindTheGapTitle": "Dėmesio tarpui",
+  "mindTheGapBody": "Šiam deriniui rekomenduojame du vienviečius čiužinius. Dviviečio Asleep viršutinis sluoksnis nėra perskirtas, todėl didelis kietumo skirtumas per vidurį gali jaustis kaip briauna.",
+  "resultSolo": "Tai konfigūracija, kurią rekomenduojame jums.",
+  "resultMatch": "Puikus derinys — vienas dvivietis čiužinys, kiekviena pusė nustatyta taip, kaip jums abiem patogiausia.",
+  "resultNoMatch": "Jūsų kietumo nustatymai per toli vienam dviviečiam čiužiniui. Rekomenduojame du vienviečius, kad kiekvienas miegotų ant savo konfigūracijos.",
+  "scale": [
+    "Ypač minkštas",
+    "Minkštas",
+    "Vidutinis",
+    "Vidutinio kietumo",
+    "Kietas",
+    "Ypač kietas"
+  ],
+  "advice": [
+    {
+      "text": "Tai minkščiausia konfigūracija. Ant šono miegantiems ir lengvesnio kūno žmonėms čia paprastai jaučiamas didžiausias spaudimo sumažinimas — pečiai ir klubai gali įsmigti.",
+      "more": "Jei pabundate ant šono ir mėgstate debesies pojūtį, pradėkite čia. Vėliau visada galite atidaryti Asleep ir pakelti kietumą per vieną lygį."
+    },
+    {
+      "text": "Minkštas pojūtis su šiek tiek daugiau struktūros apačioje. Tinka, jei norite minkštumo neprarasdami laikysenos.",
+      "more": "Dažnas pasirinkimas mišrioms miego pozoms. Jei ypač minkšta atrodo per daug įsmigimo, tai kitas žingsnis aukštyn."
+    },
+    {
+      "text": "Asleep atkeliauja šia konfigūracija. Ji subalansuoja minkštumą ir atramą daugumai miegančiųjų ir miego pozų.",
+      "more": "Jei abejojate, pirmiausia miegokite taip. Po kelių naktų galite atidaryti užvalkalą ir apversti sluoksnį, jei norite minkščiau arba kietiau."
+    },
+    {
+      "text": "Kietesnis už numatytąjį. Viršuje vis dar yra šiek tiek pasidavimo, o klubams ir juosmeniui — tvirtesnis pagrindas.",
+      "more": "Ant nugaros miegantiems ir tiems, kurie mėgsta gulėti ant čiužinio, o ne jame, dažnai tinka čia. Taip pat geras kompromisas, kai du miegančiųjų pageidavimai panašūs, bet ne identiški."
+    },
+    {
+      "text": "Atramesnė konfigūracija su mažesniu įsmigimu. Ant nugaros ir pilvo miegantiems bei sunkesnio kūno žmonėms ji dažnai tinka geriau.",
+      "more": "Jei greitai įšylate arba nemėgstate, kad putos apglėbtų, kietesni sluoksniai laiko jus aukščiau, o komforto zonos vis tiek seka stuburą."
+    },
+    {
+      "text": "Atramiškiausias derinys. Rinkitės jį, jei norite gulėti ant čiužinio, o ne jame.",
+      "more": "Ši konfigūracija skirta tiems, kurie mėgsta labai stabilų, viešbučio kietumo pojūtį. Vėliau vis tiek galite pajudinti sluoksnį, jei paaiškės, kad atramos per daug."
+    }
+  ]
+}

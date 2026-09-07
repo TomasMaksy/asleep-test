@@ -8,5 +8,8 @@ All site copy lives here. **Start with [`COPY.md`](../COPY.md)** in the repo roo
 | `{locale}/home.json` | Homepage |
 | `{locale}/product-original.json` | `/products/original` |
 | `{locale}/reviews-page.json` | `/reviews` |
+| `{locale}/contact.json` | `/contact` |
+| `{locale}/configurator.json` | `/configurator` |
+| `{locale}/checkout.json` | `/checkout`, `/checkout/thank-you` |
 
 `{locale}` is `en` or `lt`. Change values, not keys. Preview with `bun run dev`, then `bun run i18n:check`.

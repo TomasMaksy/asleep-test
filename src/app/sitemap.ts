@@ -8,6 +8,7 @@ const paths = [
   "/products/original",
   "/reviews",
   "/configurator",
+  "/contact",
 ] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {

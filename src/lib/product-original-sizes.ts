@@ -182,6 +182,16 @@ export function isDoubleMattressSize(id: MattressSizeId) {
   return getMattressSizeWidth(id) >= 140;
 }
 
+export function packshotSrc(id: MattressSizeId) {
+  return `/images/product-gallery/sizes/${id}.webp`;
+}
+
+export function layersAnimationSrc(id: MattressSizeId) {
+  return isDoubleMattressSize(id)
+    ? "/images/product-gallery/layers-animation.mp4"
+    : "/images/product-gallery/layers-animation-single.mp4";
+}
+
 export function getMattressSize(id: MattressSizeId) {
   const size = MATTRESS_SIZES.find((entry) => entry.id === id);
   if (!size) {

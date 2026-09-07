@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { saveEmail } from "@/lib/airtable";
 
 type NewsletterBody = {
   email?: string;
@@ -45,37 +46,24 @@ export async function POST(request: Request) {
     );
   }
 
-  const token = process.env.AIRTABLE_API_KEY;
-  const baseId = process.env.AIRTABLE_BASE_ID;
-  const tableId = process.env.AIRTABLE_TABLE_ID;
-
-  if (!token || !baseId || !tableId) {
-    return NextResponse.json(
-      { error: "Newsletter is not configured yet." },
-      { status: 503 },
-    );
-  }
-
-  const url = `https://api.airtable.com/v0/${baseId}/${tableId}`;
-
-  let response: Response;
   try {
-    response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        records: [
-          {
-            fields: {
-              "Email Address": email,
-              Source: source,
-            },
-          },
-        ],
-      }),
+    const result = await saveEmail(email, source);
+    if (!result.configured) {
+      return NextResponse.json(
+        { error: "Newsletter is not configured yet." },
+        { status: 503 },
+      );
+    }
+    if (!result.ok) {
+      return NextResponse.json(
+        { error: "Could not save your email. Please try again." },
+        { status: 502 },
+      );
+    }
+
+    return NextResponse.json({
+      ok: true,
+      alreadySubscribed: Boolean(result.alreadySubscribed),
     });
   } catch {
     return NextResponse.json(
@@ -83,23 +71,4 @@ export async function POST(request: Request) {
       { status: 502 },
     );
   }
-
-  if (!response.ok) {
-    const detail = await response.text();
-    console.error("Airtable newsletter error:", response.status, detail);
-
-    if (response.status === 422 && /unique|duplicate|already/i.test(detail)) {
-      return NextResponse.json({
-        ok: true,
-        alreadySubscribed: true,
-      });
-    }
-
-    return NextResponse.json(
-      { error: "Could not save your email. Please try again." },
-      { status: 502 },
-    );
-  }
-
-  return NextResponse.json({ ok: true });
 }

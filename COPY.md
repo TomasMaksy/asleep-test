@@ -21,6 +21,9 @@ Then say which page and locale you want to work on.
 | `messages/{locale}/home.json` | Homepage sections: hero, products, bundles, floating review quotes, bedroom, promise, press, support | `/lt` and `/en` |
 | `messages/{locale}/product-original.json` | Original mattress PDP: buy box, FAQs, layers, specs, compare, related | `/lt/products/original` |
 | `messages/{locale}/reviews-page.json` | Reviews page: hero, share form, carousel | `/lt/reviews` |
+| `messages/{locale}/contact.json` | Contact page | `/lt/contact` |
+| `messages/{locale}/configurator.json` | Mattress configurator | `/lt/configurator` |
+| `messages/{locale}/checkout.json` | Fake-door checkout copy | `/lt/checkout`, `/lt/checkout/thank-you` |
 
 `{locale}` is `lt` or `en`. Edit **both** when you change meaning — not only the language you are writing.
 
@@ -39,6 +42,8 @@ The first `bun run dev` needs an internet connection so Next can download the Ou
 - English homepage: [http://localhost:3000/en](http://localhost:3000/en)
 - Product: `/lt/products/original` and `/en/products/original`
 - Reviews: `/lt/reviews` and `/en/reviews`
+- Checkout: `/lt/checkout` and `/en/checkout`
+- Thank you: `/lt/checkout/thank-you` and `/en/checkout/thank-you`
 
 The language switcher in the header jumps to the same path in the other locale.
 

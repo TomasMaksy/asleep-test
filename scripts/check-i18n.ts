@@ -11,6 +11,9 @@ const FILES = [
   "messages/{locale}/home.json",
   "messages/{locale}/product-original.json",
   "messages/{locale}/reviews-page.json",
+  "messages/{locale}/contact.json",
+  "messages/{locale}/configurator.json",
+  "messages/{locale}/checkout.json",
 ] as const;
 
 const ICU_RE = /\{[a-zA-Z0-9_]+\}/g;

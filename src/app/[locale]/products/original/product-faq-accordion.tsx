@@ -55,21 +55,21 @@ function FaqSectionBlock({ section }: { section: ProductFaqSection }) {
   );
 }
 
-const DEFAULT_OPEN_INDEX = 0;
-
-export function ProductFaqAccordion({ items }: { items: ProductFaqItem[] }) {
+export function ProductFaqAccordion({
+  items,
+  defaultOpenIndex = null,
+}: {
+  items: ProductFaqItem[];
+  defaultOpenIndex?: number | null;
+}) {
   const reduceMotion = useReducedMotion();
-  const [openIndex, setOpenIndex] = useState(DEFAULT_OPEN_INDEX);
+  const [openIndex, setOpenIndex] = useState<number | null>(defaultOpenIndex);
 
   function toggle(index: number) {
-    setOpenIndex((current) =>
-      current === index ? DEFAULT_OPEN_INDEX : index,
-    );
+    setOpenIndex((current) => (current === index ? null : index));
   }
 
-  const panelTransition = reduceMotion
-    ? { duration: 0 }
-    : accordionTransition;
+  const panelTransition = reduceMotion ? { duration: 0 } : accordionTransition;
 
   return (
     <div className="border-grey border-t">

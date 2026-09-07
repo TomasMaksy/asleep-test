@@ -10,6 +10,10 @@ type SupportItem = {
   href: string;
 };
 
+function isInternalHref(href: string) {
+  return href.startsWith("/") || href.startsWith("#");
+}
+
 export async function SupportSection() {
   const messages = await getMessages();
   const items = messages.support as SupportItem[];
@@ -38,20 +42,20 @@ export async function SupportSection() {
                 </h3>
                 <p className="font-sans text-rg">{item.body}</p>
                 <p>
-                  {item.href.startsWith("tel:") ? (
-                    <a
-                      className="font-sans text-[#1A478A] text-base underline"
-                      href={item.href}
-                    >
-                      {item.cta}
-                    </a>
-                  ) : (
+                  {isInternalHref(item.href) ? (
                     <Link
                       className="font-sans text-[#1A478A] text-base underline"
                       href={item.href}
                     >
                       {item.cta}
                     </Link>
+                  ) : (
+                    <a
+                      className="font-sans text-[#1A478A] text-base underline"
+                      href={item.href}
+                    >
+                      {item.cta}
+                    </a>
                   )}
                 </p>
               </div>

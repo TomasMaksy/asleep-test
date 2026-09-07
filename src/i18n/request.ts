@@ -8,11 +8,22 @@ export default getRequestConfig(async ({ requestLocale }) => {
     ? requested
     : routing.defaultLocale;
 
-  const [shared, home, productOriginal, reviewsPage] = await Promise.all([
+  const [
+    shared,
+    home,
+    productOriginal,
+    reviewsPage,
+    contactPage,
+    configuratorPage,
+    checkoutPage,
+  ] = await Promise.all([
     import(`../../messages/${locale}.json`),
     import(`../../messages/${locale}/home.json`),
     import(`../../messages/${locale}/product-original.json`),
     import(`../../messages/${locale}/reviews-page.json`),
+    import(`../../messages/${locale}/contact.json`),
+    import(`../../messages/${locale}/configurator.json`),
+    import(`../../messages/${locale}/checkout.json`),
   ]);
 
   return {
@@ -22,6 +33,9 @@ export default getRequestConfig(async ({ requestLocale }) => {
       ...home.default,
       productOriginal: productOriginal.default,
       reviewsPage: reviewsPage.default,
+      contactPage: contactPage.default,
+      configuratorPage: configuratorPage.default,
+      checkoutPage: checkoutPage.default,
     },
   };
 });

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { ConfiguratorLink } from "@/components/configurator/configurator-link";
 import { ConfiguratorParallax } from "@/components/effects/configurator-parallax";
-import { Link } from "@/i18n/navigation";
 import { staticImageUrl } from "@/lib/static-image-url";
 
 export async function ProductConfiguratorSection() {
@@ -33,7 +33,7 @@ export async function ProductConfiguratorSection() {
                 className="relative z-10 mx-auto h-auto w-full"
                 height={425}
                 priority={false}
-                src={staticImageUrl("/images/configurator/section.png")}
+                src={staticImageUrl("/images/configurator/section.webp")}
                 width={641}
               />
               <div className="pointer-events-none absolute inset-x-[-1%] -bottom-[62px] z-0 md:inset-x-[1%] md:-bottom-[90px]">
@@ -55,12 +55,9 @@ export async function ProductConfiguratorSection() {
             className="relative z-0 mt-28 will-change-transform"
             data-parallax="fast"
           >
-            <Link
-              className="inline-flex min-h-12 max-w-full items-center justify-center rounded-full bg-white px-8 py-3 text-center text-[#244f9c] text-base transition-colors hover:bg-white/90"
-              href="/configurator"
-            >
+            <ConfiguratorLink className="inline-flex min-h-12 max-w-full items-center justify-center rounded-full bg-white px-8 py-3 text-center text-[#244f9c] text-base transition-colors hover:bg-white/90">
               {t("cta")}
-            </Link>
+            </ConfiguratorLink>
           </div>
         </div>
       </ConfiguratorParallax>

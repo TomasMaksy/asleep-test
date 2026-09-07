@@ -18,8 +18,7 @@ type ProductStickyBuyBarProps = {
   observeId: string;
   productName: string;
   sizeLabel: string;
-  isPlus: boolean;
-  compareCents: number;
+  packshotSrc: string;
   activeCents: number;
   onOpenSize: () => void;
   onAddToCart: () => void;
@@ -48,8 +47,7 @@ export function ProductStickyBuyBar({
   observeId,
   productName,
   sizeLabel,
-  isPlus,
-  compareCents,
+  packshotSrc,
   activeCents,
   onOpenSize,
   onAddToCart,
@@ -116,7 +114,7 @@ export function ProductStickyBuyBar({
                     className="object-cover"
                     fill
                     sizes="48px"
-                    src={staticImageUrl("/images/product-gallery/packshot.jpg")}
+                    src={staticImageUrl(packshotSrc)}
                   />
                 </div>
                 <p className="truncate font-medium text-brand-dark text-sm md:text-base">
@@ -135,23 +133,9 @@ export function ProductStickyBuyBar({
 
               <div className="ml-auto flex min-w-0 items-center gap-3 md:gap-5">
                 <div className="hidden items-center gap-2 sm:flex">
-                  {isPlus ? (
-                    <>
-                      <span className="text-brand-dark/45 text-sm line-through md:text-base">
-                        {formatMattPrice(compareCents)}
-                      </span>
-                      <span className="font-bold text-base text-brand-dark md:text-lg">
-                        {formatMattPrice(activeCents)}
-                      </span>
-                      <span className="rounded bg-red-600 px-2 py-0.5 font-bold text-[12px] text-white md:text-sm">
-                        {t("saveBadge")}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="font-bold text-base text-brand-dark md:text-lg">
-                      {formatMattPrice(activeCents)}
-                    </span>
-                  )}
+                  <span className="font-bold text-base text-brand-dark md:text-lg">
+                    {formatMattPrice(activeCents)}
+                  </span>
                 </div>
 
                 <span className="font-bold text-brand-dark text-sm sm:hidden">

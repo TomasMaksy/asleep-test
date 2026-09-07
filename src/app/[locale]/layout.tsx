@@ -7,7 +7,9 @@ import {
   getTranslations,
   setRequestLocale,
 } from "next-intl/server";
+import type { ReactNode } from "react";
 import { CartSheetHost } from "@/components/cart/cart-sheet-host";
+import { ConfiguratorShell } from "@/components/configurator/configurator-shell";
 import { RevealObserver } from "@/components/reveal-observer";
 import { type Locale, routing } from "@/i18n/routing";
 import { getSiteUrl } from "@/lib/site-url";
@@ -58,8 +60,9 @@ export async function generateMetadata({
 
 export default async function LocaleLayout({
   children,
+  modal,
   params,
-}: LayoutProps<"/[locale]">) {
+}: LayoutProps<"/[locale]"> & { modal: ReactNode }) {
   const { locale } = await params;
 
   if (!hasLocale(routing.locales, locale)) {
@@ -72,12 +75,13 @@ export default async function LocaleLayout({
   return (
     <html
       className={cn(outfit.variable, outfit.className, "h-full antialiased")}
+      data-scroll-behavior="smooth"
       lang={locale}
     >
       <body className="relative min-h-full font-sans">
         <NextIntlClientProvider messages={messages}>
           <RevealObserver />
-          {children}
+          <ConfiguratorShell overlay={modal}>{children}</ConfiguratorShell>
           <CartSheetHost />
         </NextIntlClientProvider>
       </body>

@@ -1,39 +1,32 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
+import { ConfiguratorSection } from "@/app/[locale]/configurator/sections/configurator-section";
 import type { Locale } from "@/i18n/routing";
 
 export async function generateMetadata({
   params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
+}: PageProps<"/[locale]/configurator">): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({
     locale,
-    namespace: "productOriginal.configurator",
+    namespace: "configuratorPage.metadata",
   });
 
   return {
-    title: `${t("title")} | Asleep`,
-    description: t("cta"),
+    title: t("title"),
+    description: t("description"),
   };
 }
 
 export default async function ConfiguratorPage({
   params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+}: PageProps<"/[locale]/configurator">) {
   const { locale } = await params;
   setRequestLocale(locale as Locale);
 
   return (
-    <>
-      <SiteHeader theme="solid" />
-      <main className="min-h-[50vh] pt-16 lg:pt-20" />
-      <SiteFooter />
-    </>
+    <main>
+      <ConfiguratorSection />
+    </main>
   );
 }
