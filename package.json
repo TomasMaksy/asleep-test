@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "server": "export $(grep -v '^#' .env.local | xargs) && ngrok http --url=$NEXT_PUBLIC_BASE_HOST 3000",
+    "server": "ngrok http --url=\"$(sed -n 's/^NEXT_PUBLIC_BASE_HOST=//p' .env.local | tr -d '\\r\"' | head -n1)\" 3000",
     "build": "next build",
     "start": "next start",
     "lint": "biome check",

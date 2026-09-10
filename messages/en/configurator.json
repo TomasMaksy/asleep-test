@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "title": "Create your mattress | Asleep",
-    "description": "Configure your Asleep Original mattress: pick a size, tell us your weight and sleep preference, and see the recommended firmness."
+    "title": "Create your mattress | asleep",
+    "description": "Configure your asleep Original mattress: pick a size, tell us your weight and sleep preference, and see the recommended firmness."
   },
-  "sizeTitle": "How big should Asleep be?",
+  "sizeTitle": "How big should asleep be?",
   "selectSize": "Select your size",
   "single": "Single",
   "double": "Double",
@@ -37,7 +37,7 @@
   "videoAria": "Mattress firmness animation",
   "updatingMattress": "Updating your mattress",
   "mindTheGapTitle": "Mind the gap",
-  "mindTheGapBody": "For this combination we recommend two single mattresses. The top layer of a double Asleep is not split, so a large firmness difference between sides can feel like a ridge in the middle.",
+  "mindTheGapBody": "For this combination we recommend two single mattresses. The top layer of a double asleep is not split, so a large firmness difference between sides can feel like a ridge in the middle.",
   "resultSolo": "This is the setup we recommend for you.",
   "resultMatch": "You make a great pair — one double mattress, with each side set to the comfort you each prefer.",
   "resultNoMatch": "Your firmness settings are too far apart for one double mattress. We recommend two singles so each of you can sleep on your own setup.",
@@ -52,14 +52,14 @@
   "advice": [
     {
       "text": "This is the most yielding setup. Side sleepers and lighter bodies usually feel the most pressure relief here, with the shoulders and hips able to sink in.",
-      "more": "If you wake up on your side and like a plush, cloud-like feel, start here. You can always unzip Asleep later and step up a level if you want more support."
+      "more": "If you wake up on your side and like a plush, cloud-like feel, start here. You can always unzip asleep later and step up a level if you want more support."
     },
     {
       "text": "A plush feel with a little more structure underneath. Good if you want softness without losing alignment.",
       "more": "This is a common choice for mixed sleep positions. If extra soft feels like too much sink, this is the next step up."
     },
     {
-      "text": "Asleep arrives in this configuration. It balances cushioning and support for most sleepers and sleeping positions.",
+      "text": "asleep arrives in this configuration. It balances cushioning and support for most sleepers and sleeping positions.",
       "more": "If you are unsure, sleep on this setup first. After a few nights you can unzip the cover and turn a layer if you want it softer or firmer."
     },
     {

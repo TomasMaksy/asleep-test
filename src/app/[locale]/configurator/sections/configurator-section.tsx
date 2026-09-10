@@ -103,6 +103,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   const shownYouRef = useRef<Firmness>(DEFAULT_FIRMNESS);
   const queueRef = useRef<QueuedTransition[]>([]);
   const playingClipRef = useRef<ConfiguratorClip | null>(null);
+  const pendingPackagingRef = useRef(false);
   const profileRef = useRef({
     yourWeight,
     yourPreference,
@@ -224,6 +225,44 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     setClip(nextClip);
   }
 
+  function playPackaging() {
+    const playing = playingClipRef.current;
+    if (playing != null || queueRef.current.length > 0) {
+      pendingPackagingRef.current = true;
+      return;
+    }
+
+    startPackaging();
+  }
+
+  function startPackaging() {
+    pendingPackagingRef.current = false;
+    clipIdRef.current += 1;
+    setCatchingUp(false);
+    setPlaybackRate(1);
+    const nextClip: ConfiguratorClip = {
+      id: clipIdRef.current,
+      kind: "packaging",
+      bed,
+    };
+    playingClipRef.current = nextClip;
+    setClip(nextClip);
+  }
+
+  function playHold(firmness: Firmness) {
+    pendingPackagingRef.current = false;
+    clipIdRef.current += 1;
+    setPlaybackRate(VIDEO_PLAYBACK_RATE);
+    const nextClip: ConfiguratorClip = {
+      id: clipIdRef.current,
+      kind: "hold",
+      bed,
+      firmness,
+    };
+    playingClipRef.current = nextClip;
+    setClip(nextClip);
+  }
+
   function chainEnd(): Firmness {
     const queued = queueRef.current;
     const lastQueued = queued[queued.length - 1];
@@ -289,6 +328,12 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   function handleClipEnded(played: ConfiguratorClip) {
     playingClipRef.current = null;
 
+    if (played.kind === "packaging" || played.kind === "hold") {
+      setPlaybackRate(VIDEO_PLAYBACK_RATE);
+      setCatchingUp(false);
+      return;
+    }
+
     if (played.kind === "intro") {
       setIntroPlaying(false);
       shownYouRef.current = DEFAULT_FIRMNESS;
@@ -320,22 +365,30 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
         setPlaybackRate(VIDEO_PLAYBACK_RATE_QUEUED);
       }
       playTransition(next.from, next.to);
-    } else {
-      setPlaybackRate(VIDEO_PLAYBACK_RATE);
-      setCatchingUp(false);
+      return;
     }
+
+    if (pendingPackagingRef.current) {
+      startPackaging();
+      return;
+    }
+
+    setPlaybackRate(VIDEO_PLAYBACK_RATE);
+    setCatchingUp(false);
   }
 
   function handleCategory(category: "single" | "double") {
     if (category === "single" && bed !== "single") {
       setSizeId(SINGLE_MATTRESS_SIZES[0]?.id ?? CONFIGURATOR_DEFAULT_SIZE_ID);
       setSleeping("alone");
+      pendingPackagingRef.current = false;
       playingClipRef.current = null;
       setClip(null);
       setStageReady(false);
     }
     if (category === "double" && bed !== "double") {
       setSizeId(DOUBLE_MATTRESS_SIZES[0]?.id ?? "140x200");
+      pendingPackagingRef.current = false;
       playingClipRef.current = null;
       setClip(null);
       setStageReady(false);
@@ -370,6 +423,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     }
 
     setStep(5);
+    playPackaging();
   }
 
   function handleBack() {
@@ -400,6 +454,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     if (step === 5) {
       const next = together && !isDesktop ? 4 : 3;
       setActiveSleeper(next === 4 ? 2 : 1);
+      playHold(shownYouRef.current);
       setStep(next);
       return;
     }

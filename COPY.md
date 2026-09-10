@@ -67,7 +67,7 @@ That compares EN vs LT (keys, array lengths, placeholders) and warns about lefto
 
 ## Brand and voice
 
-- Brand name is **Asleep**, not Matt / Matt Sleeps. A lot of product copy was ported from mattsleeps.com and still says “Matt”. Please replace those with Asleep where it reads as the product/brand.
+- Brand name is **asleep**, not Matt / Matt Sleeps. A lot of product copy was ported from mattsleeps.com and still says “Matt”. Please replace those with asleep where it reads as the product/brand.
 - Default market is Lithuania. Phone numbers, delivery times, “Consumentenbond”, “Baltics”, and Dutch press logos in `home.json` → `media` may need a Lithuania pass — flag anything that still feels NL/BE.
 - `Consumentenbond` is the Dutch consumers’ association. Decide with the team whether to keep the award claim, localize the name, or swap for a Baltic equivalent.
 

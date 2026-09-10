@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "Contact us | Asleep",
-    "description": "Email, call or write to the Asleep team in Vilnius. We'll help you find the right mattress."
+    "title": "Contact us | asleep",
+    "description": "Email, call or write to the asleep team in Vilnius. We'll help you find the right mattress."
   },
   "title": "Contact us",
   "hero": {
@@ -59,7 +59,7 @@
   },
   "email": {
     "customerSubject": "We received your message",
-    "customerBody": "Hi {name},\n\nThanks for writing to Asleep. We've received your message and will get back to you soon.\n\nYour message:\n\n{message}\n\nReply to this email if you'd like to add anything.\n\n— Asleep\ninfo@asleep.lt",
+    "customerBody": "Hi {name},\n\nThanks for writing to asleep. We've received your message and will get back to you soon.\n\nYour message:\n\n{message}\n\nReply to this email if you'd like to add anything.\n\n— asleep\ninfo@asleep.lt",
     "inboxSubject": "Website message from {name}",
     "inboxBody": "{name} wrote via the website:\n\n{message}\n\nEmail: {email}",
     "inboxPhone": "Phone: {phone}",

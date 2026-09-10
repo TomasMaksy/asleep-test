@@ -21,7 +21,7 @@ export async function ProductPurchaseExtras() {
             alt={t("awards.imageAlt")}
             className="block h-auto w-[112%] max-w-none object-contain object-left"
             height={171}
-            src={staticImageUrl("/images/short_awards.png")}
+            src={staticImageUrl("/images/short_awards.webp")}
             width={486}
           />
         </div>

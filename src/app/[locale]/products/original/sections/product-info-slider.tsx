@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { STATIC_IMAGE_CACHE_VERSION } from "@/lib/static-image-url";
 import { cn } from "@/lib/utils";
 
 type Slide = {
@@ -9,16 +8,10 @@ type Slide = {
   body: string;
 };
 
-const FRAME_COUNT = 278;
-const LAST_FRAME = FRAME_COUNT - 1;
-const CANVAS_WIDTH = 1126;
-const CANVAS_HEIGHT = 880;
-const PRELOAD_WINDOW = 25;
+const VIDEO_SRC = "/images/original-scroll/MAT_Anim_Double_Adjustable.webm";
+const VIDEO_WIDTH = 1126;
+const VIDEO_HEIGHT = 880;
 const SCROLL_OFFSET = 300;
-
-function frameSrc(index: number) {
-  return `/images/original-scroll/SCROLL_${String(index).padStart(5, "0")}.jpg?v=${STATIC_IMAGE_CACHE_VERSION}`;
-}
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
@@ -86,11 +79,8 @@ export function ProductInfoSlider({
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const mobileTrackRef = useRef<HTMLDivElement>(null);
-  const framesRef = useRef<(HTMLImageElement | undefined)[]>([]);
-  const drawnFrameRef = useRef(-1);
-  const targetFrameRef = useRef(0);
   const activeIndexRef = useRef(0);
   const progressRef = useRef(0);
   const pinnedRef = useRef(true);
@@ -104,66 +94,45 @@ export function ProductInfoSlider({
   const [pinned, setPinned] = useState(true);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
+    const video = videoRef.current;
     const track = trackRef.current;
-    if (!canvas || !track) {
+    if (!video || !track) {
       return;
     }
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) {
-      return;
-    }
-
-    canvas.width = CANVAS_WIDTH;
-    canvas.height = CANVAS_HEIGHT;
-
-    const frames = framesRef.current;
     const stopCount = slides.length;
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    const preload = (from: number, count = PRELOAD_WINDOW) => {
-      const end = Math.min(LAST_FRAME, from + count);
-      for (let index = from; index <= end; index += 1) {
-        if (frames[index]) {
-          continue;
-        }
-        const image = new Image();
-        image.src = frameSrc(index);
-        frames[index] = image;
+    let seeking = false;
+    let pendingTime: number | null = null;
+
+    const applyTime = (time: number) => {
+      const duration = video.duration;
+      if (!Number.isFinite(duration) || duration <= 0) {
+        return;
       }
+      const next = clamp(time, 0, duration);
+      if (seeking) {
+        pendingTime = next;
+        return;
+      }
+      if (Math.abs(video.currentTime - next) < 0.001) {
+        return;
+      }
+      seeking = true;
+      video.currentTime = next;
     };
 
-    const drawFrame = (index: number) => {
-      targetFrameRef.current = index;
-      const image = frames[index];
-      if (!image) {
+    const onSeeked = () => {
+      seeking = false;
+      if (pendingTime === null) {
         return;
       }
-
-      const paintIfCurrent = () => {
-        if (
-          targetFrameRef.current !== index ||
-          !image.complete ||
-          image.naturalWidth === 0
-        ) {
-          return;
-        }
-        if (drawnFrameRef.current === index) {
-          return;
-        }
-        ctx.drawImage(image, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        drawnFrameRef.current = index;
-      };
-
-      if (image.complete) {
-        paintIfCurrent();
-        return;
-      }
-
-      image.addEventListener("load", paintIfCurrent, { once: true });
+      const next = pendingTime;
+      pendingTime = null;
+      applyTime(next);
     };
 
     const updateStops = (progress: number) => {
@@ -227,25 +196,41 @@ export function ProductInfoSlider({
 
     const paint = (progress: number) => {
       progressRef.current = progress;
-      const frame = Math.min(LAST_FRAME, Math.ceil(progress * LAST_FRAME));
-      preload(frame);
-      drawFrame(frame);
+      const duration = video.duration;
+      if (Number.isFinite(duration) && duration > 0) {
+        applyTime(progress * duration);
+      }
       updateStops(progress);
     };
 
     progressFromScrollRef.current = progressFromScroll;
     paintRef.current = paint;
 
+    video.addEventListener("seeked", onSeeked);
+
+    const start = () => {
+      paint(reduceMotion ? 1 : progressFromScroll());
+    };
+
     if (reduceMotion) {
       pinnedRef.current = false;
       setPinned(false);
-      preload(LAST_FRAME, FRAME_COUNT);
-      paint(1);
-      return;
+      if (video.readyState >= HTMLMediaElement.HAVE_METADATA) {
+        start();
+      } else {
+        video.addEventListener("loadedmetadata", start, { once: true });
+      }
+      return () => {
+        video.removeEventListener("seeked", onSeeked);
+        video.removeEventListener("loadedmetadata", start);
+      };
     }
 
-    preload(0);
-    paint(progressFromScroll());
+    if (video.readyState >= HTMLMediaElement.HAVE_METADATA) {
+      start();
+    } else {
+      video.addEventListener("loadedmetadata", start, { once: true });
+    }
 
     let frame = 0;
     const onScroll = () => {
@@ -263,6 +248,8 @@ export function ProductInfoSlider({
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      video.removeEventListener("seeked", onSeeked);
+      video.removeEventListener("loadedmetadata", start);
       if (frame) {
         window.cancelAnimationFrame(frame);
       }
@@ -301,17 +288,6 @@ export function ProductInfoSlider({
     releaseStartTopRef.current = skipPanelTopRef.current;
     pinnedRef.current = false;
     setPinned(false);
-
-    const fromFrame = Math.ceil(progressRef.current * LAST_FRAME);
-    const frames = framesRef.current;
-    for (let index = fromFrame; index <= LAST_FRAME; index += 1) {
-      if (frames[index]) {
-        continue;
-      }
-      const image = new Image();
-      image.src = frameSrc(index);
-      frames[index] = image;
-    }
   }
 
   return (
@@ -347,18 +323,24 @@ export function ProductInfoSlider({
             ) : null}
           </div>
 
-          <canvas
-            className="pointer-events-none absolute top-1/2 left-1/2 z-0 mx-auto -mt-16 h-auto max-h-[80vh] w-auto max-w-full -translate-x-1/2 -translate-y-1/2"
-            height={CANVAS_HEIGHT}
-            ref={canvasRef}
-            width={CANVAS_WIDTH}
+          <video
+            className="pointer-events-none absolute top-1/2 left-1/2 z-0 mx-auto -mt-16 h-auto max-h-[80vh] w-auto max-w-full -translate-x-1/2 -translate-y-1/2 object-contain"
+            disablePictureInPicture
+            height={VIDEO_HEIGHT}
+            muted
+            playsInline
+            preload="auto"
+            ref={videoRef}
+            src={VIDEO_SRC}
+            tabIndex={-1}
+            width={VIDEO_WIDTH}
           />
           <div className="min-h-0 flex-1" />
 
           <div className="hidden w-full shrink-0 px-10 pb-2 lg:block xl:mx-auto xl:max-w-[1440px]">
             <div
               className={cn(
-                "relative z-20 flex gap-[50px] bg-surface/70 lg:[&>*]:flex-1",
+                "relative z-20 flex gap-[50px] lg:[&>*]:flex-1",
                 !pinned && "[&_[data-stop-card]]:hover:opacity-100",
               )}
             >
@@ -370,7 +352,7 @@ export function ProductInfoSlider({
 
           <div
             className={cn(
-              "w-full shrink-0 overflow-hidden bg-surface/70 pb-2 lg:hidden",
+              "w-full shrink-0 overflow-hidden pb-2 lg:hidden",
               !pinned && "[&_[data-stop-card]]:hover:opacity-100",
             )}
           >

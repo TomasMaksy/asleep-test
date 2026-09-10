@@ -11,7 +11,7 @@
  * Copy: messages/{locale}/checkout.json
  */
 export const checkoutConfig = {
-  shopName: "Asleep",
+  shopName: "asleep",
   fakeDoor: true,
   currency: "EUR",
   moneyLocale: "lt-LT",

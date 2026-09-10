@@ -45,7 +45,7 @@ export function ReviewsHeroSection() {
 
         <ul className="mt-14 flex flex-row items-start justify-center gap-10 sm:gap-16 md:gap-20">
           {ratings.map((item) => {
-            const isAsleep = item.label === "Asleep";
+            const isAsleep = item.label.toLowerCase() === "asleep";
             return (
               <li
                 className="flex flex-col items-center gap-4"

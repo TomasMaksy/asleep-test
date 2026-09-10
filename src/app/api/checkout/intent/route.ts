@@ -59,7 +59,7 @@ export async function POST(request: Request) {
       currency,
       capture_method: "manual",
       automatic_payment_methods: { enabled: true },
-      description: "Asleep checkout — authorization only, will not be captured",
+      description: "asleep checkout — authorization only, will not be captured",
       receipt_email: email.includes("@") ? email : undefined,
       metadata: {
         asleep_fake_door: "true",

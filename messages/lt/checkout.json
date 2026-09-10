@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "Apmokėjimas | Asleep",
-    "description": "Užbaikite Asleep užsakymą."
+    "title": "Apmokėjimas | asleep",
+    "description": "Užbaikite asleep užsakymą."
   },
   "expressTitle": "Greitasis apmokėjimas",
   "expressUnavailable": "Šis mokėjimo būdas dar neveikia. Mokėkite kortele.",
@@ -94,7 +94,7 @@
   },
   "closed": {
     "title": "Šiuo metu nepriimame naujų užsakymų",
-    "body": "Ačiū, kad nuėjote iki apmokėjimo. Asleep dabar nepriima užsakymų.\n\nJūsų kortelė nebuvo apmokestinta.\n\nSpustelėkite žemiau — parašysime, kai tik pradėsime.",
+    "body": "Ačiū, kad nuėjote iki apmokėjimo. asleep dabar nepriima užsakymų.\n\nJūsų kortelė nebuvo apmokestinta.\n\nSpustelėkite žemiau — parašysime, kai tik pradėsime.",
     "cta": "Praneškite, kai pradėsite",
     "saving": "Saugoma…",
     "successTitle": "Esate sąraše",
@@ -102,13 +102,13 @@
     "home": "Grįžti į parduotuvę"
   },
   "thanks": {
-    "metaTitle": "Ačiū | Asleep",
-    "metaDescription": "Jūsų Asleep apmokėjimas baigtas.",
+    "metaTitle": "Ačiū | asleep",
+    "metaDescription": "Jūsų asleep apmokėjimas baigtas.",
     "kicker": "Atsiprašome",
     "title": "Ačiū, {name}",
     "titleAnonymous": "Ačiū",
     "notCharged": "Jūsų kortelė nebuvo apmokestinta",
-    "body": "Asleep dar nepriima užsakymų. Iš jūsų sąskaitos nieko nenuskaičiavome. Parašysime adresu {email}, kai tik pradėsime.",
+    "body": "asleep dar nepriima užsakymų. Iš jūsų sąskaitos nieko nenuskaičiavome. Parašysime adresu {email}, kai tik pradėsime.",
     "home": "Grįžti į parduotuvę"
   },
   "empty": {
@@ -120,9 +120,5 @@
     "privacy": "Privatumo politika",
     "terms": "Naudojimo sąlygos",
     "refund": "Grąžinimo politika"
-  },
-  "email": {
-    "inboxSubject": "Apmokėjimas baigtas: {name}",
-    "inboxBody": "{name} užbaigė apmokėjimą.\n\nEl. paštas: {email}\nTelefonas: {phone}\n\nMokėjimas nebuvo nuskaičiuotas. Kortelės duomenys nebuvo išsaugoti."
   }
 }

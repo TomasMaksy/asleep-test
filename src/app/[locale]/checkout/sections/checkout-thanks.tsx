@@ -60,7 +60,7 @@ export function CheckoutThanksSection() {
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 firstName: merged.firstName || "Customer",
-                lastName: merged.lastName || merged.firstName || "Asleep",
+                lastName: merged.lastName || merged.firstName || "asleep",
                 email: merged.email,
                 phone: merged.phone,
                 locale,

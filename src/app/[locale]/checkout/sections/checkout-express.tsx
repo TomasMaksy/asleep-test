@@ -104,7 +104,7 @@ export function CheckoutExpress({
           const names = splitCheckoutName(event.billingDetails?.name ?? "");
           const contact: CheckoutContact = {
             firstName: names.firstName || "Customer",
-            lastName: names.lastName || names.firstName || "Asleep",
+            lastName: names.lastName || names.firstName || "asleep",
             email: event.billingDetails?.email ?? "",
             phone: event.billingDetails?.phone ?? "",
           };

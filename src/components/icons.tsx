@@ -10,7 +10,7 @@ export function Logo({ className, variant = "auto" }: LogoProps) {
   if (variant !== "auto") {
     return (
       <Image
-        alt="Asleep"
+        alt="asleep"
         className={cn("h-[27px] w-auto", className)}
         height={417}
         src={
@@ -26,7 +26,7 @@ export function Logo({ className, variant = "auto" }: LogoProps) {
   return (
     <span className={cn("relative block h-[27px] w-[85px]", className)}>
       <Image
-        alt="Asleep"
+        alt="asleep"
         className="object-contain duration-150 group-hover:opacity-0 group-data-[scrolled=true]:opacity-0"
         fill
         priority

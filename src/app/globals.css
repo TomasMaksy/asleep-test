@@ -420,7 +420,6 @@ html:has(#site-header[data-hidden="true"]) .product-info-heading-row {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: saturate(1.1) contrast(1.3) brightness(0.95);
 }
 
 /* Double SCN clips are a wider 16:19 shot than the square opening. */

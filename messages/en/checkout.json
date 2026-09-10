@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "Checkout | Asleep",
-    "description": "Complete your Asleep order."
+    "title": "Checkout | asleep",
+    "description": "Complete your asleep order."
   },
   "expressTitle": "Express checkout",
   "expressUnavailable": "This payment method isn’t available yet. Please pay with card.",
@@ -94,7 +94,7 @@
   },
   "closed": {
     "title": "We're not accepting new orders yet",
-    "body": "Thank you for going all the way to checkout. Asleep isn't taking orders right now.\n\nYou have not been charged.\n\nClick below and we'll email you the moment we open.",
+    "body": "Thank you for going all the way to checkout. asleep isn't taking orders right now.\n\nYou have not been charged.\n\nClick below and we'll email you the moment we open.",
     "cta": "Email me when we open",
     "saving": "Saving…",
     "successTitle": "You're on the list",
@@ -102,13 +102,13 @@
     "home": "Back to the shop"
   },
   "thanks": {
-    "metaTitle": "Thank you | Asleep",
-    "metaDescription": "Your Asleep checkout is complete.",
+    "metaTitle": "Thank you | asleep",
+    "metaDescription": "Your asleep checkout is complete.",
     "kicker": "We're sorry",
     "title": "Thank you, {name}",
     "titleAnonymous": "Thank you",
     "notCharged": "You have not been charged",
-    "body": "Asleep isn't taking orders yet. Nothing left your account. We'll email {email} the moment we open.",
+    "body": "asleep isn't taking orders yet. Nothing left your account. We'll email {email} the moment we open.",
     "home": "Back to the shop"
   },
   "empty": {
@@ -120,9 +120,5 @@
     "privacy": "Privacy policy",
     "terms": "Terms of service",
     "refund": "Refund policy"
-  },
-  "email": {
-    "inboxSubject": "Checkout completed: {name}",
-    "inboxBody": "{name} completed checkout.\n\nEmail: {email}\nPhone: {phone}\n\nNo payment was captured. Card details were not stored."
   }
 }

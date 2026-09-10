@@ -129,7 +129,7 @@ function walk(file: string, en: unknown, lt: unknown, path: string) {
           level: "warn",
           file,
           path,
-          message: `${locale} still says "Matt" (source-site leftover — should be Asleep)`,
+          message: `${locale} still says "Matt" (source-site leftover — should be asleep)`,
         });
       }
     }

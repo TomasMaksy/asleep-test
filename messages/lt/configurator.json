@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "title": "Sukurkite savo čiužinį | Asleep",
-    "description": "Konfigūruokite Asleep Original čiužinį: pasirinkite dydį, nurodykite svorį ir miego pageidavimus ir pamatykite rekomenduojamą kietumą."
+    "title": "Sukurkite savo čiužinį | asleep",
+    "description": "Konfigūruokite asleep Original čiužinį: pasirinkite dydį, nurodykite svorį ir miego pageidavimus ir pamatykite rekomenduojamą kietumą."
   },
-  "sizeTitle": "Kokio dydžio turi būti Asleep?",
+  "sizeTitle": "Kokio dydžio turi būti asleep?",
   "selectSize": "Pasirinkite dydį",
   "single": "Vienvietė",
   "double": "Dvivietė",
@@ -37,7 +37,7 @@
   "videoAria": "Čiužinio kietumo animacija",
   "updatingMattress": "Atnaujiname čiužinį",
   "mindTheGapTitle": "Dėmesio tarpui",
-  "mindTheGapBody": "Šiam deriniui rekomenduojame du vienviečius čiužinius. Dviviečio Asleep viršutinis sluoksnis nėra perskirtas, todėl didelis kietumo skirtumas per vidurį gali jaustis kaip briauna.",
+  "mindTheGapBody": "Šiam deriniui rekomenduojame du vienviečius čiužinius. Dviviečio asleep viršutinis sluoksnis nėra perskirtas, todėl didelis kietumo skirtumas per vidurį gali jaustis kaip briauna.",
   "resultSolo": "Tai konfigūracija, kurią rekomenduojame jums.",
   "resultMatch": "Puikus derinys — vienas dvivietis čiužinys, kiekviena pusė nustatyta taip, kaip jums abiem patogiausia.",
   "resultNoMatch": "Jūsų kietumo nustatymai per toli vienam dviviečiam čiužiniui. Rekomenduojame du vienviečius, kad kiekvienas miegotų ant savo konfigūracijos.",
@@ -52,14 +52,14 @@
   "advice": [
     {
       "text": "Tai minkščiausia konfigūracija. Ant šono miegantiems ir lengvesnio kūno žmonėms čia paprastai jaučiamas didžiausias spaudimo sumažinimas — pečiai ir klubai gali įsmigti.",
-      "more": "Jei pabundate ant šono ir mėgstate debesies pojūtį, pradėkite čia. Vėliau visada galite atidaryti Asleep ir pakelti kietumą per vieną lygį."
+      "more": "Jei pabundate ant šono ir mėgstate debesies pojūtį, pradėkite čia. Vėliau visada galite atidaryti asleep ir pakelti kietumą per vieną lygį."
     },
     {
       "text": "Minkštas pojūtis su šiek tiek daugiau struktūros apačioje. Tinka, jei norite minkštumo neprarasdami laikysenos.",
       "more": "Dažnas pasirinkimas mišrioms miego pozoms. Jei ypač minkšta atrodo per daug įsmigimo, tai kitas žingsnis aukštyn."
     },
     {
-      "text": "Asleep atkeliauja šia konfigūracija. Ji subalansuoja minkštumą ir atramą daugumai miegančiųjų ir miego pozų.",
+      "text": "asleep atkeliauja šia konfigūracija. Ji subalansuoja minkštumą ir atramą daugumai miegančiųjų ir miego pozų.",
       "more": "Jei abejojate, pirmiausia miegokite taip. Po kelių naktų galite atidaryti užvalkalą ir apversti sluoksnį, jei norite minkščiau arba kietiau."
     },
     {

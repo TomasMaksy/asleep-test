@@ -8,6 +8,7 @@ import {
   setRequestLocale,
 } from "next-intl/server";
 import type { ReactNode } from "react";
+import { AsleepNavyFilter } from "@/components/asleep-navy-filter";
 import { CartSheetHost } from "@/components/cart/cart-sheet-host";
 import { ConfiguratorShell } from "@/components/configurator/configurator-shell";
 import { RevealObserver } from "@/components/reveal-observer";
@@ -79,6 +80,7 @@ export default async function LocaleLayout({
       lang={locale}
     >
       <body className="relative min-h-full font-sans">
+        <AsleepNavyFilter />
         <NextIntlClientProvider messages={messages}>
           <RevealObserver />
           <ConfiguratorShell overlay={modal}>{children}</ConfiguratorShell>

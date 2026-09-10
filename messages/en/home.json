@@ -292,7 +292,7 @@
       }
     ],
     "sources": {
-      "asleep": "Asleep",
+      "asleep": "asleep",
       "google": "Google Reviews",
       "consumentenbond": "Consumentenbond"
     }

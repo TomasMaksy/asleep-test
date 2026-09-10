@@ -1,14 +1,20 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { asleepNavyFilterStyle } from "@/components/asleep-navy-filter";
 import {
   type BedKind,
+  DEFAULT_FIRMNESS,
   type Firmness,
+  holdVideoSrc,
   introVideoSrc,
+  packagingVideoSrc,
   transitionVideoSrc,
   VIDEO_PLAYBACK_RATE,
 } from "@/lib/configurator";
 import { cn } from "@/lib/utils";
+
+export type ClipKind = "intro" | "transition" | "packaging";
 
 export type ConfiguratorClip =
   | { id: number; kind: "intro"; bed: BedKind; reverse?: boolean }
@@ -18,7 +24,9 @@ export type ConfiguratorClip =
       bed: BedKind;
       from: Firmness;
       to: Firmness;
-    };
+    }
+  | { id: number; kind: "packaging"; bed: BedKind }
+  | { id: number; kind: "hold"; bed: BedKind; firmness: Firmness };
 
 type ConfiguratorVideosProps = {
   bed: BedKind;
@@ -45,7 +53,27 @@ function clipSrc(clip: ConfiguratorClip): string {
   if (clip.kind === "intro") {
     return introVideoSrc(clip.bed, clip.reverse);
   }
+  if (clip.kind === "packaging") {
+    return packagingVideoSrc(clip.bed);
+  }
+  if (clip.kind === "hold") {
+    return holdVideoSrc(clip.bed, clip.firmness);
+  }
   return transitionVideoSrc(clip.bed, clip.from, clip.to);
+}
+
+function frameKind(clip: ConfiguratorClip): ClipKind {
+  if (clip.kind === "packaging") {
+    return "packaging";
+  }
+  if (clip.kind === "hold") {
+    return clip.firmness === DEFAULT_FIRMNESS ? "intro" : "transition";
+  }
+  return clip.kind;
+}
+
+function usesScnFraming(bed: BedKind, kind: ClipKind) {
+  return bed === "double" && kind !== "intro";
 }
 
 function videoHasPath(video: HTMLVideoElement, path: string) {
@@ -98,9 +126,10 @@ export function ConfiguratorVideos({
   const videoBRef = useRef<HTMLVideoElement>(null);
   const activeRef = useRef<0 | 1>(0);
   const [visible, setVisible] = useState<0 | 1 | null>(null);
-  const [clipKind, setClipKind] = useState<
-    ["intro" | "transition", "intro" | "transition"]
-  >(["intro", "intro"]);
+  const [clipKind, setClipKind] = useState<[ClipKind, ClipKind]>([
+    "intro",
+    "intro",
+  ]);
   const lastClipIdRef = useRef<number | null>(null);
   const onEndedRef = useRef(onEnded);
   const onReadyRef = useRef(onReady);
@@ -162,7 +191,7 @@ export function ConfiguratorVideos({
 
     setClipKind((kinds) => {
       const next = [...kinds] as typeof kinds;
-      next[nextIndex] = clip.kind;
+      next[nextIndex] = frameKind(clip);
       return next;
     });
 
@@ -209,7 +238,7 @@ export function ConfiguratorVideos({
       }
       started = true;
       incoming.playbackRate = playbackRateRef.current;
-      if (reducedMotion) {
+      if (reducedMotion || clip.kind === "hold") {
         try {
           incoming.currentTime = Number.isFinite(incoming.duration)
             ? incoming.duration
@@ -265,53 +294,54 @@ export function ConfiguratorVideos({
               : "configurator-stage-frame-single",
           )}
         >
-          <svg
-            aria-hidden
-            className="pointer-events-none absolute inset-0 z-0 size-full overflow-visible mix-blend-multiply"
-            focusable="false"
-            preserveAspectRatio="none"
-            viewBox="0 0 100 100"
-          >
-            <title>Mattress shadow</title>
-            <defs>
-              <filter
-                height="180%"
-                id={`${filterId}-soft`}
-                primitiveUnits="userSpaceOnUse"
-                width="180%"
-                x="-40%"
-                y="-40%"
-              >
-                <feGaussianBlur in="SourceGraphic" stdDeviation="1.05" />
-              </filter>
-              <filter
-                height="160%"
-                id={`${filterId}-contact`}
-                primitiveUnits="userSpaceOnUse"
-                width="160%"
-                x="-30%"
-                y="-30%"
-              >
-                <feGaussianBlur in="SourceGraphic" stdDeviation="0.45" />
-              </filter>
-            </defs>
-            <polygon
-              fill="rgba(6,16,40,0.12)"
-              filter={`url(#${filterId}-soft)`}
-              points={MATTRESS_SHADOW[bed].soft}
-            />
-            <polygon
-              fill="rgba(6,16,40,0.20)"
-              filter={`url(#${filterId}-contact)`}
-              points={MATTRESS_SHADOW[bed].contact}
-            />
-          </svg>
+          {visible === null || clipKind[visible] !== "packaging" ? (
+            <svg
+              aria-hidden
+              className="pointer-events-none absolute inset-0 z-0 size-full overflow-visible mix-blend-multiply"
+              focusable="false"
+              preserveAspectRatio="none"
+              viewBox="0 0 100 100"
+            >
+              <title>Mattress shadow</title>
+              <defs>
+                <filter
+                  height="180%"
+                  id={`${filterId}-soft`}
+                  primitiveUnits="userSpaceOnUse"
+                  width="180%"
+                  x="-40%"
+                  y="-40%"
+                >
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="1.05" />
+                </filter>
+                <filter
+                  height="160%"
+                  id={`${filterId}-contact`}
+                  primitiveUnits="userSpaceOnUse"
+                  width="160%"
+                  x="-30%"
+                  y="-30%"
+                >
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="0.45" />
+                </filter>
+              </defs>
+              <polygon
+                fill="rgba(6,16,40,0.12)"
+                filter={`url(#${filterId}-soft)`}
+                points={MATTRESS_SHADOW[bed].soft}
+              />
+              <polygon
+                fill="rgba(6,16,40,0.20)"
+                filter={`url(#${filterId}-contact)`}
+                points={MATTRESS_SHADOW[bed].contact}
+              />
+            </svg>
+          ) : null}
           <video
             aria-hidden={visible !== 0}
             className={cn(
               "configurator-stage-video",
-              bed === "double" &&
-                clipKind[0] === "transition" &&
+              usesScnFraming(bed, clipKind[0]) &&
                 "configurator-stage-video-scn",
               visible === 0 ? "opacity-100" : "opacity-0",
             )}
@@ -319,13 +349,13 @@ export function ConfiguratorVideos({
             playsInline
             preload="auto"
             ref={videoARef}
+            style={asleepNavyFilterStyle}
           />
           <video
             aria-hidden={visible !== 1}
             className={cn(
               "configurator-stage-video",
-              bed === "double" &&
-                clipKind[1] === "transition" &&
+              usesScnFraming(bed, clipKind[1]) &&
                 "configurator-stage-video-scn",
               visible === 1 ? "opacity-100" : "opacity-0",
             )}
@@ -333,6 +363,7 @@ export function ConfiguratorVideos({
             playsInline
             preload="auto"
             ref={videoBRef}
+            style={asleepNavyFilterStyle}
           />
         </div>
       </div>

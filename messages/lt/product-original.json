@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "title": "Asleep Original čiužinys | Asleep",
+    "title": "asleep Original čiužinys | asleep",
     "description": "Reguliuojamas čiužinys su 6 kietumo lygiais. Premium medžiagos, 120 naktų išbandymas, 10 metų garantija, nemokamas pristatymas."
   },
   "hero": {
@@ -43,18 +43,18 @@
     "installment": "Mokėkite 3 dalimis po {price}",
     "addToCart": "Pridėti",
     "stickyBar": {
-      "plusName": "Asleep Original Plus čiužinys",
-      "originalName": "Asleep Original čiužinys",
+      "plusName": "asleep Original Plus čiužinys",
+      "originalName": "asleep Original čiužinys",
       "addToBasket": "Į krepšelį"
     },
     "configurator": "Sukurti savo čiužinį",
     "zoomLabel": "Padidinti nuotrauką",
     "gallery": {
-      "heroAlt": "Asleep Original čiužinys miegamajame",
-      "packshotAlt": "Asleep Original čiužinio nuotrauka",
-      "lifestyleAlt": "Pora ilsisi ant Asleep Original čiužinio",
-      "benefitsAlt": "Consumentenbond įvertinti privalumai",
-      "layersAlt": "Asleep čiužinio sluoksnių animacija",
+      "heroAlt": "asleep Original čiužinys miegamajame",
+      "packshotAlt": "asleep Original čiužinio nuotrauka",
+      "lifestyleAlt": "Pora ilsisi ant asleep Original čiužinio",
+      "benefitsAlt": "asleep Original čiužinio privalumai",
+      "layersAlt": "asleep čiužinio sluoksnių animacija",
       "pauseAnimation": "Sustabdyti sluoksnių animaciją",
       "playAnimation": "Paleisti sluoksnių animaciją",
       "zoomLabel": "Padidinti nuotrauką"
@@ -85,7 +85,7 @@
         },
         {
           "id": "original-topper",
-          "title": "Asleep topperis",
+          "title": "asleep topperis",
           "description": "Papildomas komfortas",
           "size": "",
           "price": null,
@@ -98,7 +98,7 @@
     },
     "awards": {
       "heading": "Geriausiai Baltijos šalyse įvertintas čiužinys.",
-      "imageAlt": "Asleep apdovanojimai ir įvertinimai"
+      "imageAlt": "asleep apdovanojimai ir įvertinimai"
     },
     "faq": [
       {
@@ -190,7 +190,7 @@
     "overline": "PRITAIKYKITE SAVO ČIUŽINĮ",
     "title": "Atraskite savo čiužinį",
     "cta": "Sukurti savo čiužinį",
-    "imageAlt": "Išskleistas Asleep čiužinio sluoksnių vaizdas",
+    "imageAlt": "Išskleistas asleep čiužinio sluoksnių vaizdas",
     "bedTypeLabel": "Lovos tipas",
     "single": "Vienvietė",
     "double": "Dvivietė",
@@ -317,7 +317,7 @@
     "items": [
       {
         "question": "Konstrukcija ir medžiagos",
-        "answer": "Čiužinio aukštis: 25 cm\n\nAsleep sudarytas iš:\n- Viršutinis užvalkalas (1 cm)\n- Memory Foam (3 cm)\n- asleep Support Foam (2 cm)\n- HR Comfort Foam (10 cm)\n- asleep Base Foam (10 cm)\n- Neslystantis apatinis užvalkalo sluoksnis\n\nTankiai\nASLEEP Support Foam: D60\nMemory Foam: D45\nHR Comfort Foam: D30\n\nUžvalkalo sudėtis\nViršus/baltoji pusė: 19 % liocelis (tencel) / 19 % viskozė / 62 % poliesteris\nApačia su neslystančiu sluoksniu: 100 % poliesteris"
+        "answer": "Čiužinio aukštis: 25 cm\n\nasleep sudarytas iš:\n- Viršutinis užvalkalas (1 cm)\n- Memory Foam (3 cm)\n- asleep Support Foam (2 cm)\n- HR Comfort Foam (10 cm)\n- asleep Base Foam (10 cm)\n- Neslystantis apatinis užvalkalo sluoksnis\n\nTankiai\nasleep Support Foam: D60\nMemory Foam: D45\nHR Comfort Foam: D30\n\nUžvalkalo sudėtis\nViršus/baltoji pusė: 19 % liocelis (tencel) / 19 % viskozė / 62 % poliesteris\nApačia su neslystančiu sluoksniu: 100 % poliesteris"
       },
       {
         "question": "Dydžiai ir svoriai",
@@ -398,7 +398,7 @@
       "Tarnavimo laikas"
     ],
     "original": {
-      "name": "Asleep Original",
+      "name": "asleep Original",
       "tagline": "Geriausiai apdovanotas Baltijos čiužinys",
       "values": [
         "Putų čiužinys",

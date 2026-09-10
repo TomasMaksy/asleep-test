@@ -7,7 +7,7 @@ const EMAIL_COPY = {
 } as const;
 
 const INBOX_EMAIL = process.env.CONTACT_INBOX_EMAIL ?? "info@asleep.lt";
-const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL ?? "Asleep <info@asleep.lt>";
+const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL ?? "asleep <info@asleep.lt>";
 
 type ContactEmailInput = {
   name: string;

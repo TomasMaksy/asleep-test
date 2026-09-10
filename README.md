@@ -1,6 +1,6 @@
-# Asleep
+# asleep
 
-Next.js App Router site for Asleep.lt. Package manager is **Bun**.
+Next.js App Router site for asleep.lt. Package manager is **Bun**.
 
 ## Copy / translations
 

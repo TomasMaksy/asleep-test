@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "Kontaktai | Asleep",
-    "description": "Rašykite, skambinkite arba susisiekite su Asleep komanda Vilniuje. Padėsime išsirinkti tinkamą čiužinį."
+    "title": "Kontaktai | asleep",
+    "description": "Rašykite, skambinkite arba susisiekite su asleep komanda Vilniuje. Padėsime išsirinkti tinkamą čiužinį."
   },
   "title": "Kontaktai",
   "hero": {
@@ -59,7 +59,7 @@
   },
   "email": {
     "customerSubject": "Gavome jūsų žinutę",
-    "customerBody": "Sveiki, {name},\n\nAčiū, kad parašėte Asleep. Gavome jūsų žinutę ir netrukus atsakysime.\n\nJūsų žinutė:\n\n{message}\n\nAtsakykite į šį laišką, jei norite ką nors pridėti.\n\n— Asleep\ninfo@asleep.lt",
+    "customerBody": "Sveiki, {name},\n\nAčiū, kad parašėte asleep. Gavome jūsų žinutę ir netrukus atsakysime.\n\nJūsų žinutė:\n\n{message}\n\nAtsakykite į šį laišką, jei norite ką nors pridėti.\n\n— asleep\ninfo@asleep.lt",
     "inboxSubject": "Žinutė svetainėje nuo {name}",
     "inboxBody": "{name} parašė per svetainę:\n\n{message}\n\nEl. paštas: {email}",
     "inboxPhone": "Telefonas: {phone}",

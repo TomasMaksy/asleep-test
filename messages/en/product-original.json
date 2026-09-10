@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "title": "Asleep Original Mattress | Asleep",
+    "title": "asleep Original Mattress | asleep",
     "description": "Adjustable mattress with 6 firmness levels. Premium materials, 120-night trial, 10-year warranty and free delivery."
   },
   "hero": {
@@ -43,18 +43,18 @@
     "installment": "Pay in 3 instalments of {price}",
     "addToCart": "Add",
     "stickyBar": {
-      "plusName": "Asleep Original Plus Mattress",
-      "originalName": "Asleep Original Mattress",
+      "plusName": "asleep Original Plus Mattress",
+      "originalName": "asleep Original Mattress",
       "addToBasket": "Add to basket"
     },
     "configurator": "Create your mattress",
     "zoomLabel": "Zoom image",
     "gallery": {
-      "heroAlt": "Asleep Original mattress in a bedroom",
-      "packshotAlt": "Asleep Original mattress",
-      "lifestyleAlt": "Couple relaxing on the Asleep Original mattress",
-      "benefitsAlt": "Asleep Original mattress benefits",
-      "layersAlt": "Asleep mattress layers animation",
+      "heroAlt": "asleep Original mattress in a bedroom",
+      "packshotAlt": "asleep Original mattress",
+      "lifestyleAlt": "Couple relaxing on the asleep Original mattress",
+      "benefitsAlt": "asleep Original mattress benefits",
+      "layersAlt": "asleep mattress layers animation",
       "pauseAnimation": "Pause layers animation",
       "playAnimation": "Play layers animation",
       "zoomLabel": "Zoom image"
@@ -85,7 +85,7 @@
         },
         {
           "id": "original-topper",
-          "title": "Asleep Topper",
+          "title": "asleep Topper",
           "description": "Extra comfort",
           "size": "",
           "price": null,
@@ -98,7 +98,7 @@
     },
     "awards": {
       "heading": "The best-rated mattress in the Baltics.",
-      "imageAlt": "Asleep awards and ratings"
+      "imageAlt": "asleep awards and ratings"
     },
     "faq": [
       {
@@ -190,7 +190,7 @@
     "overline": "CUSTOMISE YOUR MATTRESS",
     "title": "Find your mattress",
     "cta": "Create your mattress",
-    "imageAlt": "Exploded view of Asleep mattress layers",
+    "imageAlt": "Exploded view of asleep mattress layers",
     "bedTypeLabel": "Bed type",
     "single": "Single",
     "double": "Double",
@@ -317,7 +317,7 @@
     "items": [
       {
         "question": "Construction and materials",
-        "answer": "Mattress height: 25 cm\n\nAsleep consists of:\n- Top cover (1 cm)\n- Memory Foam (3 cm)\n- asleep Support Foam (2 cm)\n- HR Comfort Foam (10 cm)\n- asleep Base Foam (10 cm)\n- Non-slip bottom cover layer\n\nDensities\nASLEEP Support Foam: D60\nMemory Foam: D45\nHR Comfort Foam: D30\n\nCover composition\nTop/white side: 19% lyocell (Tencel) / 19% viscose / 62% polyester\nNon-slip underside: 100% polyester"
+        "answer": "Mattress height: 25 cm\n\nasleep consists of:\n- Top cover (1 cm)\n- Memory Foam (3 cm)\n- asleep Support Foam (2 cm)\n- HR Comfort Foam (10 cm)\n- asleep Base Foam (10 cm)\n- Non-slip bottom cover layer\n\nDensities\nasleep Support Foam: D60\nMemory Foam: D45\nHR Comfort Foam: D30\n\nCover composition\nTop/white side: 19% lyocell (Tencel) / 19% viscose / 62% polyester\nNon-slip underside: 100% polyester"
       },
       {
         "question": "Sizes and weights",
@@ -398,7 +398,7 @@
       "Lifespan"
     ],
     "original": {
-      "name": "Asleep Original",
+      "name": "asleep Original",
       "tagline": "The most awarded mattress in the Baltics",
       "values": [
         "Foam mattress",
@@ -473,7 +473,7 @@
       {
         "id": "topper",
         "title": "Original Topper",
-        "description": "2 firmness levels — you choose the comfort\nASLEEP Support Foam and Memory Foam\n30-night sleep trial"
+        "description": "2 firmness levels — you choose the comfort\nasleep Support Foam and Memory Foam\n30-night sleep trial"
       }
     ]
   }

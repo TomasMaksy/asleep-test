@@ -8,8 +8,10 @@ import {
   useReducedMotion,
 } from "motion/react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { asleepNavyFilterStyle } from "@/components/asleep-navy-filter";
+import type { Locale } from "@/i18n/routing";
 import { useOriginalSizeStore } from "@/lib/product-original-size-store";
 import {
   layersAnimationSrc,
@@ -20,11 +22,18 @@ import { staticImageUrl } from "@/lib/static-image-url";
 import { cn } from "@/lib/utils";
 
 const GALLERY = {
-  hero: "/images/product-gallery/hero-square.png",
-  lifestyle: "/images/product-gallery/lifestyle.jpg",
-  benefits: "/images/product-gallery/benefits.jpg",
+  hero: "/images/product-gallery/hero-square.webp",
+  lifestyle: "/images/product-gallery/lifestyle.webp",
+  benefits: {
+    lt: "/images/product-gallery/benefits.webp",
+    en: "/images/product-gallery/benefits-en.webp",
+  },
   layersThumb: "/images/configurator/section.webp",
 } as const;
+
+function benefitsSrc(locale: string) {
+  return GALLERY.benefits[locale as Locale] ?? GALLERY.benefits.lt;
+}
 
 type SlideId = "hero" | "packshot" | "lifestyle" | "layers" | "benefits";
 
@@ -42,7 +51,11 @@ type Slide = {
   objectPosition?: string;
 };
 
-function gallerySlides(packshot: string, layersVideo: string): Slide[] {
+function gallerySlides(
+  packshot: string,
+  layersVideo: string,
+  benefits: string,
+): Slide[] {
   return [
     {
       id: "hero",
@@ -75,8 +88,8 @@ function gallerySlides(packshot: string, layersVideo: string): Slide[] {
     {
       id: "benefits",
       type: "image",
-      src: GALLERY.benefits,
-      thumb: GALLERY.benefits,
+      src: benefits,
+      thumb: benefits,
       altKey: "benefitsAlt",
       objectPosition: "object-top",
     },
@@ -153,12 +166,13 @@ function LayersVideo({
     <div className={cn("relative overflow-hidden bg-[#f0f0f0]", className)}>
       <video
         autoPlay
-        className="absolute inset-0 size-full object-cover contrast-[1.05] saturate-[1.06]"
+        className="absolute inset-0 size-full object-cover"
         loop
         muted
         playsInline
         ref={videoRef}
         src={staticImageUrl(src)}
+        style={asleepNavyFilterStyle}
       />
 
       <button
@@ -252,12 +266,17 @@ function MobileGallery({
   sizeId: MattressSizeId;
 }) {
   const t = useTranslations("productOriginal.hero.gallery");
+  const locale = useLocale();
   const reduceMotion = useReducedMotion();
   const [activeId, setActiveId] = useState<SlideId>("hero");
   const [direction, setDirection] = useState(1);
   const pauseAutoplayRef = useRef<() => void>(() => {});
   const previousSizeId = useRef(sizeId);
-  const slides = gallerySlides(packshot, layersAnimationSrc(sizeId));
+  const slides = gallerySlides(
+    packshot,
+    layersAnimationSrc(sizeId),
+    benefitsSrc(locale),
+  );
   const active = slides.find((slide) => slide.id === activeId) ?? slides[0];
   const duration = reduceMotion ? 0 : slideTransition.duration;
 
@@ -357,7 +376,7 @@ function MobileGallery({
                   alt={awardAlt}
                   className="h-auto w-full"
                   height={192}
-                  src={staticImageUrl("/images/13-time-award.png")}
+                  src={staticImageUrl("/images/13-time-award.webp")}
                   style={{ height: "auto" }}
                   width={112}
                 />
@@ -424,8 +443,10 @@ function DesktopGallery({
   sizeId: MattressSizeId;
 }) {
   const t = useTranslations("productOriginal.hero.gallery");
+  const locale = useLocale();
   const previousSizeId = useRef(sizeId);
   const [sizeActive, setSizeActive] = useState(false);
+  const benefits = benefitsSrc(locale);
 
   useEffect(() => {
     if (previousSizeId.current === sizeId) {
@@ -460,7 +481,7 @@ function DesktopGallery({
             className="h-auto w-full"
             height={192}
             priority
-            src={staticImageUrl("/images/13-time-award.png")}
+            src={staticImageUrl("/images/13-time-award.webp")}
             style={{ height: "auto" }}
             width={112}
           />
@@ -482,7 +503,7 @@ function DesktopGallery({
         <GalleryTile
           alt={t("benefitsAlt")}
           objectPosition="object-top"
-          src={GALLERY.benefits}
+          src={benefits}
         />
       </div>
     </div>

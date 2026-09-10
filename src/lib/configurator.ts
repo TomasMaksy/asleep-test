@@ -107,6 +107,20 @@ export function introVideoSrc(bed: BedKind, reverse = false): string {
     : "/configurator/Double/MAT_Anim_Double_Opening.webm";
 }
 
+export function packagingVideoSrc(bed: BedKind): string {
+  return bed === "single"
+    ? "/configurator/Single/Configurator/SCN_Single_Packaging.webm"
+    : "/configurator/Double/SCN_Double_Packaging.webm";
+}
+
+export function holdVideoSrc(bed: BedKind, firmness: Firmness): string {
+  if (firmness === DEFAULT_FIRMNESS) {
+    return introVideoSrc(bed);
+  }
+  const from = (firmness === 1 ? 2 : firmness - 1) as Firmness;
+  return transitionVideoSrc(bed, from, firmness);
+}
+
 export function transitionVideoSrc(
   bed: BedKind,
   from: Firmness,

@@ -43,42 +43,42 @@ type Slice = {
 const SLICES: Slice[] = [
   {
     id: "tencel",
-    src: "/images/product-layers/laag1.png",
+    src: "/images/product-layers/laag1.webp",
     width: 2300,
     height: 210,
     hotspotX: "20%",
   },
   {
     id: "memoryFoam",
-    src: "/images/product-layers/laag3.png",
+    src: "/images/product-layers/laag3.webp",
     width: 2300,
     height: 130,
     hotspotX: "12%",
   },
   {
     id: "hypersupport",
-    src: "/images/product-layers/laag2.png",
+    src: "/images/product-layers/laag2.webp",
     width: 2300,
     height: 130,
     hotspotX: "30%",
   },
   {
     id: "coldFoamSoft",
-    src: "/images/product-layers/laag4.png",
+    src: "/images/product-layers/laag4.webp",
     width: 2300,
     height: 175,
     hotspotX: "30%",
   },
   {
     id: "coldFoamFirm",
-    src: "/images/product-layers/laag5.png",
+    src: "/images/product-layers/laag5.webp",
     width: 2300,
     height: 160,
     hotspotX: "20%",
   },
   {
     id: "nonSlip",
-    src: "/images/product-layers/laag6.png",
+    src: "/images/product-layers/laag6.webp",
     width: 2300,
     height: 290,
     hotspotX: "10%",
@@ -776,7 +776,7 @@ export function ProductLayers({
                         aria-hidden="true"
                         className="pointer-events-none absolute top-[125%] left-0 z-0 h-auto w-full"
                         height={255}
-                        src="/images/product-layers/laag7.png"
+                        src="/images/product-layers/laag7.webp"
                         width={2300}
                       />
                     ) : null}

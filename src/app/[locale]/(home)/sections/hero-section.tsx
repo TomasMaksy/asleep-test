@@ -44,10 +44,10 @@ async function HeroHeadline({
         <Image
           alt=""
           className="h-auto w-full"
-          height={2843}
+          height={1593}
           sizes="45vw"
           src={HERO_PEOPLE}
-          width={3214}
+          width={1800}
         />
       </div>
       <div className="hero-enter-right absolute inset-0 z-30">
@@ -137,7 +137,7 @@ export async function HeroSection() {
               className="z-40 mx-auto h-auto w-[300px] object-contain md:w-[357px]"
               height={171}
               sizes="(max-width: 768px) 300px, 357px"
-              src="/images/awards.png"
+              src="/images/awards.webp"
               width={486}
             />
           </div>

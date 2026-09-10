@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "Reviews | Asleep",
-    "description": "Read what customers say about Asleep mattresses. Ratings, stories and experiences."
+    "title": "Reviews | asleep",
+    "description": "Read what customers say about asleep mattresses. Ratings, stories and experiences."
   },
   "hero": {
     "title": "Your sleep says it best",
@@ -17,7 +17,7 @@
         "logoHeight": 512
       },
       {
-        "label": "Asleep",
+        "label": "asleep",
         "logo": "/images/logo/asleep-black.png",
         "logoWidth": 1304,
         "logoHeight": 417
@@ -25,7 +25,7 @@
     ]
   },
   "shareSheet": {
-    "title": "Tell us what you think about Asleep",
+    "title": "Tell us what you think about asleep",
     "close": "Close review form",
     "nameLabel": "Name*",
     "namePlaceholder": "Name Surname",
@@ -33,10 +33,10 @@
     "emailPlaceholder": "Email",
     "productLabel": "Which product would you like to review?*",
     "products": [
-      "Asleep Original Mattress",
-      "Asleep Hybrid Pro Mattress",
-      "Asleep Original Pillow",
-      "Asleep Topper"
+      "asleep Original Mattress",
+      "asleep Hybrid Pro Mattress",
+      "asleep Original Pillow",
+      "asleep Topper"
     ],
     "ratingLabel": "Your rating*",
     "ratingStar": "{count} stars",
@@ -61,7 +61,7 @@
       },
       {
         "title": "Very happy with my new mattress",
-        "body": "I've finally found something that suits me perfectly in terms of comfort, and I'm delighted. I only wish I'd discovered Asleep sooner.",
+        "body": "I've finally found something that suits me perfectly in terms of comfort, and I'm delighted. I only wish I'd discovered asleep sooner.",
         "date": "22 August 2026"
       },
       {
@@ -76,7 +76,7 @@
       },
       {
         "title": "Back pain disappeared after the first night!",
-        "body": "After my first night on Asleep, I woke up without back pain for the first time in months. It really adapts to the body and provides the right balance of firmness and comfort. Delivery was fast and customer service was very helpful. Highly recommended!",
+        "body": "After my first night on asleep, I woke up without back pain for the first time in months. It really adapts to the body and provides the right balance of firmness and comfort. Delivery was fast and customer service was very helpful. Highly recommended!",
         "date": "18 August 2026"
       },
       {
