@@ -1,11 +1,7 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { STATIC_IMAGE_CACHE_VERSION } from "@/lib/static-image-url";
-import {
-  primeVideoElement,
-  transparentVideoSrc,
-} from "@/lib/transparent-video";
 import { cn } from "@/lib/utils";
 
 type Slide = {
@@ -13,9 +9,9 @@ type Slide = {
   body: string;
 };
 
-const VIDEO_SRC = "/images/original-scroll/MAT_Anim_Double_Adjustable.webm";
-const VIDEO_WIDTH = 1126;
-const VIDEO_HEIGHT = 880;
+const FRAME_COUNT = 166;
+const FRAME_WIDTH = 1126;
+const FRAME_HEIGHT = 880;
 const SCROLL_OFFSET = 300;
 
 function clamp(value: number, min: number, max: number) {
@@ -84,7 +80,7 @@ export function ProductInfoSlider({
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const mobileTrackRef = useRef<HTMLDivElement>(null);
   const activeIndexRef = useRef(0);
   const progressRef = useRef(0);
@@ -96,73 +92,45 @@ export function ProductInfoSlider({
   const skipAlignedRef = useRef(false);
   const progressFromScrollRef = useRef<() => number>(() => 0);
   const paintRef = useRef<(progress: number) => void>(() => {});
+  const framesRef = useRef<HTMLImageElement[]>([]);
   const [pinned, setPinned] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
+  const [currentFrame, setCurrentFrame] = useState(0);
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
+    const frames: HTMLImageElement[] = [];
+    const loadedCount = { current: 0 };
+
+    for (let i = 1; i <= FRAME_COUNT; i++) {
+      const img = new window.Image();
+      const frameNum = String(i).padStart(3, "0");
+      img.src = `/images/original-scroll/frames/frame_${frameNum}.webp`;
+      frames.push(img);
+      
+      img.onload = () => {
+        loadedCount.current++;
+        if (loadedCount.current === FRAME_COUNT) {
+          framesRef.current = frames;
+        }
+      };
+    }
+
+    return () => {
+      frames.forEach(img => {
+        img.onload = null;
+      });
     };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   useEffect(() => {
-    const video = videoRef.current;
     const track = trackRef.current;
-    if (!video || !track) {
+    if (!track) {
       return;
-    }
-
-    if (isMobile) {
-      pinnedRef.current = false;
-      setPinned(false);
-      video.currentTime = video.duration || 0;
-      return;
-    }
-
-    const src = `${transparentVideoSrc(VIDEO_SRC)}?v=${STATIC_IMAGE_CACHE_VERSION}#t=0.001`;
-    if (video.dataset.boundSrc !== src) {
-      video.dataset.boundSrc = src;
-      video.src = src;
-      video.load();
     }
 
     const stopCount = slides.length;
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-
-    let seeking = false;
-    let pendingTime: number | null = null;
-
-    const applyTime = (time: number) => {
-      const duration = video.duration;
-      if (!Number.isFinite(duration) || duration <= 0) {
-        return;
-      }
-      const next = clamp(time, 0, duration);
-      if (seeking) {
-        pendingTime = next;
-        return;
-      }
-      if (Math.abs(video.currentTime - next) < 0.001) {
-        return;
-      }
-      seeking = true;
-      video.currentTime = next;
-    };
-
-    const onSeeked = () => {
-      seeking = false;
-      if (pendingTime === null) {
-        return;
-      }
-      const next = pendingTime;
-      pendingTime = null;
-      applyTime(next);
-    };
 
     const updateStops = (progress: number) => {
       const cards = track.querySelectorAll<HTMLElement>("[data-stop-card]");
@@ -225,17 +193,13 @@ export function ProductInfoSlider({
 
     const paint = (progress: number) => {
       progressRef.current = progress;
-      const duration = video.duration;
-      if (Number.isFinite(duration) && duration > 0) {
-        applyTime(progress * duration);
-      }
+      const frameIndex = Math.round(progress * (FRAME_COUNT - 1));
+      setCurrentFrame(frameIndex);
       updateStops(progress);
     };
 
     progressFromScrollRef.current = progressFromScroll;
     paintRef.current = paint;
-
-    video.addEventListener("seeked", onSeeked);
 
     let cancelled = false;
     const start = () => {
@@ -245,30 +209,16 @@ export function ProductInfoSlider({
       paint(reduceMotion ? 1 : progressFromScroll());
     };
 
-    const ready = () => {
-      void primeVideoElement(video).then(start);
-    };
-
     if (reduceMotion) {
       pinnedRef.current = false;
       setPinned(false);
-      if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
-        ready();
-      } else {
-        video.addEventListener("loadeddata", ready, { once: true });
-      }
+      start();
       return () => {
         cancelled = true;
-        video.removeEventListener("seeked", onSeeked);
-        video.removeEventListener("loadeddata", ready);
       };
     }
 
-    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
-      ready();
-    } else {
-      video.addEventListener("loadeddata", ready, { once: true });
-    }
+    start();
 
     let frame = 0;
     const onScroll = () => {
@@ -287,13 +237,11 @@ export function ProductInfoSlider({
       cancelled = true;
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
-      video.removeEventListener("seeked", onSeeked);
-      video.removeEventListener("loadeddata", ready);
       if (frame) {
         window.cancelAnimationFrame(frame);
       }
     };
-  }, [slides.length, isMobile]);
+  }, [slides.length]);
 
   useLayoutEffect(() => {
     if (pinned || !didSkipRef.current) {
@@ -337,20 +285,20 @@ export function ProductInfoSlider({
       <div
         className={cn(
           "relative [overflow-anchor:none] motion-reduce:h-fit",
-          pinned && !isMobile ? "h-[5000px]" : "h-fit",
+          pinned ? "h-[5000px]" : "h-fit",
         )}
         ref={trackRef}
       >
         <div
           className={cn(
             "flex h-dvh flex-col overflow-hidden pt-0 pb-[88px] duration-300 motion-reduce:relative md:pb-24",
-            pinned && !isMobile ? "sticky top-0" : "relative",
+            pinned ? "sticky top-0" : "relative",
           )}
           ref={panelRef}
         >
           <div className="product-info-heading-row relative z-20 mx-auto flex w-full max-w-[720px] shrink-0 items-center justify-center text-center font-bold text-brand-dark lg:flex-col">
             <h2 className="product-info-heading">{heading}</h2>
-            {pinned && !isMobile ? (
+            {pinned ? (
               <button
                 aria-label={skipLabel}
                 className="group z-20 hidden w-fit cursor-pointer lg:absolute lg:right-[-5rem] lg:bottom-0 lg:block"
@@ -362,19 +310,19 @@ export function ProductInfoSlider({
             ) : null}
           </div>
 
-          {!isMobile ? (
-            <video
-              className="pointer-events-none absolute top-1/2 left-1/2 z-0 mx-auto -mt-16 h-auto max-h-[80vh] w-auto max-w-full -translate-x-1/2 -translate-y-1/2 object-contain"
-              disablePictureInPicture
-              height={VIDEO_HEIGHT}
-              muted
-              playsInline
-              preload="metadata"
-              ref={videoRef}
-              tabIndex={-1}
-              width={VIDEO_WIDTH}
-            />
-          ) : null}
+          <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 mx-auto -mt-16 h-auto max-h-[80vh] w-auto max-w-full -translate-x-1/2 -translate-y-1/2">
+            {framesRef.current[currentFrame] ? (
+              <Image
+                alt=""
+                className="h-auto max-h-[80vh] w-auto max-w-full object-contain"
+                height={FRAME_HEIGHT}
+                key={currentFrame}
+                priority={currentFrame === 0}
+                src={framesRef.current[currentFrame].src}
+                width={FRAME_WIDTH}
+              />
+            ) : null}
+          </div>
           <div className="min-h-0 flex-1" />
 
           <div className="hidden w-full shrink-0 px-10 pb-2 lg:block xl:mx-auto xl:max-w-[1440px]">
