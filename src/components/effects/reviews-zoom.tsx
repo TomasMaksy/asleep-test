@@ -3,7 +3,7 @@
 import { type ReactNode, useEffect, useRef } from "react";
 
 const SCALE_START = 1.5;
-const SCALE_START_MOBILE = 1.12;
+const SCALE_START_MOBILE = 1.06;
 const SCALE_END = 1;
 const MOBILE_MAX_WIDTH = 768;
 
