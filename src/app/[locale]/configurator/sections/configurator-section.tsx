@@ -232,7 +232,30 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
       return;
     }
 
-    startPackaging();
+    startClosingThenPackaging();
+  }
+
+  function startClosingThenPackaging() {
+    pendingPackagingRef.current = true;
+    setCatchingUp(false);
+    if (shownYouRef.current !== DEFAULT_FIRMNESS) {
+      playTransition(shownYouRef.current, DEFAULT_FIRMNESS);
+      return;
+    }
+    playClose();
+  }
+
+  function playClose() {
+    clipIdRef.current += 1;
+    setPlaybackRate(VIDEO_PLAYBACK_RATE);
+    const nextClip: ConfiguratorClip = {
+      id: clipIdRef.current,
+      kind: "intro",
+      bed,
+      reverse: true,
+    };
+    playingClipRef.current = nextClip;
+    setClip(nextClip);
   }
 
   function startPackaging() {
@@ -338,10 +361,14 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
       setIntroPlaying(false);
       shownYouRef.current = DEFAULT_FIRMNESS;
       if (played.reverse) {
-        setStageReady(false);
         queueRef.current = [];
         setPlaybackRate(VIDEO_PLAYBACK_RATE);
         setCatchingUp(false);
+        if (pendingPackagingRef.current) {
+          startPackaging();
+          return;
+        }
+        setStageReady(false);
         return;
       }
       setStageReady(true);
@@ -369,7 +396,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     }
 
     if (pendingPackagingRef.current) {
-      startPackaging();
+      startClosingThenPackaging();
       return;
     }
 
@@ -454,7 +481,8 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     if (step === 5) {
       const next = together && !isDesktop ? 4 : 3;
       setActiveSleeper(next === 4 ? 2 : 1);
-      playHold(shownYouRef.current);
+      shownYouRef.current = you;
+      playHold(you);
       setStep(next);
       return;
     }

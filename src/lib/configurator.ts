@@ -3,6 +3,7 @@ import {
   MATTRESS_SIZES,
   type MattressSizeId,
 } from "@/lib/product-original-sizes";
+import { transparentVideoSrc } from "@/lib/transparent-video";
 
 export type BedKind = "single" | "double";
 export type Firmness = 1 | 2 | 3 | 4 | 5 | 6;
@@ -98,19 +99,25 @@ export function recommendFirmness(input: {
 
 export function introVideoSrc(bed: BedKind, reverse = false): string {
   if (bed === "single") {
-    return reverse
-      ? "/configurator/Single/Configurator/MAT_Anim_Single_Opening_Reverse.webm"
-      : "/configurator/Single/Configurator/MAT_Anim_Single_Opening.webm";
+    return transparentVideoSrc(
+      reverse
+        ? "/configurator/Single/Configurator/MAT_Anim_Single_Opening_Reverse.webm"
+        : "/configurator/Single/Configurator/MAT_Anim_Single_Opening.webm",
+    );
   }
-  return reverse
-    ? "/configurator/Double/MAT_Anim_Double_Opening_Reverse.webm"
-    : "/configurator/Double/MAT_Anim_Double_Opening.webm";
+  return transparentVideoSrc(
+    reverse
+      ? "/configurator/Double/MAT_Anim_Double_Opening_Reverse.webm"
+      : "/configurator/Double/MAT_Anim_Double_Opening.webm",
+  );
 }
 
 export function packagingVideoSrc(bed: BedKind): string {
-  return bed === "single"
-    ? "/configurator/Single/Configurator/SCN_Single_Packaging.webm"
-    : "/configurator/Double/SCN_Double_Packaging.webm";
+  return transparentVideoSrc(
+    bed === "single"
+      ? "/configurator/Single/Configurator/SCN_Single_Packaging.webm"
+      : "/configurator/Double/SCN_Double_Packaging.webm",
+  );
 }
 
 export function holdVideoSrc(bed: BedKind, firmness: Firmness): string {
@@ -126,9 +133,11 @@ export function transitionVideoSrc(
   from: Firmness,
   to: Firmness,
 ): string {
-  return bed === "single"
-    ? `/configurator/Single/Configurator/SCN_Single_${from}_${to}.webm`
-    : `/configurator/Double/SCN_Double_${from}_${to}.webm`;
+  return transparentVideoSrc(
+    bed === "single"
+      ? `/configurator/Single/Configurator/SCN_Single_${from}_${to}.webm`
+      : `/configurator/Double/SCN_Double_${from}_${to}.webm`,
+  );
 }
 
 export function suggestedSingleSizeId(

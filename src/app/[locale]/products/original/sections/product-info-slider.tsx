@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { STATIC_IMAGE_CACHE_VERSION } from "@/lib/static-image-url";
+import {
+  primeVideoElement,
+  transparentVideoSrc,
+} from "@/lib/transparent-video";
 import { cn } from "@/lib/utils";
 
 type Slide = {
@@ -98,6 +103,13 @@ export function ProductInfoSlider({
     const track = trackRef.current;
     if (!video || !track) {
       return;
+    }
+
+    const src = `${transparentVideoSrc(VIDEO_SRC)}?v=${STATIC_IMAGE_CACHE_VERSION}#t=0.001`;
+    if (video.dataset.boundSrc !== src) {
+      video.dataset.boundSrc = src;
+      video.src = src;
+      video.load();
     }
 
     const stopCount = slides.length;
@@ -208,28 +220,37 @@ export function ProductInfoSlider({
 
     video.addEventListener("seeked", onSeeked);
 
+    let cancelled = false;
     const start = () => {
+      if (cancelled) {
+        return;
+      }
       paint(reduceMotion ? 1 : progressFromScroll());
+    };
+
+    const ready = () => {
+      void primeVideoElement(video).then(start);
     };
 
     if (reduceMotion) {
       pinnedRef.current = false;
       setPinned(false);
-      if (video.readyState >= HTMLMediaElement.HAVE_METADATA) {
-        start();
+      if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+        ready();
       } else {
-        video.addEventListener("loadedmetadata", start, { once: true });
+        video.addEventListener("loadeddata", ready, { once: true });
       }
       return () => {
+        cancelled = true;
         video.removeEventListener("seeked", onSeeked);
-        video.removeEventListener("loadedmetadata", start);
+        video.removeEventListener("loadeddata", ready);
       };
     }
 
-    if (video.readyState >= HTMLMediaElement.HAVE_METADATA) {
-      start();
+    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      ready();
     } else {
-      video.addEventListener("loadedmetadata", start, { once: true });
+      video.addEventListener("loadeddata", ready, { once: true });
     }
 
     let frame = 0;
@@ -246,10 +267,11 @@ export function ProductInfoSlider({
     window.addEventListener("resize", onScroll);
 
     return () => {
+      cancelled = true;
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
       video.removeEventListener("seeked", onSeeked);
-      video.removeEventListener("loadedmetadata", start);
+      video.removeEventListener("loadeddata", ready);
       if (frame) {
         window.cancelAnimationFrame(frame);
       }
@@ -329,9 +351,8 @@ export function ProductInfoSlider({
             height={VIDEO_HEIGHT}
             muted
             playsInline
-            preload="auto"
+            preload="metadata"
             ref={videoRef}
-            src={VIDEO_SRC}
             tabIndex={-1}
             width={VIDEO_WIDTH}
           />

@@ -245,11 +245,28 @@ function Hotspot({
 function LayerMedia({
   className,
   item,
+  shouldAutoPlay = false,
 }: {
   className?: string;
   item: LayerItem;
+  shouldAutoPlay?: boolean;
 }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
   const media = MEDIA[item.id];
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !shouldAutoPlay) {
+      return;
+    }
+
+    video.load();
+    const playPromise = video.play();
+    if (playPromise) {
+      playPromise.catch(() => {});
+    }
+  }, [shouldAutoPlay, item.id]);
+
   if (!media) {
     return null;
   }
@@ -258,12 +275,13 @@ function LayerMedia({
     <div className={cn("overflow-hidden", className)}>
       {media.type === "video" ? (
         <video
-          autoPlay
           className="h-full w-full object-cover"
           key={item.id}
           loop
           muted
           playsInline
+          preload={shouldAutoPlay ? "auto" : "none"}
+          ref={videoRef}
         >
           <source src={media.src} type="video/mp4" />
         </video>
@@ -461,6 +479,7 @@ function LayerPopup({
                     <LayerMedia
                       className="aspect-[16/10] w-full shrink-0"
                       item={item}
+                      shouldAutoPlay={true}
                     />
                   </motion.div>
                   <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-5 pb-2">
@@ -678,6 +697,7 @@ export function ProductLayers({
                         <LayerMedia
                           className="mt-3 aspect-video w-full shrink-0 rounded-[28px] lg:rounded-[40px]"
                           item={item}
+                          shouldAutoPlay={true}
                         />
                       ) : (
                         <div
@@ -738,6 +758,7 @@ export function ProductLayers({
                         className="relative z-10 h-auto w-full"
                         draggable={false}
                         height={slice.height}
+                        loading="lazy"
                         sizes="(min-width: 2000px) 72rem, (min-width: 1440px) 64rem, (min-width: 1024px) 56rem, 160vw"
                         src={slice.src}
                         width={slice.width}
@@ -776,6 +797,7 @@ export function ProductLayers({
                         aria-hidden="true"
                         className="pointer-events-none absolute top-[125%] left-0 z-0 h-auto w-full"
                         height={255}
+                        loading="lazy"
                         src="/images/product-layers/laag7.webp"
                         width={2300}
                       />

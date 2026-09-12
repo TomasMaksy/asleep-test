@@ -384,10 +384,48 @@ html:has(#site-header[data-hidden="true"]) .product-info-heading-row {
 
 .configurator-stage {
   background-color: #1d4a9d;
-  background-image: url("/images/configurator/background.jpg");
-  background-repeat: repeat-x;
-  background-position: center;
-  background-size: contain;
+  background-image: linear-gradient(180deg, #103488 0%, #2a5eaa 100%);
+}
+
+.configurator-stage-fade {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  --fade-x: 7%;
+  --fade-top: 5%;
+  --fade-bottom: 18%;
+  -webkit-mask-image:
+    linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--fade-x),
+      #000 calc(100% - var(--fade-x)),
+      transparent 100%
+    ),
+    linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 var(--fade-top),
+      #000 calc(100% - var(--fade-bottom)),
+      transparent 100%
+    );
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--fade-x),
+      #000 calc(100% - var(--fade-x)),
+      transparent 100%
+    ),
+    linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 var(--fade-top),
+      #000 calc(100% - var(--fade-bottom)),
+      transparent 100%
+    );
+  mask-composite: intersect;
 }
 
 .configurator-stage-zoom {
@@ -422,10 +460,29 @@ html:has(#site-header[data-hidden="true"]) .product-info-heading-row {
   object-fit: contain;
 }
 
+/* SVG filters flatten WebKit video alpha to black. */
+@supports (-webkit-touch-callout: none) {
+  .configurator-stage-video {
+    filter: none !important;
+  }
+}
+
 /* Double SCN clips are a wider 16:19 shot than the square opening. */
 .configurator-stage-frame-double .configurator-stage-video-scn {
   transform-origin: center;
   transform: translate(0.13%, -1.02%) scale(1.311);
+}
+
+/* Packaging is the same 16:19 plate as SCN, but the subject sits higher
+   and smaller than the closed opening pose. Nudge it onto that pose. */
+.configurator-stage-frame-single .configurator-stage-video-packaging {
+  transform-origin: center;
+  transform: translate(3.42%, 10.69%) scale(0.882);
+}
+
+.configurator-stage-frame-double .configurator-stage-video-packaging {
+  transform-origin: center;
+  transform: translate(0.83%, 13.66%) scale(1.4905);
 }
 
 .configurator-range {

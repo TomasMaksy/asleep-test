@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { asleepNavyFilterStyle } from "@/components/asleep-navy-filter";
+import { useAsleepNavyFilterStyle } from "@/components/asleep-navy-filter";
 import {
   type BedKind,
   DEFAULT_FIRMNESS,
@@ -73,12 +73,23 @@ function frameKind(clip: ConfiguratorClip): ClipKind {
 }
 
 function usesScnFraming(bed: BedKind, kind: ClipKind) {
-  return bed === "double" && kind !== "intro";
+  return bed === "double" && kind === "transition";
+}
+
+function videoFitClass(bed: BedKind, kind: ClipKind) {
+  if (kind === "packaging") {
+    return "configurator-stage-video-packaging";
+  }
+  if (usesScnFraming(bed, kind)) {
+    return "configurator-stage-video-scn";
+  }
+  return undefined;
 }
 
 function videoHasPath(video: HTMLVideoElement, path: string) {
   const src = video.currentSrc || video.getAttribute("src") || video.src;
-  return src.includes(path);
+  const stem = path.replace(/\.(webm|mov|mp4)$/i, "");
+  return src.includes(stem);
 }
 
 function seekToStart(video: HTMLVideoElement, done: () => void) {
@@ -122,6 +133,7 @@ export function ConfiguratorVideos({
   onReady,
 }: ConfiguratorVideosProps) {
   const filterId = useId().replace(/:/g, "");
+  const navyFilterStyle = useAsleepNavyFilterStyle();
   const videoARef = useRef<HTMLVideoElement>(null);
   const videoBRef = useRef<HTMLVideoElement>(null);
   const activeRef = useRef<0 | 1>(0);
@@ -206,16 +218,18 @@ export function ConfiguratorVideos({
       activeRef.current = nextIndex;
       setVisible(nextIndex);
       onReadyRef.current?.(clip);
-      if (clip.kind === "intro" && !clip.reverse) {
-        const hidden = current === 0 ? videoARef.current : videoBRef.current;
-        const reverseSrc = introVideoSrc(clip.bed, true);
-        if (hidden && !videoHasPath(hidden, reverseSrc)) {
+      const hidden = current === 0 ? videoARef.current : videoBRef.current;
+      if (clip.kind === "intro" && hidden) {
+        const preloadSrc = clip.reverse
+          ? packagingVideoSrc(clip.bed)
+          : introVideoSrc(clip.bed, true);
+        if (!videoHasPath(hidden, preloadSrc)) {
           window.setTimeout(() => {
             if (cancelled) {
               return;
             }
-            hidden.src = reverseSrc;
-            hidden.preload = "auto";
+            hidden.src = preloadSrc;
+            hidden.preload = "metadata";
             hidden.load();
           }, 0);
         }
@@ -280,91 +294,91 @@ export function ConfiguratorVideos({
 
   return (
     <div className="configurator-stage absolute inset-0 overflow-hidden">
-      <div
-        className={cn(
-          "configurator-stage-zoom absolute inset-0 origin-center md:scale-100",
-          bed === "double" ? "scale-110" : "scale-150",
-        )}
-      >
+      <div className="configurator-stage-fade">
         <div
           className={cn(
-            "configurator-stage-frame",
-            bed === "double"
-              ? "configurator-stage-frame-double"
-              : "configurator-stage-frame-single",
+            "configurator-stage-zoom absolute inset-0 origin-center md:scale-100",
+            bed === "double" ? "scale-110" : "scale-150",
           )}
         >
-          {visible === null || clipKind[visible] !== "packaging" ? (
-            <svg
-              aria-hidden
-              className="pointer-events-none absolute inset-0 z-0 size-full overflow-visible mix-blend-multiply"
-              focusable="false"
-              preserveAspectRatio="none"
-              viewBox="0 0 100 100"
-            >
-              <title>Mattress shadow</title>
-              <defs>
-                <filter
-                  height="180%"
-                  id={`${filterId}-soft`}
-                  primitiveUnits="userSpaceOnUse"
-                  width="180%"
-                  x="-40%"
-                  y="-40%"
-                >
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="1.05" />
-                </filter>
-                <filter
-                  height="160%"
-                  id={`${filterId}-contact`}
-                  primitiveUnits="userSpaceOnUse"
-                  width="160%"
-                  x="-30%"
-                  y="-30%"
-                >
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="0.45" />
-                </filter>
-              </defs>
-              <polygon
-                fill="rgba(6,16,40,0.12)"
-                filter={`url(#${filterId}-soft)`}
-                points={MATTRESS_SHADOW[bed].soft}
-              />
-              <polygon
-                fill="rgba(6,16,40,0.20)"
-                filter={`url(#${filterId}-contact)`}
-                points={MATTRESS_SHADOW[bed].contact}
-              />
-            </svg>
-          ) : null}
-          <video
-            aria-hidden={visible !== 0}
+          <div
             className={cn(
-              "configurator-stage-video",
-              usesScnFraming(bed, clipKind[0]) &&
-                "configurator-stage-video-scn",
-              visible === 0 ? "opacity-100" : "opacity-0",
+              "configurator-stage-frame",
+              bed === "double"
+                ? "configurator-stage-frame-double"
+                : "configurator-stage-frame-single",
             )}
-            muted
-            playsInline
-            preload="auto"
-            ref={videoARef}
-            style={asleepNavyFilterStyle}
-          />
-          <video
-            aria-hidden={visible !== 1}
-            className={cn(
-              "configurator-stage-video",
-              usesScnFraming(bed, clipKind[1]) &&
-                "configurator-stage-video-scn",
-              visible === 1 ? "opacity-100" : "opacity-0",
-            )}
-            muted
-            playsInline
-            preload="auto"
-            ref={videoBRef}
-            style={asleepNavyFilterStyle}
-          />
+          >
+            {visible === null || clipKind[visible] !== "packaging" ? (
+              <svg
+                aria-hidden
+                className="pointer-events-none absolute inset-0 z-0 size-full overflow-visible mix-blend-multiply"
+                focusable="false"
+                preserveAspectRatio="none"
+                viewBox="0 0 100 100"
+              >
+                <title>Mattress shadow</title>
+                <defs>
+                  <filter
+                    height="180%"
+                    id={`${filterId}-soft`}
+                    primitiveUnits="userSpaceOnUse"
+                    width="180%"
+                    x="-40%"
+                    y="-40%"
+                  >
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="1.05" />
+                  </filter>
+                  <filter
+                    height="160%"
+                    id={`${filterId}-contact`}
+                    primitiveUnits="userSpaceOnUse"
+                    width="160%"
+                    x="-30%"
+                    y="-30%"
+                  >
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="0.45" />
+                  </filter>
+                </defs>
+                <polygon
+                  fill="rgba(6,16,40,0.12)"
+                  filter={`url(#${filterId}-soft)`}
+                  points={MATTRESS_SHADOW[bed].soft}
+                />
+                <polygon
+                  fill="rgba(6,16,40,0.20)"
+                  filter={`url(#${filterId}-contact)`}
+                  points={MATTRESS_SHADOW[bed].contact}
+                />
+              </svg>
+            ) : null}
+            <video
+              aria-hidden={visible !== 0}
+              className={cn(
+                "configurator-stage-video",
+                videoFitClass(bed, clipKind[0]),
+                visible === 0 ? "opacity-100" : "opacity-0",
+              )}
+              muted
+              playsInline
+              preload="metadata"
+              ref={videoARef}
+              style={navyFilterStyle}
+            />
+            <video
+              aria-hidden={visible !== 1}
+              className={cn(
+                "configurator-stage-video",
+                videoFitClass(bed, clipKind[1]),
+                visible === 1 ? "opacity-100" : "opacity-0",
+              )}
+              muted
+              playsInline
+              preload="metadata"
+              ref={videoBRef}
+              style={navyFilterStyle}
+            />
+          </div>
         </div>
       </div>
       <span className="sr-only">{label}</span>

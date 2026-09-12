@@ -1,8 +1,27 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { needsHevcAlphaVideo } from "@/lib/transparent-video";
+
 export const ASLEEP_NAVY_FILTER_ID = "asleep-navy-match";
 
 export const asleepNavyFilterStyle = {
   filter: `url(#${ASLEEP_NAVY_FILTER_ID})`,
 } as const;
+
+export function useAsleepNavyFilterStyle() {
+  const [style, setStyle] = useState<typeof asleepNavyFilterStyle | undefined>(
+    undefined,
+  );
+
+  useEffect(() => {
+    if (!needsHevcAlphaVideo()) {
+      setStyle(asleepNavyFilterStyle);
+    }
+  }, []);
+
+  return style;
+}
 
 export function AsleepNavyFilter() {
   return (

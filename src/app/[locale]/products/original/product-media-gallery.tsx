@@ -10,7 +10,7 @@ import {
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
-import { asleepNavyFilterStyle } from "@/components/asleep-navy-filter";
+import { useAsleepNavyFilterStyle } from "@/components/asleep-navy-filter";
 import type { Locale } from "@/i18n/routing";
 import { useOriginalSizeStore } from "@/lib/product-original-size-store";
 import {
@@ -147,7 +147,32 @@ function LayersVideo({
   className?: string;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [playing, setPlaying] = useState(true);
+  const navyFilterStyle = useAsleepNavyFilterStyle();
+  const [playing, setPlaying] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setIsVisible(true);
+          video.load();
+          void video.play().then(() => setPlaying(true)).catch(() => {});
+        } else {
+          setIsVisible(false);
+          video.pause();
+          setPlaying(false);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, [src]);
 
   function togglePlayback() {
     const video = videoRef.current;
@@ -165,14 +190,14 @@ function LayersVideo({
   return (
     <div className={cn("relative overflow-hidden bg-[#f0f0f0]", className)}>
       <video
-        autoPlay
         className="absolute inset-0 size-full object-cover"
         loop
         muted
         playsInline
+        preload={isVisible ? "auto" : "none"}
         ref={videoRef}
         src={staticImageUrl(src)}
-        style={asleepNavyFilterStyle}
+        style={navyFilterStyle}
       />
 
       <button
