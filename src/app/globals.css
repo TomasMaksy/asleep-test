@@ -497,10 +497,18 @@ html:has(#site-header[data-hidden="true"]) .product-info-heading-row {
   cursor: grab;
   appearance: none;
   background: transparent;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.configurator-range:focus,
+.configurator-range:focus-visible {
+  outline: none;
 }
 
 .configurator-range:active {
   cursor: grabbing;
+  outline: none;
 }
 
 .configurator-range:disabled {
@@ -512,12 +520,17 @@ html:has(#site-header[data-hidden="true"]) .product-info-heading-row {
   background: transparent;
 }
 
+/* Keep hit size; opacity:0 hides iOS Safari’s default gray square thumb */
 .configurator-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
   appearance: none;
   width: 48px;
   height: 32px;
   border: 0;
+  border-radius: 40px;
   background: transparent;
+  box-shadow: none;
+  opacity: 0;
 }
 
 .configurator-range::-moz-range-track {
@@ -529,7 +542,10 @@ html:has(#site-header[data-hidden="true"]) .product-info-heading-row {
   width: 48px;
   height: 32px;
   border: 0;
+  border-radius: 40px;
   background: transparent;
+  box-shadow: none;
+  opacity: 0;
 }
 
 @keyframes configurator-catchup {
