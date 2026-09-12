@@ -97,11 +97,28 @@ export function ProductInfoSlider({
   const progressFromScrollRef = useRef<() => number>(() => 0);
   const paintRef = useRef<(progress: number) => void>(() => {});
   const [pinned, setPinned] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
     const track = trackRef.current;
     if (!video || !track) {
+      return;
+    }
+
+    if (isMobile) {
+      pinnedRef.current = false;
+      setPinned(false);
+      video.currentTime = video.duration || 0;
       return;
     }
 
@@ -276,7 +293,7 @@ export function ProductInfoSlider({
         window.cancelAnimationFrame(frame);
       }
     };
-  }, [slides.length]);
+  }, [slides.length, isMobile]);
 
   useLayoutEffect(() => {
     if (pinned || !didSkipRef.current) {
@@ -320,20 +337,20 @@ export function ProductInfoSlider({
       <div
         className={cn(
           "relative [overflow-anchor:none] motion-reduce:h-fit",
-          pinned ? "h-[5000px]" : "h-fit",
+          pinned && !isMobile ? "h-[5000px]" : "h-fit",
         )}
         ref={trackRef}
       >
         <div
           className={cn(
             "flex h-dvh flex-col overflow-hidden pt-0 pb-[88px] duration-300 motion-reduce:relative md:pb-24",
-            pinned ? "sticky top-0" : "relative",
+            pinned && !isMobile ? "sticky top-0" : "relative",
           )}
           ref={panelRef}
         >
           <div className="product-info-heading-row relative z-20 mx-auto flex w-full max-w-[720px] shrink-0 items-center justify-center text-center font-bold text-brand-dark lg:flex-col">
             <h2 className="product-info-heading">{heading}</h2>
-            {pinned ? (
+            {pinned && !isMobile ? (
               <button
                 aria-label={skipLabel}
                 className="group z-20 hidden w-fit cursor-pointer lg:absolute lg:right-[-5rem] lg:bottom-0 lg:block"
@@ -345,17 +362,19 @@ export function ProductInfoSlider({
             ) : null}
           </div>
 
-          <video
-            className="pointer-events-none absolute top-1/2 left-1/2 z-0 mx-auto -mt-16 h-auto max-h-[80vh] w-auto max-w-full -translate-x-1/2 -translate-y-1/2 object-contain"
-            disablePictureInPicture
-            height={VIDEO_HEIGHT}
-            muted
-            playsInline
-            preload="metadata"
-            ref={videoRef}
-            tabIndex={-1}
-            width={VIDEO_WIDTH}
-          />
+          {!isMobile ? (
+            <video
+              className="pointer-events-none absolute top-1/2 left-1/2 z-0 mx-auto -mt-16 h-auto max-h-[80vh] w-auto max-w-full -translate-x-1/2 -translate-y-1/2 object-contain"
+              disablePictureInPicture
+              height={VIDEO_HEIGHT}
+              muted
+              playsInline
+              preload="metadata"
+              ref={videoRef}
+              tabIndex={-1}
+              width={VIDEO_WIDTH}
+            />
+          ) : null}
           <div className="min-h-0 flex-1" />
 
           <div className="hidden w-full shrink-0 px-10 pb-2 lg:block xl:mx-auto xl:max-w-[1440px]">
