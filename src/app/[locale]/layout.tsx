@@ -50,7 +50,10 @@ export async function generateMetadata({
   languages["x-default"] = `${baseUrl}/${routing.defaultLocale}`;
 
   return {
-    title: t("title"),
+    title: {
+      default: t("title"),
+      template: "%s | asleep",
+    },
     description: t("description"),
     alternates: {
       canonical: `${baseUrl}/${locale}`,

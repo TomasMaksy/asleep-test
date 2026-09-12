@@ -1,11 +1,16 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { STATIC_IMAGE_CACHE_VERSION } from "@/lib/static-image-url";
+import { useAsleepNavyScrollFilterStyle } from "@/components/asleep-navy-filter";
 import {
-  primeVideoElement,
-  transparentVideoSrc,
-} from "@/lib/transparent-video";
+  ADJUSTABLE_FRAME_HEIGHT,
+  ADJUSTABLE_FRAME_WIDTH,
+  adjustableFrameIndex,
+  adjustableFrameUrl,
+  paintAdjustableFrame,
+  prefetchAdjustableFrames,
+  whenAdjustableFrameReady,
+} from "@/lib/adjustable-sequence";
 import { cn } from "@/lib/utils";
 
 type Slide = {
@@ -13,10 +18,9 @@ type Slide = {
   body: string;
 };
 
-const VIDEO_SRC = "/images/original-scroll/MAT_Anim_Double_Adjustable.webm";
-const VIDEO_WIDTH = 1126;
-const VIDEO_HEIGHT = 880;
 const SCROLL_OFFSET = 300;
+const SEQUENCE_CLASS =
+  "pointer-events-none absolute top-1/2 left-1/2 z-0 mx-auto -mt-16 h-auto w-[150vw] max-h-none max-w-[150vw] -translate-x-1/2 -translate-y-1/2 object-contain lg:h-auto lg:w-auto lg:max-h-[80vh] lg:max-w-full";
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
@@ -84,7 +88,8 @@ export function ProductInfoSlider({
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const frameIndexRef = useRef(0);
   const mobileTrackRef = useRef<HTMLDivElement>(null);
   const activeIndexRef = useRef(0);
   const progressRef = useRef(0);
@@ -97,72 +102,26 @@ export function ProductInfoSlider({
   const progressFromScrollRef = useRef<() => number>(() => 0);
   const paintRef = useRef<(progress: number) => void>(() => {});
   const [pinned, setPinned] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
+  const [sequenceReady, setSequenceReady] = useState(false);
+  const navyFilterStyle = useAsleepNavyScrollFilterStyle();
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  useEffect(() => {
-    const video = videoRef.current;
+    const canvas = canvasRef.current;
     const track = trackRef.current;
-    if (!video || !track) {
+    const ctx = canvas?.getContext("2d", { alpha: false });
+    if (!canvas || !track || !ctx) {
       return;
     }
 
-    if (isMobile) {
-      pinnedRef.current = false;
-      setPinned(false);
-      video.currentTime = video.duration || 0;
-      return;
-    }
-
-    const src = `${transparentVideoSrc(VIDEO_SRC)}?v=${STATIC_IMAGE_CACHE_VERSION}#t=0.001`;
-    if (video.dataset.boundSrc !== src) {
-      video.dataset.boundSrc = src;
-      video.src = src;
-      video.load();
-    }
+    canvas.width = ADJUSTABLE_FRAME_WIDTH;
+    canvas.height = ADJUSTABLE_FRAME_HEIGHT;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
 
     const stopCount = slides.length;
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-
-    let seeking = false;
-    let pendingTime: number | null = null;
-
-    const applyTime = (time: number) => {
-      const duration = video.duration;
-      if (!Number.isFinite(duration) || duration <= 0) {
-        return;
-      }
-      const next = clamp(time, 0, duration);
-      if (seeking) {
-        pendingTime = next;
-        return;
-      }
-      if (Math.abs(video.currentTime - next) < 0.001) {
-        return;
-      }
-      seeking = true;
-      video.currentTime = next;
-    };
-
-    const onSeeked = () => {
-      seeking = false;
-      if (pendingTime === null) {
-        return;
-      }
-      const next = pendingTime;
-      pendingTime = null;
-      applyTime(next);
-    };
 
     const updateStops = (progress: number) => {
       const cards = track.querySelectorAll<HTMLElement>("[data-stop-card]");
@@ -223,11 +182,14 @@ export function ProductInfoSlider({
       return clamp(scrolled / range, 0, 1);
     };
 
+    let sequenceStarted = false;
+
     const paint = (progress: number) => {
       progressRef.current = progress;
-      const duration = video.duration;
-      if (Number.isFinite(duration) && duration > 0) {
-        applyTime(progress * duration);
+      const frame = adjustableFrameIndex(progress);
+      frameIndexRef.current = frame;
+      if (sequenceStarted) {
+        paintAdjustableFrame(ctx, frame, () => frameIndexRef.current === frame);
       }
       updateStops(progress);
     };
@@ -235,43 +197,54 @@ export function ProductInfoSlider({
     progressFromScrollRef.current = progressFromScroll;
     paintRef.current = paint;
 
-    video.addEventListener("seeked", onSeeked);
-
-    let cancelled = false;
-    const start = () => {
-      if (cancelled) {
-        return;
-      }
-      paint(reduceMotion ? 1 : progressFromScroll());
-    };
-
-    const ready = () => {
-      void primeVideoElement(video).then(start);
-    };
-
     if (reduceMotion) {
       pinnedRef.current = false;
       setPinned(false);
-      if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
-        ready();
-      } else {
-        video.addEventListener("loadeddata", ready, { once: true });
-      }
-      return () => {
-        cancelled = true;
-        video.removeEventListener("seeked", onSeeked);
-        video.removeEventListener("loadeddata", ready);
-      };
     }
 
-    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
-      ready();
+    let cancelled = false;
+    const initialProgress = reduceMotion ? 1 : progressFromScroll();
+    paint(initialProgress);
+
+    const startSequence = () => {
+      if (sequenceStarted) {
+        return;
+      }
+      sequenceStarted = true;
+      const frame = adjustableFrameIndex(progressFromScrollRef.current());
+      prefetchAdjustableFrames(frame);
+      whenAdjustableFrameReady(frame, () => {
+        if (!cancelled) {
+          paint(progressFromScrollRef.current());
+          setSequenceReady(true);
+        }
+      });
+    };
+
+    let preloadObserver: IntersectionObserver | null = null;
+    const nearViewport =
+      track.getBoundingClientRect().top < window.innerHeight + 400;
+    if (nearViewport) {
+      startSequence();
     } else {
-      video.addEventListener("loadeddata", ready, { once: true });
+      preloadObserver = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry?.isIntersecting) {
+            return;
+          }
+          startSequence();
+          preloadObserver?.disconnect();
+        },
+        { rootMargin: "400px 0px" },
+      );
+      preloadObserver.observe(track);
     }
 
     let frame = 0;
     const onScroll = () => {
+      if (cancelled || reduceMotion) {
+        return;
+      }
       if (!frame) {
         frame = window.requestAnimationFrame(() => {
           frame = 0;
@@ -285,15 +258,14 @@ export function ProductInfoSlider({
 
     return () => {
       cancelled = true;
+      preloadObserver?.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
-      video.removeEventListener("seeked", onSeeked);
-      video.removeEventListener("loadeddata", ready);
       if (frame) {
         window.cancelAnimationFrame(frame);
       }
     };
-  }, [slides.length, isMobile]);
+  }, [slides.length]);
 
   useLayoutEffect(() => {
     if (pinned || !didSkipRef.current) {
@@ -337,23 +309,23 @@ export function ProductInfoSlider({
       <div
         className={cn(
           "relative [overflow-anchor:none] motion-reduce:h-fit",
-          pinned && !isMobile ? "h-[5000px]" : "h-fit",
+          pinned ? "h-[5000px]" : "h-fit",
         )}
         ref={trackRef}
       >
         <div
           className={cn(
-            "flex h-dvh flex-col overflow-hidden pt-0 pb-[88px] duration-300 motion-reduce:relative md:pb-24",
-            pinned && !isMobile ? "sticky top-0" : "relative",
+            "flex h-dvh flex-col overflow-hidden pt-0 pb-[72px] duration-300 motion-reduce:relative md:pb-20",
+            pinned ? "sticky top-0" : "relative",
           )}
           ref={panelRef}
         >
           <div className="product-info-heading-row relative z-20 mx-auto flex w-full max-w-[720px] shrink-0 items-center justify-center text-center font-bold text-brand-dark lg:flex-col">
             <h2 className="product-info-heading">{heading}</h2>
-            {pinned && !isMobile ? (
+            {pinned ? (
               <button
                 aria-label={skipLabel}
-                className="group z-20 hidden w-fit cursor-pointer lg:absolute lg:right-[-5rem] lg:bottom-0 lg:block"
+                className="group z-20 w-fit cursor-pointer max-lg:absolute max-lg:top-1/2 max-lg:right-5 max-lg:-translate-y-1/2 lg:absolute lg:right-[-5rem] lg:bottom-0"
                 onClick={handleSkip}
                 type="button"
               >
@@ -362,25 +334,33 @@ export function ProductInfoSlider({
             ) : null}
           </div>
 
-          {!isMobile ? (
-            <video
-              className="pointer-events-none absolute top-1/2 left-1/2 z-0 mx-auto -mt-16 h-auto max-h-[80vh] w-auto max-w-full -translate-x-1/2 -translate-y-1/2 object-contain"
-              disablePictureInPicture
-              height={VIDEO_HEIGHT}
-              muted
-              playsInline
-              preload="metadata"
-              ref={videoRef}
-              tabIndex={-1}
-              width={VIDEO_WIDTH}
-            />
-          ) : null}
+          {/* Poster must share the canvas frame URL so the first decode is cached. */}
+          {/* biome-ignore lint/performance/noImgElement: same URL as the sequence loader */}
+          <img
+            alt=""
+            aria-hidden
+            className={cn(SEQUENCE_CLASS, sequenceReady && "opacity-0")}
+            decoding="async"
+            loading="lazy"
+            height={ADJUSTABLE_FRAME_HEIGHT}
+            src={adjustableFrameUrl(0)}
+            style={navyFilterStyle}
+            width={ADJUSTABLE_FRAME_WIDTH}
+          />
+          <canvas
+            aria-hidden
+            className={SEQUENCE_CLASS}
+            height={ADJUSTABLE_FRAME_HEIGHT}
+            ref={canvasRef}
+            style={navyFilterStyle}
+            width={ADJUSTABLE_FRAME_WIDTH}
+          />
           <div className="min-h-0 flex-1" />
 
-          <div className="hidden w-full shrink-0 px-10 pb-2 lg:block xl:mx-auto xl:max-w-[1440px]">
+          <div className="hidden w-full shrink-0 px-10 lg:block xl:mx-auto xl:max-w-[1440px]">
             <div
               className={cn(
-                "relative z-20 flex gap-[50px] lg:[&>*]:flex-1",
+                "relative z-20 flex gap-[50px] bg-surface/80 px-4 pt-2.5 pb-2.5 lg:[&>*]:flex-1",
                 !pinned && "[&_[data-stop-card]]:hover:opacity-100",
               )}
             >
@@ -392,7 +372,7 @@ export function ProductInfoSlider({
 
           <div
             className={cn(
-              "w-full shrink-0 overflow-hidden pb-2 lg:hidden",
+              "w-full shrink-0 overflow-hidden bg-surface/80 pt-2.5 pb-2.5 lg:hidden",
               !pinned && "[&_[data-stop-card]]:hover:opacity-100",
             )}
           >

@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "title": "Checkout | asleep",
+    "title": "Checkout",
     "description": "Complete your asleep order."
   },
   "expressTitle": "Express checkout",
@@ -102,7 +102,7 @@
     "home": "Back to the shop"
   },
   "thanks": {
-    "metaTitle": "Thank you | asleep",
+    "metaTitle": "Thank you",
     "metaDescription": "Your asleep checkout is complete.",
     "kicker": "We're sorry",
     "title": "Thank you, {name}",

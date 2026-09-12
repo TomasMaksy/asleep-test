@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { useAsleepNavyFilterStyle } from "@/components/asleep-navy-filter";
+import {
+  asleepNavyPackagingFilterStyle,
+  useAsleepNavyFilterStyle,
+} from "@/components/asleep-navy-filter";
 import {
   type BedKind,
   DEFAULT_FIRMNESS,
@@ -84,6 +87,18 @@ function videoFitClass(bed: BedKind, kind: ClipKind) {
     return "configurator-stage-video-scn";
   }
   return undefined;
+}
+
+function videoNavyStyle(
+  kind: ClipKind,
+  navyFilterStyle: { filter: string } | undefined,
+) {
+  if (!navyFilterStyle) {
+    return undefined;
+  }
+  return kind === "packaging"
+    ? asleepNavyPackagingFilterStyle
+    : navyFilterStyle;
 }
 
 function videoHasPath(video: HTMLVideoElement, path: string) {
@@ -363,7 +378,7 @@ export function ConfiguratorVideos({
               playsInline
               preload="metadata"
               ref={videoARef}
-              style={navyFilterStyle}
+              style={videoNavyStyle(clipKind[0], navyFilterStyle)}
             />
             <video
               aria-hidden={visible !== 1}
@@ -376,7 +391,7 @@ export function ConfiguratorVideos({
               playsInline
               preload="metadata"
               ref={videoBRef}
-              style={navyFilterStyle}
+              style={videoNavyStyle(clipKind[1], navyFilterStyle)}
             />
           </div>
         </div>

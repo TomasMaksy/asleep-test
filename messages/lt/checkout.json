@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "title": "Apmokėjimas | asleep",
+    "title": "Apmokėjimas",
     "description": "Užbaikite asleep užsakymą."
   },
   "expressTitle": "Greitasis apmokėjimas",
@@ -102,7 +102,7 @@
     "home": "Grįžti į parduotuvę"
   },
   "thanks": {
-    "metaTitle": "Ačiū | asleep",
+    "metaTitle": "Ačiū",
     "metaDescription": "Jūsų asleep apmokėjimas baigtas.",
     "kicker": "Atsiprašome",
     "title": "Ačiū, {name}",

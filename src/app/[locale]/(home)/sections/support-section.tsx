@@ -33,6 +33,7 @@ export async function SupportSection() {
                   className="h-10 w-auto object-contain"
                   height={40}
                   src={item.icon}
+                  style={{ width: "auto" }}
                   width={40}
                 />
               </div>

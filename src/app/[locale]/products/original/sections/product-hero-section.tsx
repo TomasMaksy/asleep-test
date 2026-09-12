@@ -63,16 +63,12 @@ export async function ProductHeroSection() {
   return (
     <section className="border-[#ececec] border-b bg-white">
       <div className="relative flex flex-col bg-white 2xl:container lg:flex-row 2xl:mx-auto">
-        <div className="relative hidden w-full pb-3 lg:block lg:w-[55%]">
+        <div className="relative w-full max-lg:mb-6 lg:w-[55%] lg:pb-3">
           <ProductMediaGallery awardAlt="Consumentenbond 13-time winner" />
         </div>
 
         <div className="w-full lg:w-[45%] lg:px-0 lg:py-10 lg:pl-12 xl:pr-20 xl:pl-16 2xl:px-0 2xl:pt-12 2xl:pl-24">
           <div className="mx-auto w-full 2xl:max-w-[960px]">
-            <div className="mb-6 lg:hidden">
-              <ProductMediaGallery awardAlt="Consumentenbond 13-time winner" />
-            </div>
-
             <div className="flex flex-col px-5 lg:px-0">
               <h1
                 className="font-black text-[28px] text-brand-dark leading-[36px] tracking-heading"

@@ -149,7 +149,6 @@ function LayersVideo({
   const videoRef = useRef<HTMLVideoElement>(null);
   const navyFilterStyle = useAsleepNavyFilterStyle();
   const [playing, setPlaying] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -158,14 +157,12 @@ function LayersVideo({
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting) {
-          setIsVisible(true);
           video.load();
           void video
             .play()
             .then(() => setPlaying(true))
             .catch(() => {});
         } else {
-          setIsVisible(false);
           video.pause();
           setPlaying(false);
         }
@@ -197,7 +194,7 @@ function LayersVideo({
         loop
         muted
         playsInline
-        preload={isVisible ? "auto" : "none"}
+        preload="metadata"
         ref={videoRef}
         src={staticImageUrl(src)}
         style={navyFilterStyle}
@@ -392,6 +389,7 @@ function MobileGallery({
                   active.objectPosition ?? "object-center",
                 )}
                 fill
+                loading={active.id === "hero" ? "eager" : undefined}
                 priority={active.id === "hero"}
                 sizes="(min-width: 1024px) 55vw, 100vw"
                 src={staticImageUrl(active.src)}
@@ -402,10 +400,10 @@ function MobileGallery({
               <div className="pointer-events-none absolute top-0 left-4 z-10 w-24">
                 <Image
                   alt={awardAlt}
-                  className="h-auto w-full"
+                  className="w-full"
                   height={192}
                   src={staticImageUrl("/images/13-time-award.webp")}
-                  style={{ height: "auto" }}
+                  style={{ width: "100%", height: "auto" }}
                   width={112}
                 />
               </div>
@@ -498,6 +496,7 @@ function DesktopGallery({
           className="object-cover object-center"
           fill
           key={mainSrc}
+          loading="eager"
           priority
           sizes="(min-width: 1024px) 55vw, 100vw"
           src={staticImageUrl(mainSrc)}
@@ -506,11 +505,11 @@ function DesktopGallery({
         <div className="pointer-events-none absolute top-0 left-5 z-10 w-28 lg:left-10">
           <Image
             alt={awardAlt}
-            className="h-auto w-full"
+            className="w-full"
             height={192}
             priority
             src={staticImageUrl("/images/13-time-award.webp")}
-            style={{ height: "auto" }}
+            style={{ width: "100%", height: "auto" }}
             width={112}
           />
         </div>
@@ -538,26 +537,67 @@ function DesktopGallery({
   );
 }
 
+const DESKTOP_MQ = "(min-width: 1024px)";
+
+function useIsDesktopGallery() {
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const media = window.matchMedia(DESKTOP_MQ);
+    const update = () => setIsDesktop(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  return isDesktop;
+}
+
+function GalleryShell() {
+  return (
+    <div className="w-full">
+      <div className="relative w-full bg-surface pt-[100%]">
+        <Image
+          alt=""
+          className="object-cover object-center"
+          fill
+          loading="eager"
+          priority
+          sizes="(min-width: 1024px) 55vw, 100vw"
+          src={staticImageUrl(GALLERY.hero)}
+        />
+      </div>
+      <div className="mt-3 hidden grid-cols-2 gap-3 lg:grid">
+        <div className="aspect-390/488 bg-surface" />
+        <div className="aspect-390/488 bg-surface" />
+        <div className="aspect-390/488 bg-surface" />
+        <div className="aspect-390/488 bg-surface" />
+      </div>
+      <div className="relative px-5 pb-1 lg:hidden">
+        <div className="flex gap-2">
+          <div className="aspect-square w-18 shrink-0 rounded-xl bg-surface" />
+          <div className="aspect-square w-18 shrink-0 rounded-xl bg-surface" />
+          <div className="aspect-square w-18 shrink-0 rounded-xl bg-surface" />
+          <div className="aspect-square w-18 shrink-0 rounded-xl bg-surface" />
+          <div className="aspect-square w-18 shrink-0 rounded-xl bg-surface" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ProductMediaGallery({ awardAlt }: { awardAlt: string }) {
   const sizeId = useOriginalSizeStore((state) => state.sizeId);
   const packshot = packshotSrc(sizeId);
+  const isDesktop = useIsDesktopGallery();
 
-  return (
-    <>
-      <div className="lg:hidden">
-        <MobileGallery
-          awardAlt={awardAlt}
-          packshot={packshot}
-          sizeId={sizeId}
-        />
-      </div>
-      <div className="hidden lg:block">
-        <DesktopGallery
-          awardAlt={awardAlt}
-          packshot={packshot}
-          sizeId={sizeId}
-        />
-      </div>
-    </>
+  if (isDesktop === null) {
+    return <GalleryShell />;
+  }
+
+  return isDesktop ? (
+    <DesktopGallery awardAlt={awardAlt} packshot={packshot} sizeId={sizeId} />
+  ) : (
+    <MobileGallery awardAlt={awardAlt} packshot={packshot} sizeId={sizeId} />
   );
 }
