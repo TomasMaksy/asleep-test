@@ -108,11 +108,10 @@ export function ProductInfoSlider({
       
       img.onload = () => {
         loadedCount.current++;
-        if (loadedCount.current === FRAME_COUNT) {
-          framesRef.current = frames;
-        }
       };
     }
+
+    framesRef.current = frames;
 
     return () => {
       frames.forEach(img => {
@@ -311,17 +310,15 @@ export function ProductInfoSlider({
           </div>
 
           <div className="pointer-events-none absolute top-1/2 left-1/2 z-0 mx-auto -mt-16 h-auto max-h-[80vh] w-auto max-w-full -translate-x-1/2 -translate-y-1/2">
-            {framesRef.current[currentFrame] ? (
-              <Image
-                alt=""
-                className="h-auto max-h-[80vh] w-auto max-w-full object-contain"
-                height={FRAME_HEIGHT}
-                key={currentFrame}
-                priority={currentFrame === 0}
-                src={framesRef.current[currentFrame].src}
-                width={FRAME_WIDTH}
-              />
-            ) : null}
+            <Image
+              alt=""
+              className="h-auto max-h-[80vh] w-auto max-w-full object-contain"
+              height={FRAME_HEIGHT}
+              key={currentFrame}
+              priority={currentFrame === 0}
+              src={`/images/original-scroll/frames/frame_${String(currentFrame + 1).padStart(3, "0")}.webp`}
+              width={FRAME_WIDTH}
+            />
           </div>
           <div className="min-h-0 flex-1" />
 
