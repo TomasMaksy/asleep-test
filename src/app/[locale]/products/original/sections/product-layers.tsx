@@ -265,7 +265,7 @@ function LayerMedia({
     if (playPromise) {
       playPromise.catch(() => {});
     }
-  }, [shouldAutoPlay, item.id]);
+  }, [shouldAutoPlay]);
 
   if (!media) {
     return null;

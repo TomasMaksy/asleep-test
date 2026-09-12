@@ -38,7 +38,7 @@ export async function BundlesSection() {
                 />
               </div>
               <div className="px-6 pt-6 pb-8">
-                <h3 className="mb-4 font-heading font-extrabold text-brand-dark text-xl tracking-heading">
+                <h3 className="mb-4 font-extrabold font-heading text-brand-dark text-xl tracking-heading">
                   {bundle.title}
                 </h3>
                 <div className="flex flex-col gap-1 text-brand-dark text-rg leading-snug">

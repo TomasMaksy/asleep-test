@@ -7,10 +7,7 @@
     "awardsCaption": "Best-rated mattress"
   },
   "products": {
-    "heading": [
-      "Made for your sleep",
-      ""
-    ],
+    "heading": ["Made for your sleep", ""],
     "items": [
       {
         "id": "original",
@@ -361,10 +358,7 @@
   },
   "media": {
     "heading": "In the press",
-    "tabs": [
-      "Press",
-      "Awards"
-    ],
+    "tabs": ["Press", "Awards"],
     "quote": "\"The profit margins of the mattress market are unreasonably high.\"",
     "logos": [
       {

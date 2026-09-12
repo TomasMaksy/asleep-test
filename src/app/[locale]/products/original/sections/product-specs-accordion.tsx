@@ -50,7 +50,7 @@ export function ProductSpecsAccordion({
             <button
               aria-controls={`product-specs-panel-${index}`}
               aria-expanded={isOpen}
-              className="flex w-full cursor-pointer items-center justify-between gap-4 py-4 text-left font-bold text-base text-brand-dark leading-snug focus-visible:-outline-offset-2 focus-visible:outline-2 focus-visible:outline-brand"
+              className="flex w-full cursor-pointer items-center justify-between gap-4 py-4 text-left font-bold text-base text-brand-dark leading-snug focus-visible:outline-2 focus-visible:outline-brand focus-visible:-outline-offset-2"
               id={`product-specs-trigger-${index}`}
               onClick={() => toggle(index)}
               type="button"

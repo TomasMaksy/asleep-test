@@ -63,33 +63,19 @@
     "columns": [
       {
         "title": "Klausimai",
-        "links": [
-          "Kontaktai",
-          "Grąžinimas",
-          "DUK"
-        ]
+        "links": ["Kontaktai", "Grąžinimas", "DUK"]
       },
       {
         "title": "Sekite mus",
-        "links": [
-          "Facebook",
-          "Instagram",
-          "Twitter"
-        ]
+        "links": ["Facebook", "Instagram", "Twitter"]
       },
       {
         "title": "Apie mus",
-        "links": [
-          "Jobs"
-        ]
+        "links": ["Jobs"]
       },
       {
         "title": "asleep",
-        "links": [
-          "Garantija",
-          "Privatumo politika",
-          "Taisyklės ir sąlygos"
-        ]
+        "links": ["Garantija", "Privatumo politika", "Taisyklės ir sąlygos"]
       },
       {
         "title": "Produktai",

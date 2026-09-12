@@ -160,19 +160,22 @@ function LayersVideo({
         if (entry?.isIntersecting) {
           setIsVisible(true);
           video.load();
-          void video.play().then(() => setPlaying(true)).catch(() => {});
+          void video
+            .play()
+            .then(() => setPlaying(true))
+            .catch(() => {});
         } else {
           setIsVisible(false);
           video.pause();
           setPlaying(false);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
 
     observer.observe(video);
     return () => observer.disconnect();
-  }, [src]);
+  }, []);
 
   function togglePlayback() {
     const video = videoRef.current;

@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import { useRouter, usePathname } from "@/i18n/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { useConfiguratorOverlayStore } from "@/lib/configurator-overlay-store";
 import { cn } from "@/lib/utils";
 

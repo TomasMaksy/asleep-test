@@ -60,7 +60,8 @@
 }
 
 .input:focus-visible + .box {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand, #1a478a) 28%, transparent);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--color-brand, #1a478a) 28%, transparent);
 }
 
 .input:disabled + .box,

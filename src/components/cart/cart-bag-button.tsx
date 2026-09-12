@@ -40,7 +40,9 @@ export function CartBagButton({
           : hasCount
             ? "gap-2 py-2 pr-2 pl-3"
             : "size-10 justify-center",
-        compactOnMobile && hasCount && "lg:gap-2 lg:py-2 lg:pr-2 lg:pl-3 lg:w-auto",
+        compactOnMobile &&
+          hasCount &&
+          "lg:w-auto lg:gap-2 lg:py-2 lg:pr-2 lg:pl-3",
         className,
       )}
       onClick={openCart}
@@ -55,11 +57,10 @@ export function CartBagButton({
             compactOnMobile
               ? "absolute -top-1 -right-1 size-5 text-[11px] lg:static lg:top-auto lg:right-auto lg:text-sm"
               : null,
-            !compactOnMobile && (visibleCount > 9 ? "h-6 min-w-6 px-1" : "size-6"),
+            !compactOnMobile &&
+              (visibleCount > 9 ? "h-6 min-w-6 px-1" : "size-6"),
             compactOnMobile &&
-              (visibleCount > 9
-                ? "lg:h-6 lg:min-w-6 lg:px-1"
-                : "lg:size-6"),
+              (visibleCount > 9 ? "lg:h-6 lg:min-w-6 lg:px-1" : "lg:size-6"),
           )}
         >
           {visibleCount > 99 ? "99+" : visibleCount}

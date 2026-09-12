@@ -217,7 +217,7 @@ export function ReviewShareSheet({ isOpen, onClose }: ReviewShareSheetProps) {
                   <p className="font-bold text-brand-dark text-xl">
                     {t("successTitle")}
                   </p>
-                  <p className="text-brand-dark/70 text-base leading-7">
+                  <p className="text-base text-brand-dark/70 leading-7">
                     {t("successBody")}
                   </p>
                   <button

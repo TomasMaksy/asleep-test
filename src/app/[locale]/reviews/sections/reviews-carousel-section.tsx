@@ -27,11 +27,7 @@ function Stars() {
   return (
     <div aria-hidden="true" className="mb-5 flex gap-0.5">
       {["1", "2", "3", "4", "5"].map((key) => (
-        <svg
-          className="size-3.5 fill-[#f9ce23]"
-          key={key}
-          viewBox="0 0 20 20"
-        >
+        <svg className="size-3.5 fill-[#f9ce23]" key={key} viewBox="0 0 20 20">
           <path d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.5L10 14.9l-4.94 2.6.94-5.5-4-3.9 5.53-.8L10 1.5z" />
         </svg>
       ))}
@@ -43,10 +39,10 @@ function ReviewColumn({ item }: { item: CarouselItem }) {
   return (
     <article className="flex w-[calc(100vw-6rem)] shrink-0 flex-col sm:w-[340px] lg:w-[360px]">
       <Stars />
-      <h3 className="font-bold text-brand-dark text-base leading-snug md:text-lg">
+      <h3 className="font-bold text-base text-brand-dark leading-snug md:text-lg">
         {item.title}
       </h3>
-      <p className="mt-4 text-brand-dark/75 text-base leading-7">{item.body}</p>
+      <p className="mt-4 text-base text-brand-dark/75 leading-7">{item.body}</p>
       <p className="mt-8 text-brand-dark/40 text-sm">{item.date}</p>
     </article>
   );
@@ -97,17 +93,11 @@ export function ReviewsCarouselSection() {
     if (!viewport || !track || !card) return;
 
     const styles = window.getComputedStyle(track);
-    const gap =
-      Number.parseFloat(styles.columnGap || styles.gap || "0") || 40;
+    const gap = Number.parseFloat(styles.columnGap || styles.gap || "0") || 40;
     const nextStep = card.offsetWidth + gap;
-    const nextMaxScroll = Math.max(
-      0,
-      track.scrollWidth - viewport.clientWidth,
-    );
+    const nextMaxScroll = Math.max(0, track.scrollWidth - viewport.clientWidth);
     const nextMax =
-      nextStep > 0
-        ? Math.max(0, Math.ceil(nextMaxScroll / nextStep))
-        : 0;
+      nextStep > 0 ? Math.max(0, Math.ceil(nextMaxScroll / nextStep)) : 0;
 
     setStep(nextStep);
     setMaxScroll(nextMaxScroll);
@@ -123,7 +113,7 @@ export function ReviewsCarouselSection() {
     measure();
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
-  }, [measure, items.length]);
+  }, [measure]);
 
   return (
     <section

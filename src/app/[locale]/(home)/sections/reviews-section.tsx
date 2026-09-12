@@ -175,7 +175,12 @@ export async function ReviewsSection({
         <div className="absolute inset-0 hidden md:block">
           {cards.map((card) => (
             <ReviewCard
-              card={layoutCard(card, CARD_SIZE, DESKTOP_SPREAD_X, DESKTOP_SPREAD_Y)}
+              card={layoutCard(
+                card,
+                CARD_SIZE,
+                DESKTOP_SPREAD_X,
+                DESKTOP_SPREAD_Y,
+              )}
               key={`d-${card.quote}-${card.left}`}
               sourceLabels={sourceLabels}
             />
@@ -184,7 +189,12 @@ export async function ReviewsSection({
         <div className="absolute inset-0 md:hidden">
           {cardsMobile.map((card) => (
             <ReviewCard
-              card={layoutCard(card, CARD_SIZE_MOBILE, MOBILE_SPREAD_X, MOBILE_SPREAD_Y)}
+              card={layoutCard(
+                card,
+                CARD_SIZE_MOBILE,
+                MOBILE_SPREAD_X,
+                MOBILE_SPREAD_Y,
+              )}
               key={`m-${card.quote}-${card.left}`}
               sourceLabels={sourceLabels}
             />

@@ -47,10 +47,7 @@ export function ReviewsHeroSection() {
           {ratings.map((item) => {
             const isAsleep = item.label.toLowerCase() === "asleep";
             return (
-              <li
-                className="flex flex-col items-center gap-4"
-                key={item.label}
-              >
+              <li className="flex flex-col items-center gap-4" key={item.label}>
                 <p className="text-sm text-white md:text-base">{t("rating")}</p>
                 <div className="flex h-8 w-full items-center justify-center md:h-9">
                   <Image

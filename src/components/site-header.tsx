@@ -106,7 +106,7 @@ export async function SiteHeader({
             ))}
           </nav>
 
-          <div className="ml-auto flex shrink-0 items-center justify-end gap-2 lg:flex-1 lg:ml-0 xl:gap-5">
+          <div className="ml-auto flex shrink-0 items-center justify-end gap-2 lg:ml-0 lg:flex-1 xl:gap-5">
             <LanguageSwitcher compactOnMobile solid={isSolid} />
 
             <Link

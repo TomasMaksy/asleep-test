@@ -7,10 +7,7 @@
     "awardsCaption": "Geriausiai įvertintas čiužinys"
   },
   "products": {
-    "heading": [
-      "Sukurtas tavo miegu",
-      ""
-    ],
+    "heading": ["Sukurtas tavo miegu", ""],
     "items": [
       {
         "id": "original",
@@ -361,10 +358,7 @@
   },
   "media": {
     "heading": "Spaudoje",
-    "tabs": [
-      "Spauda",
-      "Apdovanojimai"
-    ],
+    "tabs": ["Spauda", "Apdovanojimai"],
     "quote": "\"The profit margins of the mattress market are unreasonably high.\"",
     "logos": [
       {

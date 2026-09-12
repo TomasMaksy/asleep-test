@@ -63,33 +63,19 @@
     "columns": [
       {
         "title": "Questions",
-        "links": [
-          "Contact",
-          "Return Request",
-          "FAQ"
-        ]
+        "links": ["Contact", "Return Request", "FAQ"]
       },
       {
         "title": "Follow us",
-        "links": [
-          "Facebook",
-          "Instagram",
-          "Twitter"
-        ]
+        "links": ["Facebook", "Instagram", "Twitter"]
       },
       {
         "title": "About",
-        "links": [
-          "Jobs"
-        ]
+        "links": ["Jobs"]
       },
       {
         "title": "Sleepinducing",
-        "links": [
-          "Warranty",
-          "Privacy policy",
-          "Terms & Conditions"
-        ]
+        "links": ["Warranty", "Privacy policy", "Terms & Conditions"]
       },
       {
         "title": "Products",
