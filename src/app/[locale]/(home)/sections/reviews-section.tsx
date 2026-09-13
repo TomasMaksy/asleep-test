@@ -18,7 +18,7 @@ type SourceLabels = Record<ReviewSource, string>;
 
 const STAR_KEYS = ["s1", "s2", "s3", "s4", "s5"] as const;
 const CARD_SIZE = 0.75;
-/** Keep mobile card width ratio (not skinnier) — size down with CSS scale instead. */
+/** Same width ratio as before — don’t squeeze cards skinny on mobile. */
 const CARD_SIZE_MOBILE = 0.58;
 const DESKTOP_SPREAD_X = 0.88;
 const DESKTOP_SPREAD_Y = 0.9;
