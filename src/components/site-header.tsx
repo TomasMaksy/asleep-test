@@ -75,6 +75,7 @@ export async function SiteHeader({
           <div className="flex shrink-0 items-center lg:flex-1">
             <MobileNav
               links={navLinks}
+              menuLabel={t("menu")}
               reviewsLabel={t("reviews")}
               solid={isSolid}
             />

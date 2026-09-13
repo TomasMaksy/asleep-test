@@ -58,6 +58,8 @@
   "footer": {
     "newsletter": "Subscribe to our newsletter",
     "subscribe": "Subscribe",
+    "subscribed": "Subscribed",
+    "subscribedAria": "Subscribed",
     "payments": "Payment methods",
     "marquee": "Rest well with asleep",
     "columns": [

@@ -1,8 +1,3 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { needsHevcAlphaVideo } from "@/lib/transparent-video";
-
 export const ASLEEP_NAVY_FILTER_ID = "asleep-navy-match";
 export const ASLEEP_NAVY_PACKAGING_FILTER_ID = "asleep-navy-match-packaging";
 export const ASLEEP_NAVY_SCROLL_FILTER_ID = "asleep-navy-match-scroll";
@@ -18,34 +13,6 @@ export const asleepNavyPackagingFilterStyle = {
 export const asleepNavyScrollFilterStyle = {
   filter: `url(#${ASLEEP_NAVY_SCROLL_FILTER_ID})`,
 } as const;
-
-export function useAsleepNavyFilterStyle() {
-  const [style, setStyle] = useState<typeof asleepNavyFilterStyle | undefined>(
-    undefined,
-  );
-
-  useEffect(() => {
-    if (!needsHevcAlphaVideo()) {
-      setStyle(asleepNavyFilterStyle);
-    }
-  }, []);
-
-  return style;
-}
-
-export function useAsleepNavyScrollFilterStyle() {
-  const [style, setStyle] = useState<
-    typeof asleepNavyScrollFilterStyle | undefined
-  >(undefined);
-
-  useEffect(() => {
-    if (!needsHevcAlphaVideo()) {
-      setStyle(asleepNavyScrollFilterStyle);
-    }
-  }, []);
-
-  return style;
-}
 
 function NavyTintFilter({
   amount = 1,

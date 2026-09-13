@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useAsleepNavyScrollFilterStyle } from "@/components/asleep-navy-filter";
+import { useAsleepNavyScrollFilterStyle } from "@/components/asleep-navy-filter-style";
 import {
   ADJUSTABLE_FRAME_HEIGHT,
   ADJUSTABLE_FRAME_WIDTH,

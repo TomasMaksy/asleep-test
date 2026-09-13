@@ -12,10 +12,14 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   reactStrictMode: false,
   devIndicators: false,
+  experimental: {
+    globalNotFound: true,
+  },
   allowedDevOrigins: [...(ngrokHost ? [ngrokHost] : []), "*.ngrok-free.dev"],
   images: {
     dangerouslyAllowSVG: true,
     contentDispositionType: "inline",
+    qualities: [75, 80],
     remotePatterns: [
       {
         protocol: "https",

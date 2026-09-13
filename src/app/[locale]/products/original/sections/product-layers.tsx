@@ -1,16 +1,11 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import {
-  AnimatePresence,
-  motion,
-  type PanInfo,
-  useDragControls,
-  useReducedMotion,
-} from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
-import { useEffect, useId, useRef, useState } from "react";
+import { type PointerEvent, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { staticImageUrl } from "@/lib/static-image-url";
 import { cn } from "@/lib/utils";
 
 export type LayerItem = {
@@ -100,24 +95,25 @@ const NAV_IDS = [
   "cover",
 ] as const;
 
+function layerVideo(name: string) {
+  return {
+    type: "video" as const,
+    src: `/images/product-layers/${name}.mp4`,
+    poster: `/images/product-layers/${name}.webp`,
+  };
+}
+
 const MEDIA: Record<
   string,
-  { type: "video" | "image"; src: string } | undefined
+  | { type: "video"; src: string; poster: string }
+  | { type: "image"; src: string }
+  | undefined
 > = {
-  tencel: { type: "video", src: "/images/product-layers/tencel.mp4" },
-  hypersupport: {
-    type: "video",
-    src: "/images/product-layers/hypersupport.mp4",
-  },
-  memoryFoam: { type: "video", src: "/images/product-layers/memory-foam.mp4" },
-  coldFoamSoft: {
-    type: "video",
-    src: "/images/product-layers/cold-foam-soft.mp4",
-  },
-  coldFoamFirm: {
-    type: "video",
-    src: "/images/product-layers/cold-foam-firm.mp4",
-  },
+  tencel: layerVideo("tencel"),
+  hypersupport: layerVideo("hypersupport"),
+  memoryFoam: layerVideo("memory-foam"),
+  coldFoamSoft: layerVideo("cold-foam-soft"),
+  coldFoamFirm: layerVideo("cold-foam-firm"),
   nonSlip: { type: "image", src: "/images/product-layers/non-slip.jpg" },
   cover: { type: "image", src: "/images/product-layers/cover.jpg" },
 };
@@ -252,6 +248,7 @@ function LayerMedia({
   shouldAutoPlay?: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(false);
   const media = MEDIA[item.id];
 
   useEffect(() => {
@@ -260,11 +257,17 @@ function LayerMedia({
       return;
     }
 
-    video.load();
-    const playPromise = video.play();
-    if (playPromise) {
-      playPromise.catch(() => {});
+    const play = () => {
+      void video.play().catch(() => {});
+    };
+
+    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      play();
+      return;
     }
+
+    video.addEventListener("canplay", play);
+    return () => video.removeEventListener("canplay", play);
   }, [shouldAutoPlay]);
 
   if (!media) {
@@ -272,19 +275,33 @@ function LayerMedia({
   }
 
   return (
-    <div className={cn("overflow-hidden", className)}>
+    <div className={cn("relative overflow-hidden bg-brand-muted", className)}>
       {media.type === "video" ? (
-        <video
-          className="h-full w-full object-cover"
-          key={item.id}
-          loop
-          muted
-          playsInline
-          preload={shouldAutoPlay ? "auto" : "none"}
-          ref={videoRef}
-        >
-          <source src={media.src} type="video/mp4" />
-        </video>
+        <>
+          {/* biome-ignore lint/performance/noImgElement: tiny static poster, skip the image optimizer */}
+          <img
+            alt=""
+            aria-hidden
+            className="absolute inset-0 size-full object-cover"
+            decoding="async"
+            fetchPriority={shouldAutoPlay ? "high" : "low"}
+            src={staticImageUrl(media.poster)}
+          />
+          <video
+            className={cn(
+              "absolute inset-0 size-full object-cover transition-opacity duration-300",
+              playing ? "opacity-100" : "opacity-0",
+            )}
+            loop
+            muted
+            onPlaying={() => setPlaying(true)}
+            playsInline
+            poster={staticImageUrl(media.poster)}
+            preload={shouldAutoPlay ? "auto" : "none"}
+            ref={videoRef}
+            src={staticImageUrl(media.src)}
+          />
+        </>
       ) : (
         <Image
           alt={item.mediaAlt}
@@ -367,7 +384,13 @@ function LayerPopup({
   total: number;
 }) {
   const titleId = useId();
-  const dragControls = useDragControls();
+  const swipeRef = useRef<{
+    axis: "x" | "y" | null;
+    time: number;
+    x: number;
+    y: number;
+  } | null>(null);
+  const sheetRef = useRef<HTMLElement>(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -399,13 +422,74 @@ function LayerPopup({
     };
   }, [isOpen, onClose, onNext, onPrev]);
 
-  function onDragEnd(_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) {
-    if (reduceMotion) {
+  useEffect(() => {
+    const node = sheetRef.current;
+    if (!isOpen || !node) {
       return;
     }
-    if (info.offset.x < -48 || info.velocity.x < -500) {
+
+    const onTouchMove = (event: TouchEvent) => {
+      const swipe = swipeRef.current;
+      const touch = event.touches[0];
+      if (!swipe || !touch) {
+        return;
+      }
+      if (!swipe.axis) {
+        const dx = touch.clientX - swipe.x;
+        const dy = touch.clientY - swipe.y;
+        if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
+          return;
+        }
+        swipe.axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+      }
+      if (swipe.axis === "x") {
+        event.preventDefault();
+      }
+    };
+
+    node.addEventListener("touchmove", onTouchMove, { passive: false });
+    return () => node.removeEventListener("touchmove", onTouchMove);
+  }, [isOpen]);
+
+  function onSwipePointerDown(event: PointerEvent<HTMLDivElement>) {
+    if (reduceMotion || event.button !== 0) {
+      return;
+    }
+    if ((event.target as HTMLElement | null)?.closest("button, a, input")) {
+      return;
+    }
+    swipeRef.current = {
+      axis: null,
+      time: event.timeStamp,
+      x: event.clientX,
+      y: event.clientY,
+    };
+  }
+
+  function onSwipePointerMove(event: PointerEvent<HTMLDivElement>) {
+    const swipe = swipeRef.current;
+    if (!swipe || swipe.axis) {
+      return;
+    }
+    const dx = event.clientX - swipe.x;
+    const dy = event.clientY - swipe.y;
+    if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
+      return;
+    }
+    swipe.axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+  }
+
+  function onSwipePointerUp(event: PointerEvent<HTMLDivElement>) {
+    const swipe = swipeRef.current;
+    swipeRef.current = null;
+    if (!swipe || swipe.axis === "y" || reduceMotion) {
+      return;
+    }
+    const dx = event.clientX - swipe.x;
+    const velocity = dx / Math.max(1, event.timeStamp - swipe.time);
+    if (dx < -48 || velocity < -0.45) {
       onNext();
-    } else if (info.offset.x > 48 || info.velocity.x > 500) {
+    } else if (dx > 48 || velocity > 0.45) {
       onPrev();
     }
   }
@@ -436,6 +520,7 @@ function LayerPopup({
             initial={reduceMotion ? false : { y: "110%" }}
             animate={{ y: 0 }}
             exit={reduceMotion ? { opacity: 0 } : { y: "110%" }}
+            ref={sheetRef}
             role="dialog"
             transition={reduceMotion ? { duration: 0 } : sheetSpring}
           >
@@ -456,33 +541,26 @@ function LayerPopup({
                   animate="center"
                   className="absolute inset-0 flex flex-col"
                   custom={direction}
-                  drag={reduceMotion ? false : "x"}
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragControls={dragControls}
-                  dragElastic={0.16}
-                  dragListener={false}
                   exit="exit"
                   initial="enter"
                   key={item.id}
-                  onDragEnd={onDragEnd}
                   transition={reduceMotion ? { duration: 0 } : slideTransition}
                   variants={slideVariants}
                 >
-                  <motion.div
-                    className="shrink-0 touch-none"
-                    onPointerDown={(event) => {
-                      if (!reduceMotion) {
-                        dragControls.start(event);
-                      }
+                  <div
+                    className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-14 pb-2"
+                    onPointerCancel={() => {
+                      swipeRef.current = null;
                     }}
+                    onPointerDown={onSwipePointerDown}
+                    onPointerMove={onSwipePointerMove}
+                    onPointerUp={onSwipePointerUp}
                   >
                     <LayerMedia
-                      className="aspect-[16/10] w-full shrink-0"
+                      className="mb-5 aspect-16/10 w-3/5 rounded-3xl"
                       item={item}
                       shouldAutoPlay={true}
                     />
-                  </motion.div>
-                  <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-5 pb-2">
                     <p className="mb-2 font-medium text-brand text-xs uppercase tracking-[0.18em]">
                       {String(index + 1).padStart(2, "0")} /{" "}
                       {String(total).padStart(2, "0")}
@@ -632,6 +710,19 @@ export function ProductLayers({
       setPopupOpen(false);
     }
   }, [isDesktop]);
+
+  useEffect(() => {
+    if (!expanded) {
+      return;
+    }
+    for (const asset of Object.values(MEDIA)) {
+      if (asset?.type !== "video") {
+        continue;
+      }
+      const preload = new window.Image();
+      preload.src = staticImageUrl(asset.poster);
+    }
+  }, [expanded]);
 
   function select(id: string, nextDirection = 1) {
     setDirection(nextDirection);

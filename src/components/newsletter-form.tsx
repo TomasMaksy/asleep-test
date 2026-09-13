@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -15,15 +14,9 @@ function isValidEmail(value: string) {
 
 function Spinner() {
   return (
-    <motion.span
+    <span
       aria-hidden="true"
-      animate={{ rotate: 360 }}
-      className="size-[14px] rounded-full border-2 border-[#1A478A]/25 border-t-[#1A478A]"
-      transition={{
-        duration: 0.7,
-        ease: "linear",
-        repeat: Number.POSITIVE_INFINITY,
-      }}
+      className="size-[14px] animate-spin rounded-full border-2 border-[#1A478A]/25 border-t-[#1A478A]"
     />
   );
 }
@@ -36,15 +29,12 @@ function CheckIcon() {
       fill="none"
       viewBox="0 0 14 14"
     >
-      <motion.path
-        animate={{ pathLength: 1 }}
+      <path
         d="M2.5 7.2 5.6 10.2 11.5 3.8"
-        initial={{ pathLength: 0 }}
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="1.75"
-        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       />
     </svg>
   );
@@ -54,7 +44,6 @@ export function NewsletterForm() {
   const t = useTranslations("footer");
   const inputId = useId();
   const messageId = useId();
-  const reduceMotion = useReducedMotion();
 
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
@@ -125,11 +114,7 @@ export function NewsletterForm() {
       }
 
       setStatus("ok");
-      setMessage(
-        data.alreadySubscribed
-          ? "You're already on the list."
-          : "Thanks — you're on the list.",
-      );
+      setMessage("");
       setEmail("");
       setTouched(false);
     } catch {
@@ -138,11 +123,13 @@ export function NewsletterForm() {
     }
   }
 
+  const subscribedLabel = t("subscribed");
+  const showSubscribedText = subscribedLabel.length > 0;
   const buttonLabel =
     status === "loading"
-      ? "Subscribing"
+      ? t("subscribe")
       : status === "ok"
-        ? "Subscribed"
+        ? subscribedLabel
         : t("subscribe");
 
   return (
@@ -164,7 +151,7 @@ export function NewsletterForm() {
           )}
         >
           <input
-            aria-describedby={message ? messageId : undefined}
+            aria-describedby={hasClientError && message ? messageId : undefined}
             aria-invalid={hasClientError || undefined}
             aria-label={t("newsletter")}
             autoComplete="email"
@@ -172,7 +159,9 @@ export function NewsletterForm() {
               "newsletter-input h-full w-full min-w-0 border-0 bg-transparent py-2 pr-5 pl-5 text-base text-white outline-none ring-0",
               "placeholder:font-normal placeholder:text-base placeholder:text-white/85",
               "disabled:cursor-not-allowed disabled:opacity-70",
-              "md:pr-[7.75rem] md:text-rg md:placeholder:text-rg",
+              isSuccess && !showSubscribedText
+                ? "md:pr-14 md:text-rg md:placeholder:text-rg"
+                : "md:pr-[7.75rem] md:text-rg md:placeholder:text-rg",
             )}
             disabled={isBusy}
             id={inputId}
@@ -200,63 +189,41 @@ export function NewsletterForm() {
         </div>
 
         <div className="self-start md:absolute md:top-1.5 md:right-1.5">
-          <motion.button
+          <button
+            aria-label={isSuccess ? t("subscribedAria") : undefined}
             aria-live="polite"
             className={cn(
-              "relative inline-flex h-10 min-w-[7.25rem] cursor-pointer items-center justify-center overflow-hidden rounded-full px-5 font-sans text-sm leading-none tracking-normal",
-              "bg-white text-[#1A478A] transition-colors duration-300 ease-out",
+              "relative inline-flex h-10 cursor-pointer items-center justify-center overflow-hidden rounded-full font-sans text-sm leading-none tracking-normal",
+              "bg-white text-[#1A478A] transition-[width,padding,background-color,color] duration-300 ease-out",
               "hover:bg-[#2B2D41] hover:text-white",
               "disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-[#1A478A]",
-              isSuccess &&
-                "bg-emerald-400 text-[#12301f] hover:bg-[#2B2D41] hover:text-white",
+              isSuccess && showSubscribedText
+                ? "min-w-[7.25rem] bg-emerald-400 px-5 text-[#12301f] hover:bg-[#2B2D41] hover:text-white"
+                : isSuccess
+                  ? "size-10 min-w-10 bg-emerald-400 px-0 text-[#12301f] hover:bg-[#2B2D41] hover:text-white"
+                  : "min-w-[7.25rem] px-5",
             )}
             disabled={isBusy}
             type="submit"
-            whileTap={reduceMotion || isBusy ? undefined : { scale: 0.98 }}
           >
-            <AnimatePresence initial={false} mode="popLayout">
-              <motion.span
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                className="inline-flex items-center gap-2"
-                exit={{ opacity: 0, y: 6, filter: "blur(4px)" }}
-                initial={{ opacity: 0, y: -6, filter: "blur(4px)" }}
-                key={status === "loading" ? "loading" : status}
-                transition={{
-                  duration: reduceMotion ? 0 : 0.22,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                {status === "loading" ? <Spinner /> : null}
-                {status === "ok" ? <CheckIcon /> : null}
-                <span>{buttonLabel}</span>
-              </motion.span>
-            </AnimatePresence>
-          </motion.button>
+            <span className="inline-flex items-center gap-2">
+              {status === "loading" ? <Spinner /> : null}
+              {status === "ok" ? <CheckIcon /> : null}
+              {buttonLabel ? <span>{buttonLabel}</span> : null}
+            </span>
+          </button>
         </div>
       </div>
 
-      <div aria-live="polite" className="min-h-[1.5rem] pt-2" id={messageId}>
-        <AnimatePresence mode="wait">
-          {message ? (
-            <motion.p
-              animate={{ opacity: 1, y: 0 }}
-              className={cn(
-                "text-base leading-snug",
-                status === "ok" ? "text-emerald-300" : "text-red-300",
-              )}
-              exit={{ opacity: 0, y: -4 }}
-              initial={{ opacity: 0, y: 4 }}
-              key={`${status}-${message}`}
-              transition={{
-                duration: reduceMotion ? 0 : 0.2,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-            >
-              {message}
-            </motion.p>
-          ) : null}
-        </AnimatePresence>
-      </div>
+      {status === "error" && message ? (
+        <p
+          aria-live="polite"
+          className="min-h-[1.5rem] pt-2 text-base text-red-300 leading-snug"
+          id={messageId}
+        >
+          {message}
+        </p>
+      ) : null}
     </form>
   );
 }

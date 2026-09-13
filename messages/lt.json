@@ -58,6 +58,8 @@
   "footer": {
     "newsletter": "Prenumeruokite naujienlaiškį",
     "subscribe": "Siųsti",
+    "subscribed": "",
+    "subscribedAria": "Prenumeruota",
     "payments": "Mokėjimo būdai",
     "marquee": "Susitiksime sapnuose",
     "columns": [

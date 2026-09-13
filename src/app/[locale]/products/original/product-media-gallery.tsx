@@ -10,29 +10,41 @@ import {
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
-import { useAsleepNavyFilterStyle } from "@/components/asleep-navy-filter";
+import { useAsleepNavyFilterStyle } from "@/components/asleep-navy-filter-style";
 import type { Locale } from "@/i18n/routing";
 import { useOriginalSizeStore } from "@/lib/product-original-size-store";
 import {
   layersAnimationSrc,
+  layersStripThumbSrc,
+  layersThumbSrc,
   type MattressSizeId,
   packshotSrc,
+  packshotThumbSrc,
 } from "@/lib/product-original-sizes";
 import { staticImageUrl } from "@/lib/static-image-url";
 import { cn } from "@/lib/utils";
 
 const GALLERY = {
   hero: "/images/product-gallery/hero-square.webp",
+  heroThumb: "/images/product-gallery/thumbs/hero.webp",
   lifestyle: "/images/product-gallery/lifestyle.webp",
+  lifestyleThumb: "/images/product-gallery/thumbs/lifestyle.webp",
   benefits: {
     lt: "/images/product-gallery/benefits.webp",
     en: "/images/product-gallery/benefits-en.webp",
   },
-  layersThumb: "/images/configurator/section.webp",
+  benefitsThumb: {
+    lt: "/images/product-gallery/thumbs/benefits.webp",
+    en: "/images/product-gallery/thumbs/benefits-en.webp",
+  },
 } as const;
 
 function benefitsSrc(locale: string) {
   return GALLERY.benefits[locale as Locale] ?? GALLERY.benefits.lt;
+}
+
+function benefitsThumbSrc(locale: string) {
+  return GALLERY.benefitsThumb[locale as Locale] ?? GALLERY.benefitsThumb.lt;
 }
 
 type SlideId = "hero" | "packshot" | "lifestyle" | "layers" | "benefits";
@@ -42,6 +54,7 @@ type Slide = {
   type: "image" | "video";
   src: string;
   thumb: string;
+  poster?: string;
   altKey:
     | "heroAlt"
     | "packshotAlt"
@@ -51,45 +64,53 @@ type Slide = {
   objectPosition?: string;
 };
 
+const GALLERY_QUALITY = 80;
+
 function gallerySlides(
   packshot: string,
+  packshotThumb: string,
   layersVideo: string,
+  layersPoster: string,
+  layersThumb: string,
   benefits: string,
+  benefitsThumb: string,
 ): Slide[] {
   return [
     {
       id: "hero",
       type: "image",
       src: GALLERY.hero,
-      thumb: GALLERY.hero,
+      thumb: GALLERY.heroThumb,
       altKey: "heroAlt",
     },
     {
       id: "packshot",
       type: "image",
       src: packshot,
-      thumb: packshot,
+      thumb: packshotThumb,
       altKey: "packshotAlt",
     },
     {
       id: "lifestyle",
       type: "image",
       src: GALLERY.lifestyle,
-      thumb: GALLERY.lifestyle,
+      thumb: GALLERY.lifestyleThumb,
       altKey: "lifestyleAlt",
     },
     {
       id: "layers",
       type: "video",
       src: layersVideo,
-      thumb: GALLERY.layersThumb,
+      thumb: layersThumb,
+      poster: layersPoster,
       altKey: "layersAlt",
+      objectPosition: "object-[center_68%]",
     },
     {
       id: "benefits",
       type: "image",
       src: benefits,
-      thumb: benefits,
+      thumb: benefitsThumb,
       altKey: "benefitsAlt",
       objectPosition: "object-top",
     },
@@ -138,11 +159,13 @@ function slideDirection(fromId: SlideId, toId: SlideId) {
 function LayersVideo({
   pauseLabel,
   playLabel,
+  poster,
   src,
   className,
 }: {
   pauseLabel: string;
   playLabel: string;
+  poster: string;
   src: string;
   className?: string;
 }) {
@@ -190,10 +213,11 @@ function LayersVideo({
   return (
     <div className={cn("relative overflow-hidden bg-[#f0f0f0]", className)}>
       <video
-        className="absolute inset-0 size-full object-cover"
+        className="absolute inset-0 size-full object-cover object-[center_68%]"
         loop
         muted
         playsInline
+        poster={staticImageUrl(poster)}
         preload="metadata"
         ref={videoRef}
         src={staticImageUrl(src)}
@@ -233,7 +257,9 @@ function GalleryTile({
         alt={alt}
         className={`object-cover ${objectPosition}`}
         fill
+        key={src}
         priority={priority}
+        quality={GALLERY_QUALITY}
         sizes="(min-width: 1024px) 28vw, 50vw"
         src={staticImageUrl(src)}
       />
@@ -299,8 +325,12 @@ function MobileGallery({
   const previousSizeId = useRef(sizeId);
   const slides = gallerySlides(
     packshot,
+    packshotThumbSrc(sizeId),
     layersAnimationSrc(sizeId),
+    layersThumbSrc(sizeId),
+    layersStripThumbSrc(sizeId),
     benefitsSrc(locale),
+    benefitsThumbSrc(locale),
   );
   const active = slides.find((slide) => slide.id === activeId) ?? slides[0];
   const duration = reduceMotion ? 0 : slideTransition.duration;
@@ -379,6 +409,7 @@ function MobileGallery({
                 key={active.src}
                 pauseLabel={t("pauseAnimation")}
                 playLabel={t("playAnimation")}
+                poster={active.poster ?? active.thumb}
                 src={active.src}
               />
             ) : (
@@ -391,6 +422,7 @@ function MobileGallery({
                 fill
                 loading={active.id === "hero" ? "eager" : undefined}
                 priority={active.id === "hero"}
+                quality={GALLERY_QUALITY}
                 sizes="(min-width: 1024px) 55vw, 100vw"
                 src={staticImageUrl(active.src)}
               />
@@ -436,8 +468,11 @@ function MobileGallery({
                         slide.objectPosition ?? "object-center",
                       )}
                       fill
+                      key={slide.thumb}
+                      loading="eager"
                       sizes="72px"
                       src={staticImageUrl(slide.thumb)}
+                      unoptimized
                     />
                   </span>
                   {selected ? (
@@ -487,6 +522,7 @@ function DesktopGallery({
   const tileSrc = sizeActive ? GALLERY.hero : packshot;
   const tileAlt = sizeActive ? t("heroAlt") : t("packshotAlt");
   const layersVideo = layersAnimationSrc(sizeId);
+  const layersThumb = layersThumbSrc(sizeId);
 
   return (
     <div className="flex w-full flex-col gap-3">
@@ -498,6 +534,7 @@ function DesktopGallery({
           key={mainSrc}
           loading="eager"
           priority
+          quality={GALLERY_QUALITY}
           sizes="(min-width: 1024px) 55vw, 100vw"
           src={staticImageUrl(mainSrc)}
         />
@@ -525,6 +562,7 @@ function DesktopGallery({
           key={layersVideo}
           pauseLabel={t("pauseAnimation")}
           playLabel={t("playAnimation")}
+          poster={layersThumb}
           src={layersVideo}
         />
         <GalleryTile
@@ -540,7 +578,7 @@ function DesktopGallery({
 const DESKTOP_MQ = "(min-width: 1024px)";
 
 function useIsDesktopGallery() {
-  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
     const media = window.matchMedia(DESKTOP_MQ);
@@ -553,47 +591,10 @@ function useIsDesktopGallery() {
   return isDesktop;
 }
 
-function GalleryShell() {
-  return (
-    <div className="w-full">
-      <div className="relative w-full bg-surface pt-[100%]">
-        <Image
-          alt=""
-          className="object-cover object-center"
-          fill
-          loading="eager"
-          priority
-          sizes="(min-width: 1024px) 55vw, 100vw"
-          src={staticImageUrl(GALLERY.hero)}
-        />
-      </div>
-      <div className="mt-3 hidden grid-cols-2 gap-3 lg:grid">
-        <div className="aspect-390/488 bg-surface" />
-        <div className="aspect-390/488 bg-surface" />
-        <div className="aspect-390/488 bg-surface" />
-        <div className="aspect-390/488 bg-surface" />
-      </div>
-      <div className="relative px-5 pb-1 lg:hidden">
-        <div className="flex gap-2">
-          <div className="aspect-square w-18 shrink-0 rounded-xl bg-surface" />
-          <div className="aspect-square w-18 shrink-0 rounded-xl bg-surface" />
-          <div className="aspect-square w-18 shrink-0 rounded-xl bg-surface" />
-          <div className="aspect-square w-18 shrink-0 rounded-xl bg-surface" />
-          <div className="aspect-square w-18 shrink-0 rounded-xl bg-surface" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function ProductMediaGallery({ awardAlt }: { awardAlt: string }) {
   const sizeId = useOriginalSizeStore((state) => state.sizeId);
   const packshot = packshotSrc(sizeId);
   const isDesktop = useIsDesktopGallery();
-
-  if (isDesktop === null) {
-    return <GalleryShell />;
-  }
 
   return isDesktop ? (
     <DesktopGallery awardAlt={awardAlt} packshot={packshot} sizeId={sizeId} />

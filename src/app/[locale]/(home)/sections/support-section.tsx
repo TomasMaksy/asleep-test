@@ -27,14 +27,13 @@ export async function SupportSection() {
               className="reveal flex flex-col items-center gap-y-6 text-center md:gap-y-12"
               key={item.title}
             >
-              <div className="flex h-10 items-center justify-center">
+              <div className="relative size-10">
                 <Image
                   alt=""
-                  className="h-10 w-auto object-contain"
-                  height={40}
+                  className="object-contain"
+                  fill
+                  sizes="40px"
                   src={item.icon}
-                  style={{ width: "auto" }}
-                  width={40}
                 />
               </div>
               <div className="mx-auto flex w-64 max-w-full flex-col gap-2 text-brand-dark leading-6">

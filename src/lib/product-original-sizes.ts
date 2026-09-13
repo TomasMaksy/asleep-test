@@ -186,10 +186,26 @@ export function packshotSrc(id: MattressSizeId) {
   return `/images/product-gallery/sizes/${id}.webp`;
 }
 
+export function packshotThumbSrc(id: MattressSizeId) {
+  return `/images/product-gallery/thumbs/sizes/${id}.webp`;
+}
+
 export function layersAnimationSrc(id: MattressSizeId) {
   return isDoubleMattressSize(id)
     ? "/images/product-gallery/layers-animation.mp4"
     : "/images/product-gallery/layers-animation-single.mp4";
+}
+
+export function layersThumbSrc(id: MattressSizeId) {
+  return isDoubleMattressSize(id)
+    ? "/images/product-gallery/layers-thumb.webp"
+    : "/images/product-gallery/layers-thumb-single.webp";
+}
+
+export function layersStripThumbSrc(id: MattressSizeId) {
+  return isDoubleMattressSize(id)
+    ? "/images/product-gallery/thumbs/layers.webp"
+    : "/images/product-gallery/thumbs/layers-single.webp";
 }
 
 export function getMattressSize(id: MattressSizeId) {

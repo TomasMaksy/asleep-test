@@ -1,6 +1,3 @@
-"use client";
-
-import { motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 type AnimatedRadioIndicatorProps = {
@@ -12,8 +9,6 @@ export function AnimatedRadioIndicator({
   selected,
   size = "md",
 }: AnimatedRadioIndicatorProps) {
-  const reduceMotion = useReducedMotion();
-
   if (size === "sm") {
     return (
       <span
@@ -23,18 +18,11 @@ export function AnimatedRadioIndicator({
           selected ? "border-brand-dark bg-brand-dark" : "border-grey bg-white",
         )}
       >
-        <motion.span
-          animate={{
-            scale: selected ? 1 : 0,
-            opacity: selected ? 1 : 0,
-          }}
-          className="size-1.5 rounded-full bg-white"
-          initial={false}
-          transition={
-            reduceMotion
-              ? { duration: 0 }
-              : { type: "spring", stiffness: 520, damping: 32, mass: 0.55 }
-          }
+        <span
+          className={cn(
+            "size-1.5 rounded-full bg-white transition-[transform,opacity] duration-200 ease-out motion-reduce:transition-none",
+            selected ? "scale-100 opacity-100" : "scale-0 opacity-0",
+          )}
         />
       </span>
     );
@@ -48,18 +36,11 @@ export function AnimatedRadioIndicator({
         selected ? "border-brand-dark bg-brand-dark" : "border-grey bg-white",
       )}
     >
-      <motion.span
-        animate={{
-          scale: selected ? 1 : 0,
-          opacity: selected ? 1 : 0,
-        }}
-        className="absolute inset-1 rounded-full bg-white"
-        initial={false}
-        transition={
-          reduceMotion
-            ? { duration: 0 }
-            : { type: "spring", stiffness: 520, damping: 32, mass: 0.55 }
-        }
+      <span
+        className={cn(
+          "absolute inset-1 rounded-full bg-white transition-[transform,opacity] duration-200 ease-out motion-reduce:transition-none",
+          selected ? "scale-100 opacity-100" : "scale-0 opacity-0",
+        )}
       />
     </span>
   );

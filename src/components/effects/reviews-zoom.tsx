@@ -3,9 +3,21 @@
 import { type ReactNode, useEffect, useRef } from "react";
 
 const SCALE_START = 1.5;
-const SCALE_START_MOBILE = 1.12;
+const SCALE_START_TABLET = 1.2;
+const SCALE_START_MOBILE = 1.42;
 const SCALE_END = 1;
 const MOBILE_MAX_WIDTH = 768;
+const TABLET_MAX_WIDTH = 1440;
+
+function scaleStartForWidth(width: number) {
+  if (width < MOBILE_MAX_WIDTH) {
+    return SCALE_START_MOBILE;
+  }
+  if (width < TABLET_MAX_WIDTH) {
+    return SCALE_START_TABLET;
+  }
+  return SCALE_START;
+}
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
@@ -33,10 +45,11 @@ export function ReviewsZoom({ children }: { children: ReactNode }) {
       const rect = section.getBoundingClientRect();
       const vh = window.innerHeight;
       const progress = clamp((vh - rect.top) / (vh + rect.height), 0, 1);
-      const scaleStart =
-        window.innerWidth < MOBILE_MAX_WIDTH ? SCALE_START_MOBILE : SCALE_START;
+      const scaleStart = scaleStartForWidth(window.innerWidth);
       const scale = scaleStart + (SCALE_END - scaleStart) * progress;
-      wall.style.transform = `scale(${scale})`;
+      // Tailwind v4 `scale-*` uses the CSS `scale` property. Setting
+      // `transform` on top of that multiplies both — override `scale` instead.
+      wall.style.scale = String(scale);
     };
 
     const schedule = () => {
@@ -48,10 +61,16 @@ export function ReviewsZoom({ children }: { children: ReactNode }) {
     update();
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
+    window.visualViewport?.addEventListener("scroll", schedule, {
+      passive: true,
+    });
+    window.visualViewport?.addEventListener("resize", schedule);
 
     return () => {
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
+      window.visualViewport?.removeEventListener("scroll", schedule);
+      window.visualViewport?.removeEventListener("resize", schedule);
       if (frame) {
         window.cancelAnimationFrame(frame);
       }

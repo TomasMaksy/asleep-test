@@ -124,6 +124,91 @@ details summary::-webkit-details-marker {
   display: none;
 }
 
+@supports selector(::details-content) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+
+  .acc::details-content {
+    block-size: 0;
+    overflow: clip;
+    opacity: 0;
+    transition-property: block-size, opacity, content-visibility;
+    transition-duration: 0.42s, 0.28s, 0.42s;
+    transition-timing-function:
+      cubic-bezier(0.32, 0.72, 0, 1), cubic-bezier(0.22, 1, 0.36, 1),
+      cubic-bezier(0.32, 0.72, 0, 1);
+    transition-behavior: allow-discrete;
+  }
+
+  .acc[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acc::details-content {
+    transition: none;
+  }
+}
+
+.mobile-nav-sheet {
+  inset: 0 auto 0 0;
+  width: min(100%, 320px);
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  overflow: hidden;
+  border: 0;
+  background: #fff;
+  box-shadow: 12px 0 40px rgb(0 0 0 / 0.12);
+  transform: translateX(-100%);
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    overlay 0.28s allow-discrete,
+    display 0.28s allow-discrete;
+}
+
+.mobile-nav-sheet:popover-open {
+  transform: translateX(0);
+}
+
+.mobile-nav-sheet::backdrop {
+  background: rgb(43 45 65 / 0.25);
+  opacity: 0;
+  backdrop-filter: blur(6px);
+  transition:
+    opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    overlay 0.28s allow-discrete,
+    display 0.28s allow-discrete;
+}
+
+.mobile-nav-sheet:popover-open::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  .mobile-nav-sheet:popover-open {
+    transform: translateX(-100%);
+  }
+
+  .mobile-nav-sheet:popover-open::backdrop {
+    opacity: 0;
+  }
+}
+
+html:has(.mobile-nav-sheet:popover-open) {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-nav-sheet,
+  .mobile-nav-sheet::backdrop {
+    transition: none;
+  }
+}
+
 @keyframes media-marquee {
   from {
     transform: translateX(0);

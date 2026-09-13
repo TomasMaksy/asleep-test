@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useLocale } from "next-intl";
 import { useState } from "react";
 import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
@@ -9,7 +10,8 @@ type Mode = "split" | "overlay" | "difference";
 
 const ORIGINAL = "https://www.mattsleeps.com/en";
 
-export function CompareView({ locale }: { locale: Locale }) {
+export function CompareView() {
+  const locale = useLocale() as Locale;
   const previewPath = `/${locale}`;
   const [mode, setMode] = useState<Mode>("split");
   const [opacity, setOpacity] = useState(50);

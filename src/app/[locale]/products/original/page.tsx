@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { SupportSection } from "@/app/[locale]/(home)/sections/support-section";
 import { ProductConfiguratorSection } from "@/app/[locale]/products/original/sections/product-configurator-section";
 import { ProductDifferenceSection } from "@/app/[locale]/products/original/sections/product-difference-section";
@@ -10,16 +10,9 @@ import { ProductSpecsSection } from "@/app/[locale]/products/original/sections/p
 import { ReviewsCarouselSection } from "@/app/[locale]/reviews/sections/reviews-carousel-section";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import type { Locale } from "@/i18n/routing";
 
-export async function generateMetadata({
-  params,
-}: PageProps<"/[locale]/products/original">): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({
-    locale,
-    namespace: "productOriginal.metadata",
-  });
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("productOriginal.metadata");
 
   return {
     title: t("title"),
@@ -27,12 +20,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function OriginalProductPage({
-  params,
-}: PageProps<"/[locale]/products/original">) {
-  const { locale } = await params;
-  setRequestLocale(locale as Locale);
-
+export default function OriginalProductPage() {
   return (
     <>
       <SiteHeader theme="solid" />

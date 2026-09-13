@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import {
-  asleepNavyPackagingFilterStyle,
-  useAsleepNavyFilterStyle,
-} from "@/components/asleep-navy-filter";
+import { asleepNavyPackagingFilterStyle } from "@/components/asleep-navy-filter";
+import { useAsleepNavyFilterStyle } from "@/components/asleep-navy-filter-style";
 import {
   type BedKind,
   DEFAULT_FIRMNESS,

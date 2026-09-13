@@ -1,20 +1,13 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { ContactHashScroll } from "@/app/[locale]/contact/contact-hash-scroll";
 import { ContactFaqSection } from "@/app/[locale]/contact/sections/contact-faq-section";
 import { ContactHeroSection } from "@/app/[locale]/contact/sections/contact-hero-section";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import type { Locale } from "@/i18n/routing";
 
-export async function generateMetadata({
-  params,
-}: PageProps<"/[locale]/contact">): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({
-    locale,
-    namespace: "contactPage.metadata",
-  });
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("contactPage.metadata");
 
   return {
     title: t("title"),
@@ -22,12 +15,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function ContactPage({
-  params,
-}: PageProps<"/[locale]/contact">) {
-  const { locale } = await params;
-  setRequestLocale(locale as Locale);
-
+export default function ContactPage() {
   return (
     <>
       <SiteHeader theme="solid" />

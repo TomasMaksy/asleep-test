@@ -52,7 +52,7 @@ export async function ProductConfiguratorSection() {
           </div>
 
           <div
-            className="relative z-0 mt-28 will-change-transform"
+            className="relative z-0 mt-32 will-change-transform md:mt-28"
             data-parallax="fast"
           >
             <ConfiguratorLink className="inline-flex min-h-12 max-w-full items-center justify-center rounded-full bg-white px-8 py-3 text-center text-[#244f9c] text-base transition-colors hover:bg-white/90">

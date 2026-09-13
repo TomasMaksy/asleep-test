@@ -17,56 +17,42 @@ type ReviewCardData = {
 type SourceLabels = Record<ReviewSource, string>;
 
 const STAR_KEYS = ["s1", "s2", "s3", "s4", "s5"] as const;
-const CARD_SIZE = 0.75;
-/** Same width ratio as before — don’t squeeze cards skinny on mobile. */
-const CARD_SIZE_MOBILE = 0.58;
 const DESKTOP_SPREAD_X = 0.88;
 const DESKTOP_SPREAD_Y = 0.9;
-const MOBILE_SPREAD_X = 1.2;
-const MOBILE_SPREAD_Y = 1.12;
+const TABLET_SPREAD_X = 1.1;
+const TABLET_SPREAD_Y = 1.05;
+const MOBILE_SPREAD_X = 1.42;
+const MOBILE_SPREAD_Y = 1.14;
+const MOBILE_CARD_COUNT = 6;
 const TYPICAL_CARD_HEIGHT = 16;
 
 function parsePercent(value: string) {
   return Number.parseFloat(value);
 }
 
-/** Shrink a card around its center so more quotes fit on screen with room to fly in. */
+/** Place a card by its original center. Width is a fixed rem, not a % of the viewport. */
 function layoutCard(
   card: ReviewCardData,
-  size: number,
   spreadX = 1,
   spreadY = 1,
 ): ReviewCardData {
-  const left = parsePercent(card.left);
-  const top = parsePercent(card.top);
-  const width = parsePercent(card.width);
-  const nextWidth = width * size;
-  const centerX = left + width / 2;
-  const centerY = top + TYPICAL_CARD_HEIGHT / 2;
-  let nextLeft = centerX - nextWidth / 2;
-  let nextTop = centerY - (TYPICAL_CARD_HEIGHT * size) / 2;
-
-  if (spreadX !== 1 || spreadY !== 1) {
-    const laidOutCenterX = nextLeft + nextWidth / 2;
-    nextLeft = 50 + (laidOutCenterX - 50) * spreadX - nextWidth / 2;
-    nextTop = 50 + (nextTop - 50) * spreadY;
-  }
+  const centerX = parsePercent(card.left) + parsePercent(card.width) / 2;
+  const centerY = parsePercent(card.top) + TYPICAL_CARD_HEIGHT / 2;
 
   return {
     ...card,
-    left: `${nextLeft.toFixed(2)}%`,
-    top: `${nextTop.toFixed(2)}%`,
-    width: `${nextWidth.toFixed(2)}%`,
+    left: `${(50 + (centerX - 50) * spreadX).toFixed(2)}%`,
+    top: `${(50 + (centerY - 50) * spreadY).toFixed(2)}%`,
   };
 }
 
-function Stars() {
+function Stars({ compact = false }: { compact?: boolean }) {
   return (
     <div aria-hidden="true" className="flex gap-0.5">
       {STAR_KEYS.map((key) => (
         <svg
           aria-hidden="true"
-          className="size-3.5 fill-[#f9ce23] md:size-4"
+          className={cn("fill-[#f9ce23]", compact ? "size-3" : "size-4")}
           focusable="false"
           key={key}
           viewBox="0 0 20 20"
@@ -78,12 +64,18 @@ function Stars() {
   );
 }
 
-function SourceBadge({ source }: { source: ReviewSource }) {
+function SourceBadge({
+  compact = false,
+  source,
+}: {
+  compact?: boolean;
+  source: ReviewSource;
+}) {
   if (source === "asleep") {
     return (
       <Image
         alt=""
-        className="h-3.5 w-auto object-contain md:h-4"
+        className={cn("w-auto object-contain", compact ? "h-3" : "h-4")}
         height={417}
         src="/images/logo/asleep-black.png"
         width={1304}
@@ -94,7 +86,7 @@ function SourceBadge({ source }: { source: ReviewSource }) {
   return (
     <Image
       alt=""
-      className="size-5 object-contain md:size-6"
+      className={cn("object-contain", compact ? "size-4" : "size-6")}
       height={source === "google" ? 512 : 225}
       src={
         source === "google"
@@ -108,28 +100,47 @@ function SourceBadge({ source }: { source: ReviewSource }) {
 
 function ReviewCard({
   card,
+  compact = false,
   sourceLabels,
 }: {
   card: ReviewCardData;
+  compact?: boolean;
   sourceLabels: SourceLabels;
 }) {
   return (
     <article
-      className="absolute origin-center rounded-[20px] bg-white p-3.5 shadow-[0_2px_16px_rgba(0,0,0,0.04)] md:rounded-3xl md:p-4"
+      className={cn(
+        "absolute origin-center -translate-x-1/2 -translate-y-1/2 bg-white shadow-[0_2px_16px_rgba(0,0,0,0.04)]",
+        compact ? "w-42 rounded-2xl p-2.5" : "w-72 rounded-3xl p-4",
+      )}
       style={{
         left: card.left,
         top: card.top,
-        width: card.width,
       }}
     >
-      <div className="mb-2.5 flex items-start justify-between gap-2">
-        <Stars />
-        <SourceBadge source={card.source} />
+      <div
+        className={cn(
+          "flex items-start justify-between gap-2",
+          compact ? "mb-1.5" : "mb-2.5",
+        )}
+      >
+        <Stars compact={compact} />
+        <SourceBadge compact={compact} source={card.source} />
       </div>
-      <p className="font-bold font-heading text-base text-brand-dark leading-snug md:text-lg">
+      <p
+        className={cn(
+          "font-bold font-heading text-brand-dark leading-snug",
+          compact ? "text-sm" : "text-lg",
+        )}
+      >
         {card.quote}
       </p>
-      <p className="mt-2.5 text-[#afafaf] text-xs md:text-sm">
+      <p
+        className={cn(
+          "text-[#afafaf]",
+          compact ? "mt-1.5 text-[11px]" : "mt-2.5 text-sm",
+        )}
+      >
         {sourceLabels[card.source]}
       </p>
     </article>
@@ -154,7 +165,7 @@ export async function ReviewsSection({
     <ReviewsZoom>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 left-0 z-20 w-[16%] bg-[linear-gradient(90deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:w-[20%]"
+        className="pointer-events-none absolute inset-y-0 left-0 z-20 w-[10%] bg-[linear-gradient(90deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:w-[20%]"
       />
       <div
         aria-hidden="true"
@@ -166,36 +177,36 @@ export async function ReviewsSection({
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-0 z-20 w-[16%] bg-[linear-gradient(-90deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:w-[20%]"
+        className="pointer-events-none absolute inset-y-0 right-0 z-20 w-[10%] bg-[linear-gradient(-90deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:w-[20%]"
       />
 
       <div
-        className="absolute inset-0 h-full w-full origin-center will-change-transform max-md:scale-[1.12] md:scale-[1.5]"
+        className="absolute inset-0 h-full w-full origin-center will-change-transform max-md:scale-[1.42] md:max-xl:scale-[1.2] xl:scale-[1.5]"
         data-reviews-wall=""
       >
-        <div className="absolute inset-0 hidden md:block">
+        <div className="absolute inset-0 hidden xl:block">
           {cards.map((card) => (
             <ReviewCard
-              card={layoutCard(
-                card,
-                CARD_SIZE,
-                DESKTOP_SPREAD_X,
-                DESKTOP_SPREAD_Y,
-              )}
+              card={layoutCard(card, DESKTOP_SPREAD_X, DESKTOP_SPREAD_Y)}
               key={`d-${card.quote}-${card.left}`}
               sourceLabels={sourceLabels}
             />
           ))}
         </div>
-        <div className="absolute inset-0 md:hidden">
-          {cardsMobile.map((card) => (
+        <div className="absolute inset-0 hidden md:block xl:hidden">
+          {cards.map((card) => (
             <ReviewCard
-              card={layoutCard(
-                card,
-                CARD_SIZE_MOBILE,
-                MOBILE_SPREAD_X,
-                MOBILE_SPREAD_Y,
-              )}
+              card={layoutCard(card, TABLET_SPREAD_X, TABLET_SPREAD_Y)}
+              key={`t-${card.quote}-${card.left}`}
+              sourceLabels={sourceLabels}
+            />
+          ))}
+        </div>
+        <div className="absolute inset-0 md:hidden">
+          {cardsMobile.slice(0, MOBILE_CARD_COUNT).map((card) => (
+            <ReviewCard
+              card={layoutCard(card, MOBILE_SPREAD_X, MOBILE_SPREAD_Y)}
+              compact
               key={`m-${card.quote}-${card.left}`}
               sourceLabels={sourceLabels}
             />
@@ -207,7 +218,7 @@ export async function ReviewsSection({
         <p className="font-black font-heading text-[3rem] text-brand-dark leading-none tracking-[-0.04em] md:text-[5rem]">
           {t("stat")}
         </p>
-        <p className="mt-2 text-brand-dark text-base md:mt-3 md:text-lg">
+        <p className="mt-2 text-base text-brand-dark md:mt-3 md:text-lg">
           {t("caption")}
         </p>
         <div className="mt-6 flex justify-center md:mt-8">

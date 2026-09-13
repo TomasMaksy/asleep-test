@@ -1,9 +1,6 @@
-"use client";
-
 import Image from "next/image";
-import { useTranslations } from "next-intl";
-import { useState } from "react";
-import { ReviewShareSheet } from "@/app/[locale]/reviews/review-share-sheet";
+import { getTranslations } from "next-intl/server";
+import { ReviewShareButton } from "@/app/[locale]/reviews/review-share-button";
 
 type RatingItem = {
   label: string;
@@ -12,10 +9,9 @@ type RatingItem = {
   logoHeight: number;
 };
 
-export function ReviewsHeroSection() {
-  const t = useTranslations("reviewsPage.hero");
+export async function ReviewsHeroSection() {
+  const t = await getTranslations("reviewsPage.hero");
   const ratings = t.raw("ratings") as RatingItem[];
-  const [shareOpen, setShareOpen] = useState(false);
 
   return (
     <section className="bg-brand-dark px-5 pt-14 pb-16 text-white md:px-10 md:pt-20 md:pb-24">
@@ -34,13 +30,7 @@ export function ReviewsHeroSection() {
           >
             {t("seeAll")}
           </a>
-          <button
-            className="inline-flex h-12 min-w-[168px] cursor-pointer items-center justify-center rounded-full bg-brand px-6 text-base text-white transition-colors hover:bg-[#2456a0]"
-            onClick={() => setShareOpen(true)}
-            type="button"
-          >
-            {t("share")}
-          </button>
+          <ReviewShareButton label={t("share")} />
         </div>
 
         <ul className="mt-14 flex flex-row items-start justify-center gap-10 sm:gap-16 md:gap-20">
@@ -67,11 +57,6 @@ export function ReviewsHeroSection() {
           })}
         </ul>
       </div>
-
-      <ReviewShareSheet
-        isOpen={shareOpen}
-        onClose={() => setShareOpen(false)}
-      />
     </section>
   );
 }

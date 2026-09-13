@@ -1,17 +1,10 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { CheckoutThanksSection } from "@/app/[locale]/checkout/sections/checkout-thanks";
 import { SiteHeader } from "@/components/site-header";
-import type { Locale } from "@/i18n/routing";
 
-export async function generateMetadata({
-  params,
-}: PageProps<"/[locale]/checkout/thank-you">): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({
-    locale,
-    namespace: "checkoutPage.thanks",
-  });
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("checkoutPage.thanks");
 
   return {
     title: t("metaTitle"),
@@ -23,12 +16,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function CheckoutThankYouPage({
-  params,
-}: PageProps<"/[locale]/checkout/thank-you">) {
-  const { locale } = await params;
-  setRequestLocale(locale as Locale);
-
+export default function CheckoutThankYouPage() {
   return (
     <>
       <SiteHeader theme="solid" variant="minimal" />

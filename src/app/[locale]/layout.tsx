@@ -2,17 +2,13 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import {
-  getMessages,
-  getTranslations,
-  setRequestLocale,
-} from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { AsleepNavyFilter } from "@/components/asleep-navy-filter";
 import { CartSheetHost } from "@/components/cart/cart-sheet-host";
 import { ConfiguratorShell } from "@/components/configurator/configurator-shell";
 import { RevealObserver } from "@/components/reveal-observer";
-import { type Locale, routing } from "@/i18n/routing";
+import { routing } from "@/i18n/routing";
 import { getSiteUrl } from "@/lib/site-url";
 import { cn } from "@/lib/utils";
 import "../globals.css";
@@ -40,7 +36,7 @@ export async function generateMetadata({
     return {};
   }
 
-  const t = await getTranslations({ locale, namespace: "metadata" });
+  const t = await getTranslations("metadata");
   const baseUrl = getSiteUrl();
   const languages: Record<string, string> = {};
 
@@ -73,9 +69,6 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  setRequestLocale(locale as Locale);
-  const messages = await getMessages();
-
   return (
     <html
       className={cn(outfit.variable, outfit.className, "h-full antialiased")}
@@ -84,7 +77,7 @@ export default async function LocaleLayout({
     >
       <body className="relative min-h-full font-sans">
         <AsleepNavyFilter />
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider>
           <RevealObserver />
           <ConfiguratorShell overlay={modal}>{children}</ConfiguratorShell>
           <CartSheetHost />
