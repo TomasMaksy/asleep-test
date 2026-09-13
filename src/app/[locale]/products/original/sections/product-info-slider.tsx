@@ -20,7 +20,7 @@ type Slide = {
 
 const SCROLL_OFFSET = 300;
 const SEQUENCE_CLASS =
-  "pointer-events-none absolute top-1/2 left-1/2 z-0 mx-auto -mt-16 h-auto w-[150vw] max-h-none max-w-[150vw] -translate-x-1/2 -translate-y-1/2 object-contain lg:h-auto lg:w-auto lg:max-h-[80vh] lg:max-w-full";
+  "pointer-events-none absolute top-1/2 left-1/2 z-0 mx-auto -mt-10 h-auto w-[118vw] max-h-[46dvh] max-w-[118vw] -translate-x-1/2 -translate-y-1/2 object-contain lg:-mt-16 lg:h-auto lg:w-auto lg:max-h-[80vh] lg:max-w-full";
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
