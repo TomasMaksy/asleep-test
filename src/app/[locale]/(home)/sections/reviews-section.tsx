@@ -18,11 +18,12 @@ type SourceLabels = Record<ReviewSource, string>;
 
 const STAR_KEYS = ["s1", "s2", "s3", "s4", "s5"] as const;
 const CARD_SIZE = 0.75;
+/** Same width ratio as before — don’t squeeze cards skinny on mobile. */
 const CARD_SIZE_MOBILE = 0.58;
 const DESKTOP_SPREAD_X = 0.88;
 const DESKTOP_SPREAD_Y = 0.9;
-const MOBILE_SPREAD_X = 1.14;
-const MOBILE_SPREAD_Y = 1.06;
+const MOBILE_SPREAD_X = 1.2;
+const MOBILE_SPREAD_Y = 1.12;
 const TYPICAL_CARD_HEIGHT = 16;
 
 function parsePercent(value: string) {
@@ -169,7 +170,7 @@ export async function ReviewsSection({
       />
 
       <div
-        className="absolute inset-0 h-full w-full origin-center will-change-transform max-md:scale-[1.28] md:scale-[1.5]"
+        className="absolute inset-0 h-full w-full origin-center will-change-transform max-md:scale-[1.12] md:scale-[1.5]"
         data-reviews-wall=""
       >
         <div className="absolute inset-0 hidden md:block">
@@ -203,11 +204,13 @@ export async function ReviewsSection({
       </div>
 
       <div className="absolute top-1/2 left-1/2 z-30 w-screen -translate-x-1/2 -translate-y-1/2 text-center md:w-fit">
-        <p className="font-black font-heading text-[1.75rem] text-brand-dark leading-none tracking-[-0.04em] md:text-[5rem]">
+        <p className="font-black font-heading text-[3rem] text-brand-dark leading-none tracking-[-0.04em] md:text-[5rem]">
           {t("stat")}
         </p>
-        <p className="mt-3 text-brand-dark text-lg">{t("caption")}</p>
-        <div className="mt-8 flex justify-center">
+        <p className="mt-2 text-brand-dark text-base md:mt-3 md:text-lg">
+          {t("caption")}
+        </p>
+        <div className="mt-6 flex justify-center md:mt-8">
           {ctaHref.startsWith("#") ? (
             <a className={ctaClassName} href={ctaHref}>
               {t("cta")}
