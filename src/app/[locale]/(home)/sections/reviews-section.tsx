@@ -18,11 +18,12 @@ type SourceLabels = Record<ReviewSource, string>;
 
 const STAR_KEYS = ["s1", "s2", "s3", "s4", "s5"] as const;
 const CARD_SIZE = 0.75;
-const CARD_SIZE_MOBILE = 0.34;
+/** Keep mobile card width ratio (not skinnier) — size down with CSS scale instead. */
+const CARD_SIZE_MOBILE = 0.58;
 const DESKTOP_SPREAD_X = 0.88;
 const DESKTOP_SPREAD_Y = 0.9;
-const MOBILE_SPREAD_X = 1.32;
-const MOBILE_SPREAD_Y = 1.24;
+const MOBILE_SPREAD_X = 1.2;
+const MOBILE_SPREAD_Y = 1.12;
 const TYPICAL_CARD_HEIGHT = 16;
 
 function parsePercent(value: string) {
@@ -65,7 +66,7 @@ function Stars() {
       {STAR_KEYS.map((key) => (
         <svg
           aria-hidden="true"
-          className="size-3 fill-[#f9ce23] md:size-4"
+          className="size-3.5 fill-[#f9ce23] md:size-4"
           focusable="false"
           key={key}
           viewBox="0 0 20 20"
@@ -82,7 +83,7 @@ function SourceBadge({ source }: { source: ReviewSource }) {
     return (
       <Image
         alt=""
-        className="h-3 w-auto object-contain md:h-4"
+        className="h-3.5 w-auto object-contain md:h-4"
         height={417}
         src="/images/logo/asleep-black.png"
         width={1304}
@@ -93,7 +94,7 @@ function SourceBadge({ source }: { source: ReviewSource }) {
   return (
     <Image
       alt=""
-      className="size-4 object-contain md:size-6"
+      className="size-5 object-contain md:size-6"
       height={source === "google" ? 512 : 225}
       src={
         source === "google"
@@ -114,21 +115,21 @@ function ReviewCard({
 }) {
   return (
     <article
-      className="absolute origin-center rounded-2xl bg-white p-2.5 shadow-[0_2px_16px_rgba(0,0,0,0.04)] md:rounded-3xl md:p-4"
+      className="absolute origin-center rounded-[20px] bg-white p-3.5 shadow-[0_2px_16px_rgba(0,0,0,0.04)] md:rounded-3xl md:p-4"
       style={{
         left: card.left,
         top: card.top,
         width: card.width,
       }}
     >
-      <div className="mb-1.5 flex items-start justify-between gap-2 md:mb-2.5">
+      <div className="mb-2.5 flex items-start justify-between gap-2">
         <Stars />
         <SourceBadge source={card.source} />
       </div>
-      <p className="font-bold font-heading text-sm text-brand-dark leading-snug md:text-lg">
+      <p className="font-bold font-heading text-base text-brand-dark leading-snug md:text-lg">
         {card.quote}
       </p>
-      <p className="mt-1.5 text-[#afafaf] text-[11px] md:mt-2.5 md:text-sm">
+      <p className="mt-2.5 text-[#afafaf] text-xs md:text-sm">
         {sourceLabels[card.source]}
       </p>
     </article>
@@ -153,23 +154,23 @@ export async function ReviewsSection({
     <ReviewsZoom>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 left-0 z-20 w-[22%] bg-[linear-gradient(90deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:w-[20%]"
+        className="pointer-events-none absolute inset-y-0 left-0 z-20 w-[16%] bg-[linear-gradient(90deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:w-[20%]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[14%] w-full bg-[linear-gradient(0deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:h-[30%]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[10%] w-full bg-[linear-gradient(0deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:h-[30%]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[14%] w-full bg-[linear-gradient(180deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:h-[30%]"
+        className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[10%] w-full bg-[linear-gradient(180deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:h-[30%]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-0 z-20 w-[22%] bg-[linear-gradient(-90deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:w-[20%]"
+        className="pointer-events-none absolute inset-y-0 right-0 z-20 w-[16%] bg-[linear-gradient(-90deg,#f5f5f5_0%,rgba(245,245,245,0)_100%)] md:w-[20%]"
       />
 
       <div
-        className="absolute inset-0 h-full w-full origin-center will-change-transform max-md:scale-[1.06] md:scale-[1.5]"
+        className="absolute inset-0 h-full w-full origin-center will-change-transform max-md:scale-[1.12] md:scale-[1.5]"
         data-reviews-wall=""
       >
         <div className="absolute inset-0 hidden md:block">
@@ -203,7 +204,7 @@ export async function ReviewsSection({
       </div>
 
       <div className="absolute top-1/2 left-1/2 z-30 w-screen -translate-x-1/2 -translate-y-1/2 text-center md:w-fit">
-        <p className="font-black font-heading text-[3.5rem] text-brand-dark leading-none tracking-[-0.04em] md:text-[5rem]">
+        <p className="font-black font-heading text-[3rem] text-brand-dark leading-none tracking-[-0.04em] md:text-[5rem]">
           {t("stat")}
         </p>
         <p className="mt-2 text-brand-dark text-base md:mt-3 md:text-lg">
