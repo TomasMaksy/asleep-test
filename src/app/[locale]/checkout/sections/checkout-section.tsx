@@ -41,7 +41,11 @@ import {
   readCheckoutDraft,
   writeCheckoutDraft,
 } from "@/lib/checkout-draft";
-import { confirmAndVoidPayment } from "@/lib/checkout-stripe-flow";
+import {
+  confirmAndVoidPayment,
+  PaymentValidationError,
+  validatePaymentElement,
+} from "@/lib/checkout-stripe-flow";
 import { dispatchAcceptedPurchase } from "@/lib/tracking/client/dispatcher";
 import {
   createPurchaseTrackingEvent,
@@ -469,7 +473,7 @@ function CheckoutForm({
       return;
     }
 
-    if (!checkoutConfig.fakeDoor && (!stripe || !elements)) {
+    if (!stripe || !elements) {
       setPayError(t("expressUnavailable"));
       return;
     }
@@ -484,40 +488,28 @@ function CheckoutForm({
       phone: phone.trim(),
     };
 
-    if (checkoutConfig.fakeDoor) {
-      try {
-        await finishCheckout(contact, "card");
-      } catch (cause) {
-        setPayError(
-          cause instanceof Error ? cause.message : t("expressUnavailable"),
-        );
-        setProcessing(false);
-      }
-      return;
-    }
-
-    if (!stripe || !elements) {
-      setPayError(t("expressUnavailable"));
-      setProcessing(false);
-      return;
-    }
-
-    const billingCountryCode = billingSame ? country : billingCountry;
-    const billing = {
-      email: contact.email,
-      name: `${contact.firstName} ${contact.lastName}`.trim(),
-      phone: contact.phone,
-      address: {
-        line1: (billingSame ? address : billingAddress).trim(),
-        line2: apartment.trim(),
-        city: (billingSame ? city : billingCity).trim(),
-        state: (billingSame ? city : billingCity).trim(),
-        postal_code: (billingSame ? postal : billingPostal).trim(),
-        country: billingCountryCode,
-      },
-    };
-
     try {
+      await validatePaymentElement(elements);
+      if (checkoutConfig.fakeDoor) {
+        await finishCheckout(contact, "card");
+        return;
+      }
+
+      const billingCountryCode = billingSame ? country : billingCountry;
+      const billing = {
+        email: contact.email,
+        name: `${contact.firstName} ${contact.lastName}`.trim(),
+        phone: contact.phone,
+        address: {
+          line1: (billingSame ? address : billingAddress).trim(),
+          line2: apartment.trim(),
+          city: (billingSame ? city : billingCity).trim(),
+          state: (billingSame ? city : billingCity).trim(),
+          postal_code: (billingSame ? postal : billingPostal).trim(),
+          country: billingCountryCode,
+        },
+      };
+
       const paid = await confirmAndVoidPayment({
         amountCents,
         billing,
@@ -535,10 +527,13 @@ function CheckoutForm({
         "card",
       );
     } catch (cause) {
+      setProcessing(false);
+      if (cause instanceof PaymentValidationError) {
+        return;
+      }
       setPayError(
         cause instanceof Error ? cause.message : t("expressUnavailable"),
       );
-      setProcessing(false);
     }
   }
 

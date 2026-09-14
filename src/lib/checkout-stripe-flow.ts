@@ -54,6 +54,25 @@ function paymentMethodBilling(
   };
 }
 
+export class PaymentValidationError extends Error {
+  override name = "PaymentValidationError";
+
+  constructor() {
+    super("Payment details are incomplete.");
+  }
+}
+
+export async function validatePaymentElement(elements: StripeElements) {
+  const { error } = await elements.submit();
+  if (!error) {
+    return;
+  }
+  if (error.type === "validation_error") {
+    throw new PaymentValidationError();
+  }
+  throw new Error(error.message ?? "Payment details are incomplete.");
+}
+
 export async function confirmAndVoidPayment(options: {
   stripe: Stripe;
   elements: StripeElements;
@@ -61,10 +80,7 @@ export async function confirmAndVoidPayment(options: {
   returnUrl: string;
   billing: CheckoutBilling;
 }): Promise<CheckoutContact> {
-  const { error: submitError } = await options.elements.submit();
-  if (submitError) {
-    throw new Error(submitError.message ?? "Payment details are incomplete.");
-  }
+  await validatePaymentElement(options.elements);
 
   const intentResponse = await fetch("/api/checkout/intent", {
     method: "POST",

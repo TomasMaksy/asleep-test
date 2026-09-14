@@ -1,9 +1,10 @@
 /**
  * Fake-door checkout — looks like Shopify Checkout.
  *
- * With `fakeDoor: true`, Pay Now never confirms a PaymentIntent. The lead is
- * saved and the customer goes to /checkout/thank-you. Apple Pay, Google Pay,
- * and Revolut stay visible so checkout looks real — they are not charged.
+ * With `fakeDoor: true`, Pay Now still validates the card fields, then
+ * never confirms a PaymentIntent. The lead is saved and the customer goes
+ * to /checkout/thank-you. Apple Pay, Google Pay, and Revolut stay visible
+ * so checkout looks real — they are not charged.
  *
  * Set fakeDoor to false when you are ready to take real (test or live) payments.
  * Live keys are refused until then.
