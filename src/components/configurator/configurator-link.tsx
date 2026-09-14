@@ -42,6 +42,7 @@ export function ConfiguratorLink({
         onPointerDown?.(event);
       }}
       prefetch={false}
+      scroll={false}
     />
   );
 }

@@ -6,7 +6,7 @@
         "href": "/products/original"
       },
       {
-        "label": "Create your mattress",
+        "label": "Configurator",
         "href": "/configurator"
       }
     ],
@@ -57,7 +57,7 @@
         "title": "Products",
         "links": [
           { "label": "Original mattress", "href": "/products/original" },
-          { "label": "Create your mattress", "href": "/configurator" }
+          { "label": "Configurator", "href": "/configurator" }
         ]
       }
     ]

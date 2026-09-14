@@ -1,6 +1,12 @@
 "use client";
 
-import { type ReactNode, useEffect, useLayoutEffect, useState } from "react";
+import {
+  type ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { ConfiguratorOverlay } from "@/components/configurator/configurator-overlay";
 import { usePathname } from "@/i18n/navigation";
 import {
@@ -21,6 +27,9 @@ export function ConfiguratorShell({
   const setOpen = useConfiguratorOverlayStore((state) => state.setOpen);
   const [animating, setAnimating] = useState(false);
   const [shown, setShown] = useState(false);
+  const pageRef = useRef<HTMLDivElement>(null);
+  const lockedScrollYRef = useRef(0);
+  const wasLockedRef = useRef(false);
   const lockScroll = isOpen || animating;
 
   useLayoutEffect(() => {
@@ -28,6 +37,34 @@ export function ConfiguratorShell({
       setOpen(false);
     }
   }, [pathname, setOpen]);
+
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    const page = pageRef.current;
+
+    if (lockScroll) {
+      if (!wasLockedRef.current) {
+        lockedScrollYRef.current = window.scrollY;
+        wasLockedRef.current = true;
+      }
+      root.classList.add("configurator-overlay-lock");
+      if (page) {
+        page.style.top = `-${lockedScrollYRef.current}px`;
+      }
+      return () => {
+        root.classList.remove("configurator-overlay-lock");
+      };
+    }
+
+    root.classList.remove("configurator-overlay-lock");
+    if (page) {
+      page.style.top = "";
+    }
+    if (wasLockedRef.current) {
+      window.scrollTo({ top: lockedScrollYRef.current, behavior: "instant" });
+      wasLockedRef.current = false;
+    }
+  }, [lockScroll]);
 
   useEffect(() => {
     if (isOpen) {
@@ -54,23 +91,14 @@ export function ConfiguratorShell({
     return () => window.clearTimeout(timeoutId);
   }, [isOpen]);
 
-  useEffect(() => {
-    const root = document.documentElement;
-    root.classList.toggle("configurator-overlay-lock", lockScroll);
-
-    return () => {
-      root.classList.remove("configurator-overlay-lock");
-    };
-  }, [lockScroll]);
-
   return (
     <>
       <div
         className={cn(
-          lockScroll ? "h-dvh overflow-hidden" : "min-h-full",
-          lockScroll && "configurator-page-slide",
+          lockScroll ? "configurator-page-slide" : "min-h-full",
           shown && "configurator-page-slide-open",
         )}
+        ref={pageRef}
       >
         {children}
       </div>

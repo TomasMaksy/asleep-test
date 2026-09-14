@@ -1,7 +1,14 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import {
+  AnimatePresence,
+  animate,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from "motion/react";
 import Image from "next/image";
 import { type PointerEvent, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -148,6 +155,9 @@ const sheetSpring = {
   damping: 34,
   mass: 0.85,
 };
+
+const DISMISS_OFFSET = 96;
+const DISMISS_VELOCITY = 0.55;
 
 const slideTransition = {
   type: "tween" as const,
@@ -386,11 +396,16 @@ function LayerPopup({
   const titleId = useId();
   const swipeRef = useRef<{
     axis: "x" | "y" | null;
+    draggingSheet: boolean;
+    startedAtTop: boolean;
     time: number;
     x: number;
     y: number;
   } | null>(null);
   const sheetRef = useRef<HTMLElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const dragY = useMotionValue(0);
+  const backdropDragOpacity = useTransform(dragY, [0, 280], [1, 0.2]);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -423,6 +438,12 @@ function LayerPopup({
   }, [isOpen, onClose, onNext, onPrev]);
 
   useEffect(() => {
+    if (isOpen) {
+      dragY.set(0);
+    }
+  }, [dragY, isOpen]);
+
+  useEffect(() => {
     const node = sheetRef.current;
     if (!isOpen || !node) {
       return;
@@ -434,9 +455,9 @@ function LayerPopup({
       if (!swipe || !touch) {
         return;
       }
+      const dx = touch.clientX - swipe.x;
+      const dy = touch.clientY - swipe.y;
       if (!swipe.axis) {
-        const dx = touch.clientX - swipe.x;
-        const dy = touch.clientY - swipe.y;
         if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
           return;
         }
@@ -444,45 +465,83 @@ function LayerPopup({
       }
       if (swipe.axis === "x") {
         event.preventDefault();
+        return;
+      }
+      if (swipe.startedAtTop && dy > 0) {
+        swipe.draggingSheet = true;
+        event.preventDefault();
+        dragY.set(dy);
       }
     };
 
     node.addEventListener("touchmove", onTouchMove, { passive: false });
     return () => node.removeEventListener("touchmove", onTouchMove);
-  }, [isOpen]);
+  }, [dragY, isOpen]);
 
-  function onSwipePointerDown(event: PointerEvent<HTMLDivElement>) {
+  function onSwipePointerDown(event: PointerEvent<HTMLElement>) {
     if (reduceMotion || event.button !== 0) {
       return;
     }
-    if ((event.target as HTMLElement | null)?.closest("button, a, input")) {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest("button, a, input")) {
       return;
     }
+    const inScroll = Boolean(target?.closest("[data-layer-sheet-scroll]"));
+    const atTop = (scrollRef.current?.scrollTop ?? 0) <= 1;
     swipeRef.current = {
       axis: null,
+      draggingSheet: false,
+      startedAtTop:
+        Boolean(target?.closest("[data-sheet-handle]")) || !inScroll || atTop,
       time: event.timeStamp,
       x: event.clientX,
       y: event.clientY,
     };
   }
 
-  function onSwipePointerMove(event: PointerEvent<HTMLDivElement>) {
+  function onSwipePointerMove(event: PointerEvent<HTMLElement>) {
     const swipe = swipeRef.current;
-    if (!swipe || swipe.axis) {
+    if (!swipe || reduceMotion) {
       return;
     }
     const dx = event.clientX - swipe.x;
     const dy = event.clientY - swipe.y;
-    if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
+    if (!swipe.axis) {
+      if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
+        return;
+      }
+      swipe.axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+    }
+    if (swipe.axis !== "y") {
       return;
     }
-    swipe.axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+    if (!swipe.draggingSheet) {
+      if (!swipe.startedAtTop || dy <= 0) {
+        return;
+      }
+      swipe.draggingSheet = true;
+      event.currentTarget.setPointerCapture(event.pointerId);
+    }
+    dragY.set(Math.max(0, dy));
   }
 
-  function onSwipePointerUp(event: PointerEvent<HTMLDivElement>) {
+  function settleSheetDrag(event: PointerEvent<HTMLElement>) {
     const swipe = swipeRef.current;
     swipeRef.current = null;
-    if (!swipe || swipe.axis === "y" || reduceMotion) {
+    if (!swipe || reduceMotion) {
+      return;
+    }
+    if (swipe.draggingSheet) {
+      const dy = Math.max(0, event.clientY - swipe.y);
+      const velocity = dy / Math.max(1, event.timeStamp - swipe.time);
+      if (dy > DISMISS_OFFSET || velocity > DISMISS_VELOCITY) {
+        onClose();
+        return;
+      }
+      void animate(dragY, 0, sheetSpring);
+      return;
+    }
+    if (swipe.axis !== "x") {
       return;
     }
     const dx = event.clientX - swipe.x;
@@ -502,125 +561,142 @@ function LayerPopup({
     <AnimatePresence>
       {isOpen && item ? (
         <div className="fixed inset-0 z-[2000] lg:hidden" key="layer-popup">
-          <motion.button
-            aria-label={closeLabel}
-            className="absolute inset-0 cursor-pointer bg-brand-dark/40 backdrop-blur-[8px] supports-[backdrop-filter]:bg-brand-dark/30"
+          <motion.div
+            className="absolute inset-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
             transition={reduceMotion ? { duration: 0 } : { duration: 0.28 }}
-            type="button"
-          />
+          >
+            <motion.button
+              aria-label={closeLabel}
+              className="absolute inset-0 cursor-pointer bg-brand-dark/40 backdrop-blur-[8px] supports-[backdrop-filter]:bg-brand-dark/30"
+              onClick={onClose}
+              style={{ opacity: backdropDragOpacity }}
+              type="button"
+            />
+          </motion.div>
 
-          <motion.aside
-            aria-labelledby={titleId}
-            aria-modal="true"
-            className="absolute inset-x-0 bottom-0 flex h-[min(86dvh,42rem)] flex-col overflow-hidden rounded-t-[2rem] bg-white text-brand-dark shadow-[0_-24px_80px_rgba(26,71,138,0.22)]"
+          <motion.div
+            className="absolute inset-x-0 bottom-0"
             initial={reduceMotion ? false : { y: "110%" }}
             animate={{ y: 0 }}
             exit={reduceMotion ? { opacity: 0 } : { y: "110%" }}
-            ref={sheetRef}
-            role="dialog"
             transition={reduceMotion ? { duration: 0 } : sheetSpring}
           >
-            <div className="pointer-events-none absolute top-2.5 left-1/2 z-30 h-1 w-10 -translate-x-1/2 rounded-full bg-brand-dark/20" />
-
-            <button
-              aria-label={closeLabel}
-              className="absolute top-4 right-4 z-30 flex size-10 cursor-pointer items-center justify-center rounded-full bg-white/90 text-brand-dark shadow-md backdrop-blur-sm"
-              onClick={onClose}
-              type="button"
+            <motion.aside
+              aria-labelledby={titleId}
+              aria-modal="true"
+              className="flex h-[min(86dvh,42rem)] flex-col overflow-hidden rounded-t-[2rem] bg-white text-brand-dark shadow-[0_-24px_80px_rgba(26,71,138,0.22)]"
+              onPointerCancel={settleSheetDrag}
+              onPointerDown={onSwipePointerDown}
+              onPointerMove={onSwipePointerMove}
+              onPointerUp={settleSheetDrag}
+              ref={sheetRef}
+              role="dialog"
+              style={{ y: dragY }}
             >
-              <X aria-hidden="true" className="size-5" strokeWidth={1.75} />
-            </button>
-
-            <div className="relative min-h-0 flex-1 overflow-hidden">
-              <AnimatePresence custom={direction} initial={false} mode="sync">
-                <motion.div
-                  animate="center"
-                  className="absolute inset-0 flex flex-col"
-                  custom={direction}
-                  exit="exit"
-                  initial="enter"
-                  key={item.id}
-                  transition={reduceMotion ? { duration: 0 } : slideTransition}
-                  variants={slideVariants}
-                >
-                  <div
-                    className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-14 pb-2"
-                    onPointerCancel={() => {
-                      swipeRef.current = null;
-                    }}
-                    onPointerDown={onSwipePointerDown}
-                    onPointerMove={onSwipePointerMove}
-                    onPointerUp={onSwipePointerUp}
-                  >
-                    <LayerMedia
-                      className="mb-5 aspect-16/10 w-3/5 rounded-3xl"
-                      item={item}
-                      shouldAutoPlay={true}
-                    />
-                    <p className="mb-2 font-medium text-brand text-xs uppercase tracking-[0.18em]">
-                      {String(index + 1).padStart(2, "0")} /{" "}
-                      {String(total).padStart(2, "0")}
-                    </p>
-                    <LayerCopy
-                      advantagesLabel={advantagesLabel}
-                      item={item}
-                      titleId={titleId}
-                    />
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            <div className="flex shrink-0 items-center justify-between gap-3 border-brand-dark/10 border-t px-5 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
-              <button
-                aria-label={previousLabel}
-                className="flex size-12 cursor-pointer items-center justify-center rounded-full bg-brand text-white shadow-[0_10px_24px_rgba(26,71,138,0.28)] transition-transform active:scale-95"
-                onClick={onPrev}
-                type="button"
+              <div
+                className="absolute top-0 right-0 left-0 z-20 flex h-8 items-start justify-center pt-2.5"
+                data-sheet-handle=""
               >
-                <ChevronLeft
-                  aria-hidden="true"
-                  className="size-6"
-                  strokeWidth={1.75}
-                />
-              </button>
-
-              <div className="flex items-center gap-1.5">
-                {navItems.map((navItem) => (
-                  <button
-                    aria-current={navItem.id === item.id}
-                    aria-label={navItem.selectLabel}
-                    className={cn(
-                      "h-1.5 cursor-pointer rounded-full transition-[width,background-color] duration-300",
-                      navItem.id === item.id
-                        ? "w-6 bg-brand"
-                        : "w-1.5 bg-brand-dark/20",
-                    )}
-                    key={navItem.id}
-                    onClick={() => onJump(navItem.id)}
-                    type="button"
-                  />
-                ))}
+                <div className="h-1 w-10 rounded-full bg-brand-dark/20" />
               </div>
 
               <button
-                aria-label={nextLabel}
-                className="flex size-12 cursor-pointer items-center justify-center rounded-full bg-brand text-white shadow-[0_10px_24px_rgba(26,71,138,0.28)] transition-transform active:scale-95"
-                onClick={onNext}
+                aria-label={closeLabel}
+                className="absolute top-4 right-4 z-30 flex size-10 cursor-pointer items-center justify-center rounded-full bg-white/90 text-brand-dark shadow-md backdrop-blur-sm"
+                onClick={onClose}
                 type="button"
               >
-                <ChevronRight
-                  aria-hidden="true"
-                  className="size-6"
-                  strokeWidth={1.75}
-                />
+                <X aria-hidden="true" className="size-5" strokeWidth={1.75} />
               </button>
-            </div>
-          </motion.aside>
+
+              <div className="relative min-h-0 flex-1 overflow-hidden">
+                <AnimatePresence custom={direction} initial={false} mode="sync">
+                  <motion.div
+                    animate="center"
+                    className="absolute inset-0 flex flex-col"
+                    custom={direction}
+                    exit="exit"
+                    initial="enter"
+                    key={item.id}
+                    transition={
+                      reduceMotion ? { duration: 0 } : slideTransition
+                    }
+                    variants={slideVariants}
+                  >
+                    <div
+                      className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-14 pb-2"
+                      data-layer-sheet-scroll=""
+                      ref={scrollRef}
+                    >
+                      <LayerMedia
+                        className="mb-5 aspect-16/10 w-3/5 rounded-3xl"
+                        item={item}
+                        shouldAutoPlay={true}
+                      />
+                      <p className="mb-2 font-medium text-brand text-xs uppercase tracking-[0.18em]">
+                        {String(index + 1).padStart(2, "0")} /{" "}
+                        {String(total).padStart(2, "0")}
+                      </p>
+                      <LayerCopy
+                        advantagesLabel={advantagesLabel}
+                        item={item}
+                        titleId={titleId}
+                      />
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              <div className="flex shrink-0 items-center justify-between gap-3 border-brand-dark/10 border-t px-5 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
+                <button
+                  aria-label={previousLabel}
+                  className="flex size-12 cursor-pointer items-center justify-center rounded-full bg-brand text-white shadow-[0_10px_24px_rgba(26,71,138,0.28)] transition-transform active:scale-95"
+                  onClick={onPrev}
+                  type="button"
+                >
+                  <ChevronLeft
+                    aria-hidden="true"
+                    className="size-6"
+                    strokeWidth={1.75}
+                  />
+                </button>
+
+                <div className="flex items-center gap-1.5">
+                  {navItems.map((navItem) => (
+                    <button
+                      aria-current={navItem.id === item.id}
+                      aria-label={navItem.selectLabel}
+                      className={cn(
+                        "h-1.5 cursor-pointer rounded-full transition-[width,background-color] duration-300",
+                        navItem.id === item.id
+                          ? "w-6 bg-brand"
+                          : "w-1.5 bg-brand-dark/20",
+                      )}
+                      key={navItem.id}
+                      onClick={() => onJump(navItem.id)}
+                      type="button"
+                    />
+                  ))}
+                </div>
+
+                <button
+                  aria-label={nextLabel}
+                  className="flex size-12 cursor-pointer items-center justify-center rounded-full bg-brand text-white shadow-[0_10px_24px_rgba(26,71,138,0.28)] transition-transform active:scale-95"
+                  onClick={onNext}
+                  type="button"
+                >
+                  <ChevronRight
+                    aria-hidden="true"
+                    className="size-6"
+                    strokeWidth={1.75}
+                  />
+                </button>
+              </div>
+            </motion.aside>
+          </motion.div>
         </div>
       ) : null}
     </AnimatePresence>,

@@ -47,7 +47,7 @@
       "originalName": "asleep Original Mattress",
       "addToBasket": "Add to basket"
     },
-    "configurator": "Create your mattress",
+    "configurator": "Configurator",
     "zoomLabel": "Zoom image",
     "gallery": {
       "heroAlt": "asleep Original mattress in a bedroom",
@@ -189,7 +189,7 @@
   "configurator": {
     "overline": "CUSTOMISE YOUR MATTRESS",
     "title": "Find your mattress",
-    "cta": "Create your mattress",
+    "cta": "Configurator",
     "imageAlt": "Exploded view of asleep mattress layers",
     "bedTypeLabel": "Bed type",
     "single": "Single",

@@ -1,6 +1,7 @@
 "use client";
 
 import { Menu, X } from "lucide-react";
+import { ConfiguratorLink } from "@/components/configurator/configurator-link";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
@@ -62,19 +63,35 @@ export function MobileNav({
           </button>
         </div>
         <nav className="flex flex-col gap-1 overflow-y-auto px-3 py-4">
-          {links.map((link) => (
-            <Link
-              className={cn(
-                "rounded-xl px-4 py-3 font-medium text-base",
-                link.accent ? "text-red-600" : "text-brand-dark",
-              )}
-              href={link.href}
-              key={link.label}
-              onClick={closeSheet}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {links.map((link) => {
+            const className = cn(
+              "rounded-xl px-4 py-3 font-medium text-base",
+              link.accent ? "text-red-600" : "text-brand-dark",
+            );
+
+            if (link.href === "/configurator") {
+              return (
+                <ConfiguratorLink
+                  className={className}
+                  key={link.label}
+                  onClick={closeSheet}
+                >
+                  {link.label}
+                </ConfiguratorLink>
+              );
+            }
+
+            return (
+              <Link
+                className={className}
+                href={link.href}
+                key={link.label}
+                onClick={closeSheet}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
           <Link
             className="rounded-xl px-4 py-3 font-medium text-base text-brand-dark"
             href="/reviews"

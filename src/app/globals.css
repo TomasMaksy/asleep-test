@@ -657,7 +657,12 @@ html.configurator-overlay-lock,
 html.configurator-overlay-lock body {
   overflow: hidden;
   overscroll-behavior: none;
-  height: 100%;
+}
+
+html.configurator-overlay-lock .configurator-page-slide {
+  position: fixed;
+  left: 0;
+  width: 100%;
 }
 
 .configurator-form-panel {

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { ConfiguratorLink } from "@/components/configurator/configurator-link";
 import { Logo } from "@/components/icons";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { Link } from "@/i18n/navigation";
@@ -105,7 +106,11 @@ function FooterColumn({
             className="list-none text-rg text-white leading-[1.85]"
             key={link.label}
           >
-            {isInternalHref(link.href) ? (
+            {link.href === "/configurator" ? (
+              <ConfiguratorLink className="hover:underline">
+                {link.label}
+              </ConfiguratorLink>
+            ) : isInternalHref(link.href) ? (
               <Link className="hover:underline" href={link.href}>
                 {link.label}
               </Link>

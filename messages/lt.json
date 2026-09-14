@@ -6,7 +6,7 @@
         "href": "/products/original"
       },
       {
-        "label": "Sukurti savo čiužinį",
+        "label": "Konfiguratorius",
         "href": "/configurator"
       }
     ],
@@ -57,7 +57,7 @@
         "title": "Produktai",
         "links": [
           { "label": "Original čiužinys", "href": "/products/original" },
-          { "label": "Sukurti savo čiužinį", "href": "/configurator" }
+          { "label": "Konfiguratorius", "href": "/configurator" }
         ]
       }
     ]

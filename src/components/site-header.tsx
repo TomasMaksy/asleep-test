@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { CartBagButton } from "@/components/cart/cart-bag-button";
+import { ConfiguratorLink } from "@/components/configurator/configurator-link";
 import { HeaderScroll } from "@/components/header-scroll";
 import { ChevronIcon, Logo } from "@/components/icons";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -92,19 +93,32 @@ export async function SiteHeader({
           </div>
 
           <nav className="mx-5 hidden h-full flex-wrap items-center justify-center gap-x-5 gap-y-2 lg:flex xl:mx-10 xl:gap-x-7">
-            {navLinks.map((link) => (
-              <Link
-                className={cn(
-                  "flex items-center gap-2.5 font-medium leading-normal duration-150",
-                  link.accent ? "text-red-600" : "",
-                )}
-                href={link.href}
-                key={link.label}
-              >
-                {link.label}
-                {link.hasMenu ? <ChevronIcon /> : null}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const className = cn(
+                "flex items-center gap-2.5 font-medium leading-normal duration-150",
+                link.accent ? "text-red-600" : "",
+              );
+
+              if (link.href === "/configurator") {
+                return (
+                  <ConfiguratorLink className={className} key={link.label}>
+                    {link.label}
+                    {link.hasMenu ? <ChevronIcon /> : null}
+                  </ConfiguratorLink>
+                );
+              }
+
+              return (
+                <Link
+                  className={className}
+                  href={link.href}
+                  key={link.label}
+                >
+                  {link.label}
+                  {link.hasMenu ? <ChevronIcon /> : null}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="ml-auto flex shrink-0 items-center justify-end gap-2 lg:ml-0 lg:flex-1 xl:gap-5">

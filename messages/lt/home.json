@@ -27,11 +27,11 @@
       },
       {
         "id": "hybrid",
-        "title": "Sukurk savo",
+        "title": "Konfiguratorius",
         "variant": "light",
         "image": "/images/product-hybrid.webp",
         "imageAlt": "Lorem ipsum hybrid mattress",
-        "cta": "Sukurti savo čiužinį",
+        "cta": "Konfiguratorius",
         "price": 899,
         "sizeLabel": "180 × 200 cm",
         "features": [

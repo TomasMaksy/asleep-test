@@ -27,11 +27,11 @@
       },
       {
         "id": "hybrid",
-        "title": "Create your own",
+        "title": "Configurator",
         "variant": "light",
         "image": "/images/product-hybrid.webp",
         "imageAlt": "Custom asleep mattress",
-        "cta": "Create your mattress",
+        "cta": "Configurator",
         "price": 899,
         "sizeLabel": "180 × 200 cm",
         "features": [

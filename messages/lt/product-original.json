@@ -47,7 +47,7 @@
       "originalName": "asleep Original čiužinys",
       "addToBasket": "Į krepšelį"
     },
-    "configurator": "Sukurti savo čiužinį",
+    "configurator": "Konfiguratorius",
     "zoomLabel": "Padidinti nuotrauką",
     "gallery": {
       "heroAlt": "asleep Original čiužinys miegamajame",
@@ -189,7 +189,7 @@
   "configurator": {
     "overline": "PRITAIKYKITE SAVO ČIUŽINĮ",
     "title": "Atraskite savo čiužinį",
-    "cta": "Sukurti savo čiužinį",
+    "cta": "Konfiguratorius",
     "imageAlt": "Išskleistas asleep čiužinio sluoksnių vaizdas",
     "bedTypeLabel": "Lovos tipas",
     "single": "Vienvietė",
