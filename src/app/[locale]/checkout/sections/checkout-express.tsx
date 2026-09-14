@@ -107,6 +107,8 @@ export function CheckoutExpress({
             lastName: names.lastName || names.firstName || "asleep",
             email: event.billingDetails?.email ?? "",
             phone: event.billingDetails?.phone ?? "",
+            city: event.billingDetails?.address?.city ?? "",
+            postal: event.billingDetails?.address?.postal_code ?? "",
           };
 
           if (checkoutConfig.fakeDoor) {
@@ -142,6 +144,8 @@ export function CheckoutExpress({
               lastName: paid.lastName || contact.lastName,
               email: paid.email || contact.email,
               phone: paid.phone || contact.phone,
+              city: contact.city,
+              postal: contact.postal,
             });
           } catch (cause) {
             const message =

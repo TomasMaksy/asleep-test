@@ -1,15 +1,21 @@
 import { clientTrackingConfig } from "@/lib/tracking/client/config";
 import type { TrackingEvent } from "@/lib/tracking/events";
 import { TRACKING_EVENT_REGISTRY } from "@/lib/tracking/events";
+import { buildGa4GtagUserData } from "@/lib/tracking/ga4-user-data";
+import { isGoogleDebugMode } from "@/lib/tracking/google-debug";
+import {
+  createGaClientId,
+  type GoogleIdentifiers,
+  googleIdentifiersFromCookies,
+  parseCookieHeader,
+} from "@/lib/tracking/google-ids";
 import { logTrackingIssue } from "@/lib/tracking/log";
+import type { MetaContact } from "@/lib/tracking/meta-user-data";
+
+export type { GoogleIdentifiers };
 
 let initialized = false;
 const GOOGLE_IDENTIFIERS_KEY = "asleep.tracking.google_identifiers";
-
-export type GoogleIdentifiers = {
-  clientId?: string;
-  sessionId?: string;
-};
 
 export function initializeGoogleTag() {
   const measurementId = clientTrackingConfig.ga4MeasurementId;
@@ -32,11 +38,15 @@ export function initializeGoogleTag() {
     window.dataLayer?.push(arguments);
   };
 
+  const seeded = seedGoogleIdentifiers(measurementId);
   window.gtag("js", new Date());
   window.gtag("config", measurementId, {
     send_page_view: false,
     page_path: window.location.pathname,
-    debug_mode: process.env.NODE_ENV !== "production",
+    ...(seeded.fromCookie || !seeded.clientId
+      ? {}
+      : { client_id: seeded.clientId }),
+    ...(isGoogleDebugMode() ? { debug_mode: true } : {}),
   });
 
   if (!document.querySelector('script[data-asleep-google-tag="true"]')) {
@@ -46,6 +56,17 @@ export function initializeGoogleTag() {
     script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
     document.head.append(script);
   }
+}
+
+export function identifyGa4User(contact: MetaContact) {
+  if (!initialized || !window.gtag) {
+    return;
+  }
+  const userData = buildGa4GtagUserData(contact);
+  if (!userData) {
+    return;
+  }
+  window.gtag("set", "user_data", userData);
 }
 
 export function buildGa4EventParams(event: TrackingEvent) {
@@ -125,20 +146,15 @@ export function captureGa4Event(
 }
 
 export async function getGoogleIdentifiers(): Promise<GoogleIdentifiers> {
-  const stored = readStoredGoogleIdentifiers();
-  const cookies = readGoogleIdentifiersFromCookies();
-  const fallback: GoogleIdentifiers = {
-    clientId: cookies.clientId ?? stored.clientId,
-    sessionId: cookies.sessionId ?? stored.sessionId,
-  };
-  storeGoogleIdentifiers(fallback);
+  const fallback = seedGoogleIdentifiers(clientTrackingConfig.ga4MeasurementId);
   if (!initialized || !window.gtag) {
     return fallback;
   }
 
+  const timeoutMs = fallback.clientId ? 400 : 1200;
   const [clientId, sessionId] = await Promise.all([
-    getGoogleField("client_id"),
-    getGoogleField("session_id"),
+    getGoogleField("client_id", timeoutMs),
+    getGoogleField("session_id", timeoutMs),
   ]);
 
   const identifiers = {
@@ -149,7 +165,26 @@ export async function getGoogleIdentifiers(): Promise<GoogleIdentifiers> {
   return identifiers;
 }
 
-function getGoogleField(field: "client_id" | "session_id") {
+function seedGoogleIdentifiers(
+  measurementId: string,
+): GoogleIdentifiers & { fromCookie: boolean } {
+  const stored = readStoredGoogleIdentifiers();
+  const cookies = googleIdentifiersFromCookies(
+    parseCookieHeader(document.cookie),
+    measurementId,
+  );
+  const identifiers: GoogleIdentifiers = {
+    clientId:
+      cookies.clientId ??
+      stored.clientId ??
+      (measurementId ? createGaClientId() : undefined),
+    sessionId: cookies.sessionId ?? stored.sessionId,
+  };
+  storeGoogleIdentifiers(identifiers);
+  return { ...identifiers, fromCookie: Boolean(cookies.clientId) };
+}
+
+function getGoogleField(field: "client_id" | "session_id", timeoutMs: number) {
   return new Promise<string | undefined>((resolve) => {
     let settled = false;
     const finish = (value?: string) => {
@@ -160,37 +195,9 @@ function getGoogleField(field: "client_id" | "session_id") {
       resolve(value || undefined);
     };
 
-    window.setTimeout(() => finish(), 600);
+    window.setTimeout(() => finish(), timeoutMs);
     window.gtag?.("get", clientTrackingConfig.ga4MeasurementId, field, finish);
   });
-}
-
-function readGoogleIdentifiersFromCookies(): GoogleIdentifiers {
-  const cookies = Object.fromEntries(
-    document.cookie.split(";").flatMap((entry) => {
-      const separator = entry.indexOf("=");
-      if (separator < 0) {
-        return [];
-      }
-      return [
-        [
-          entry.slice(0, separator).trim(),
-          decodeURIComponent(entry.slice(separator + 1)),
-        ],
-      ];
-    }),
-  );
-
-  const gaParts = cookies._ga?.split(".");
-  const clientId =
-    gaParts && gaParts.length >= 4 ? gaParts.slice(-2).join(".") : undefined;
-  const streamCookieName = `_ga_${clientTrackingConfig.ga4MeasurementId.replace(/^G-/, "")}`;
-  const streamCookie = cookies[streamCookieName];
-  const sessionId =
-    streamCookie?.match(/(?:^|[.$])s(\d+)(?:[.$]|$)/)?.[1] ??
-    streamCookie?.match(/^GS\d+\.\d+\.(\d+)/)?.[1];
-
-  return { clientId, sessionId };
 }
 
 function readStoredGoogleIdentifiers(): GoogleIdentifiers {

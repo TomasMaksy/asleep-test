@@ -2,13 +2,13 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { resolveCatalogItem } from "@/lib/product-catalog";
 import { useOriginalSizeStore } from "@/lib/product-original-size-store";
 import {
   resetConfiguratorVisit,
   trackConfiguratorStarted,
 } from "@/lib/tracking/client/configurator";
 import { trackClientEvent } from "@/lib/tracking/client/dispatcher";
+import { trackProductViewed } from "@/lib/tracking/client/ecommerce";
 import { asHttpUrl, currentTrackingUrl } from "@/lib/tracking/urls";
 
 const ORIGINAL_PRODUCT_PATH = /^\/(?:lt|en)\/products\/original\/?$/;
@@ -41,19 +41,7 @@ export function TrackingRouteObserver() {
     );
 
     if (ORIGINAL_PRODUCT_PATH.test(pathname)) {
-      const sizeId = useOriginalSizeStore.getState().sizeId;
-      const item = resolveCatalogItem(`matt-original-${sizeId}`, 1);
-      if (item) {
-        trackClientEvent(
-          "product_viewed",
-          {
-            currency: "EUR",
-            value: item.price * item.quantity,
-            items: [item],
-          },
-          { source: "route" },
-        );
-      }
+      trackProductViewed(useOriginalSizeStore.getState().sizeId);
     }
 
     if (CONFIGURATOR_PATH.test(pathname)) {
@@ -61,6 +49,21 @@ export function TrackingRouteObserver() {
     } else {
       resetConfiguratorVisit();
     }
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!ORIGINAL_PRODUCT_PATH.test(pathname)) {
+      return;
+    }
+
+    let previousSizeId = useOriginalSizeStore.getState().sizeId;
+    return useOriginalSizeStore.subscribe((state) => {
+      if (state.sizeId === previousSizeId) {
+        return;
+      }
+      previousSizeId = state.sizeId;
+      trackProductViewed(state.sizeId);
+    });
   }, [pathname]);
 
   return null;

@@ -4,15 +4,19 @@ import {
   isPostHogOnlyEventName,
   TRACKING_EVENT_REGISTRY,
 } from "@/lib/tracking/events";
+import { asMetaClientIp } from "@/lib/tracking/ip";
 import { logTrackingIssue } from "@/lib/tracking/log";
 import {
   type MetaContact,
+  normalizeMetaCity,
   normalizeMetaEmail,
+  normalizeMetaPostal,
   normalizeMetaText,
 } from "@/lib/tracking/meta-user-data";
 import { normalizePhoneE164 } from "@/lib/tracking/phone";
 import { serverTrackingConfig } from "@/lib/tracking/server/config";
 import type { TrackingRequestContext } from "@/lib/tracking/server/request";
+import { RetryableProviderError } from "@/lib/tracking/server/retry";
 
 export type { MetaContact };
 
@@ -27,7 +31,7 @@ export function buildMetaServerEvent(
   }
 
   const userData = compact({
-    client_ip_address: context.clientIp,
+    client_ip_address: asMetaClientIp(context.clientIp),
     client_user_agent: context.userAgent,
     em: hashedArray(contact.email, normalizeMetaEmail),
     ph: hashedArray(contact.phone, (value) =>
@@ -35,6 +39,8 @@ export function buildMetaServerEvent(
     ),
     fn: hashedArray(contact.firstName, normalizeMetaText),
     ln: hashedArray(contact.lastName, normalizeMetaText),
+    ct: hashedArray(contact.city, normalizeMetaCity),
+    zp: hashedArray(contact.postal, normalizeMetaPostal),
     country: hashedArray(contact.country, normalizeMetaText),
     external_id: [hash(event.visitor_id)],
     fbp: context.fbp,
@@ -96,8 +102,38 @@ export async function sendMetaCapiEvent(
   });
 
   if (!response.ok) {
-    throw new Error(`Meta CAPI request failed (${response.status}).`);
+    throw new RetryableProviderError(
+      `Meta CAPI request failed (${response.status}).`,
+      {
+        retryable: isRetryableStatus(response.status),
+        status: response.status,
+      },
+    );
   }
+
+  const body = (await response.json().catch(() => null)) as {
+    events_received?: unknown;
+    messages?: unknown;
+  } | null;
+  if (
+    body &&
+    typeof body.events_received === "number" &&
+    body.events_received < 1
+  ) {
+    const detail = Array.isArray(body.messages)
+      ? body.messages
+          .filter((message): message is string => typeof message === "string")
+          .join("; ")
+      : "";
+    throw new RetryableProviderError(
+      `Meta CAPI accepted 0 events${detail ? `: ${detail}` : "."}`,
+      { retryable: false, status: response.status },
+    );
+  }
+}
+
+function isRetryableStatus(status: number) {
+  return status === 408 || status === 429 || status >= 500;
 }
 
 function buildMetaCustomData(event: TrackingEvent) {

@@ -323,6 +323,8 @@ function CheckoutForm({
           lastName: (contact?.lastName ?? lastName).trim(),
           email: (contact?.email ?? email).trim().toLowerCase(),
           phone: (contact?.phone ?? phone).trim(),
+          city: (contact?.city ?? city).trim(),
+          postal: (contact?.postal ?? postal).trim(),
           locale,
           country,
           company: "",
@@ -379,6 +381,8 @@ function CheckoutForm({
       lastName,
       locale,
       phone,
+      city,
+      postal,
     ],
   );
 
@@ -435,6 +439,8 @@ function CheckoutForm({
               phone: contact.phone,
               firstName: contact.firstName,
               lastName: contact.lastName,
+              city: (contact.city ?? city).trim(),
+              postal: (contact.postal ?? postal).trim(),
               country,
             });
           }
@@ -444,7 +450,11 @@ function CheckoutForm({
         } catch {
           // Browser analytics must never block an accepted checkout.
         }
-        storeCheckoutThanks(contact);
+        storeCheckoutThanks({
+          ...contact,
+          city: (contact.city ?? city).trim(),
+          postal: (contact.postal ?? postal).trim(),
+        });
         clearCheckoutDraft();
         if (!checkoutConfig.fakeDoor) {
           clearCart();
@@ -463,6 +473,8 @@ function CheckoutForm({
       router,
       saveLead,
       t,
+      city,
+      postal,
     ],
   );
 

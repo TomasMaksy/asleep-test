@@ -1,4 +1,7 @@
 import type { TrackingEvent } from "@/lib/tracking/events";
+import { googleIdentifiersFromCookies } from "@/lib/tracking/google-ids";
+import { asMetaClientIp } from "@/lib/tracking/ip";
+import { serverTrackingConfig } from "@/lib/tracking/server/config";
 import { isTrustedSiteRequest } from "@/lib/tracking/server/origins";
 import { consumeRateLimit } from "@/lib/tracking/server/rate-limit";
 
@@ -7,6 +10,8 @@ export type TrackingRequestContext = {
   userAgent?: string;
   fbp?: string;
   fbc?: string;
+  gaClientId?: string;
+  gaSessionId?: string;
 };
 
 export function getTrackingRequestContext(
@@ -14,10 +19,13 @@ export function getTrackingRequestContext(
   event: TrackingEvent,
 ): TrackingRequestContext {
   const cookies = parseCookies(request.headers.get("cookie") ?? "");
-  const clientIp = getClientIp(request);
+  const google = googleIdentifiersFromCookies(
+    cookies,
+    serverTrackingConfig.ga4MeasurementId,
+  );
 
   return {
-    clientIp,
+    clientIp: asMetaClientIp(getClientIp(request)),
     userAgent: request.headers.get("user-agent") || undefined,
     fbp: cookies._fbp || cookies.asleep_fbp || event.fbp,
     fbc:
@@ -25,6 +33,8 @@ export function getTrackingRequestContext(
       cookies.asleep_fbc ||
       event.fbc ||
       createFbcFromUrl(event.url, event.occurred_at),
+    gaClientId: event.ga_client_id || google.clientId,
+    gaSessionId: event.ga_session_id || google.sessionId,
   };
 }
 
@@ -32,8 +42,8 @@ export function getClientIp(request: Request) {
   const forwarded = request.headers.get("x-forwarded-for");
   return (
     forwarded?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip") ||
-    "unknown"
+    request.headers.get("x-real-ip")?.trim() ||
+    undefined
   );
 }
 
@@ -52,7 +62,7 @@ export function consumeMutationRateLimit(
   } as const;
 
   return consumeRateLimit(
-    `${scope}:${getClientIp(request)}`,
+    `${scope}:${getClientIp(request) ?? "unknown"}`,
     limits[scope],
     60_000,
   );

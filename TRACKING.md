@@ -84,14 +84,22 @@ it as `transaction_id`. Purchase also includes
   and GA4 purchase only after `/api/checkout` accepts the request.
 - The server emits Meta CAPI and GA4 Measurement Protocol purchase. Meta uses
   the shared `event_id`; GA4 browser and server events use the same non-empty
-  `checkout_id` as `transaction_id`.
+  `checkout_id` as `transaction_id`. Measurement Protocol purchase includes
+  numeric `session_id` and `engagement_time_msec` so the event joins the
+  browser session and shows in Realtime / engaged-session reports. If gtag
+  has not minted `_ga` yet, the client seeds a client_id and the server can
+  fall back to the request `_ga` cookie so first-session checkout is not
+  dropped.
 - Browser events are not mirrored to PostHog server-side. That keeps the richer
   browser event and avoids replacing it with a thinner server duplicate.
 - `_fbp`, `_fbc`, and first-party `asleep_fbp` / `asleep_fbc` cookies, plus
   the landing `fbclid`, are read by server routes. Checkout contact fields
   are normalized to E.164 using the selected country and SHA-256 hashed
-  before Meta CAPI. Phone is not sent to PostHog or GA4. PostHog person
-  properties store email and name so a buyer profile can show the journey.
+  before Meta CAPI. Purchase also sends hashed email and phone to GA4 as
+  user-provided data (`gtag('set', 'user_data')` and Measurement Protocol
+  `sha256_email_address` / `sha256_phone_number`). Phone is not sent to
+  PostHog. PostHog person properties store email and name so a buyer profile
+  can show the journey.
 - Analytics provider failures never reject an otherwise accepted checkout.
   Tokens, contact data, IP addresses, and full provider payloads are not
   logged. Purchase delivery retries three times and logs only provider,
@@ -168,6 +176,16 @@ strip the buyer file you want to open.
 ## Privacy and loading
 
 Tracking starts immediately without a consent gate, by product decision.
+There is no GDPR popup and no Google Consent Mode v2 yet. gtag still loads
+and fires; cookies are set; hashed checkout email/phone are sent to Google
+for enhanced conversions. Lithuania is EEA, so until a banner sets
+`ad_storage`, `analytics_storage`, `ad_user_data`, and `ad_personalization`
+before `gtag('config', ...)`, Google Ads modeling and enhanced conversions
+will not be full-quality. When the popup lands, default those four signals
+to `denied` before the Google tag, then `update` them from the user's
+choice. Do not add a consent default now or tags will wait for a banner
+that does not exist.
+
 PostHog initializes before hydration with explicit events only: autocapture
 is off and session replay is on with inputs masked. Meta and Google scripts
 load asynchronously. Meta Pixel `autoConfig` and `disablePushState` are off
@@ -201,10 +219,13 @@ After adding credentials:
    complete the funnel. Pixel and server copies must show the same event ID and
    one deduplicated event. Size, quantity, and nav clicks must not appear as
    `SubscribedButtonClick` or other inferred button events.
-3. Use GA4 DebugView while developing. Non-production Measurement Protocol
-   calls go to the validation endpoint. A purchase's browser and server copies
-   must share one `transaction_id`, and item `price × quantity` must equal
-   `value`.
+3. Use GA4 DebugView while developing. Measurement Protocol always POSTs to
+   `/mp/collect` (the `/debug/mp/collect` URL only validates and does not
+   ingest). Local `bun dev` and Vercel previews add `debug_mode: true` so
+   events appear in DebugView; they still land in this property because
+   `NODE_ENV` is `production` on every Vercel deploy. A purchase's browser
+   and server copies must share one `transaction_id`, and item
+   `price × quantity` must equal `value`.
 4. Remove `META_TEST_EVENT_CODE` before production verification.
 
 ## One-time Google Ads setup
@@ -217,3 +238,6 @@ After adding credentials:
 5. Leave `page_view` out of conversions.
 6. Do not install a separate `AW-...` tag or duplicate native Google Ads
    conversion actions.
+7. In GA4 Admin → Data streams → Google tag → Allow user-provided data
+   capabilities, turn on user-provided data so enhanced conversions can
+   use the hashed checkout email and phone.

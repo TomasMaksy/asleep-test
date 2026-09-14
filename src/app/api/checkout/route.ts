@@ -23,6 +23,8 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MAX_EMAIL_LENGTH = 254;
 const MAX_NAME_LENGTH = 80;
 const MAX_PHONE_LENGTH = 40;
+const MAX_CITY_LENGTH = 80;
+const MAX_POSTAL_LENGTH = 16;
 const MAX_BODY_BYTES = 64_000;
 
 type CheckoutLead = {
@@ -30,6 +32,8 @@ type CheckoutLead = {
   lastName: string;
   email: string;
   phone: string;
+  city: string;
+  postal: string;
   locale: string;
   country: string;
   company: string;
@@ -51,6 +55,8 @@ function pickLead(body: unknown): CheckoutLead {
     lastName: asTrimmedString(source.lastName, MAX_NAME_LENGTH),
     email: asTrimmedString(source.email, MAX_EMAIL_LENGTH).toLowerCase(),
     phone: asTrimmedString(source.phone, MAX_PHONE_LENGTH),
+    city: asTrimmedString(source.city, MAX_CITY_LENGTH),
+    postal: asTrimmedString(source.postal, MAX_POSTAL_LENGTH),
     locale: asTrimmedString(source.locale, 8) || "lt",
     country: asTrimmedString(source.country, 2).toLowerCase(),
     company: asTrimmedString(source.company, 120),
@@ -136,6 +142,8 @@ export async function POST(request: Request) {
         phone: lead.phone,
         firstName: lead.firstName,
         lastName: lead.lastName,
+        city: lead.city,
+        postal: lead.postal,
         country: lead.country,
       }),
     );

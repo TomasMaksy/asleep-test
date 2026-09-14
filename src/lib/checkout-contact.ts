@@ -3,6 +3,8 @@ export type CheckoutContact = {
   lastName: string;
   email: string;
   phone: string;
+  city?: string;
+  postal?: string;
 };
 
 export const CHECKOUT_THANKS_KEY = "asleep.checkout.thanks";
@@ -40,6 +42,8 @@ export function readCheckoutThanks(): CheckoutContact | null {
       lastName: typeof parsed.lastName === "string" ? parsed.lastName : "",
       email: parsed.email,
       phone: typeof parsed.phone === "string" ? parsed.phone : "",
+      city: typeof parsed.city === "string" ? parsed.city : "",
+      postal: typeof parsed.postal === "string" ? parsed.postal : "",
     };
   } catch {
     return null;

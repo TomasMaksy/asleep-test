@@ -5,6 +5,8 @@ export type MetaContact = {
   phone?: string;
   firstName?: string;
   lastName?: string;
+  city?: string;
+  postal?: string;
   country?: string;
 };
 
@@ -16,6 +18,14 @@ export function normalizeMetaEmail(value: string) {
 
 export function normalizeMetaText(value: string) {
   return value.trim().toLowerCase();
+}
+
+export function normalizeMetaCity(value: string) {
+  return value.trim().toLowerCase().replace(/\s+/g, "");
+}
+
+export function normalizeMetaPostal(value: string) {
+  return value.trim().toLowerCase().replace(/[\s-]/g, "");
 }
 
 export async function sha256Hex(value: string) {
@@ -55,6 +65,8 @@ export function buildMetaPixelUserData(
       : undefined,
     fn: contact.firstName ? normalizeMetaText(contact.firstName) : undefined,
     ln: contact.lastName ? normalizeMetaText(contact.lastName) : undefined,
+    ct: contact.city ? normalizeMetaCity(contact.city) : undefined,
+    zp: contact.postal ? normalizeMetaPostal(contact.postal) : undefined,
     country: contact.country ? normalizeMetaText(contact.country) : undefined,
     external_id: hashedExternalId,
   });

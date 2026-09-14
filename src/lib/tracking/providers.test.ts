@@ -3,14 +3,22 @@ import { createHash } from "node:crypto";
 import { buildGa4EventParams } from "@/lib/tracking/client/ga4";
 import { buildMetaPixelData } from "@/lib/tracking/client/meta";
 import { purchaseEventSchema } from "@/lib/tracking/events";
+import { buildGa4MeasurementUserData } from "@/lib/tracking/ga4-user-data";
 import {
   buildMetaPixelUserData,
   hashMetaExternalId,
+  normalizeMetaCity,
   normalizeMetaEmail,
+  normalizeMetaPostal,
   normalizeMetaText,
 } from "@/lib/tracking/meta-user-data";
 import { normalizePhoneE164 } from "@/lib/tracking/phone";
-import { buildGa4MeasurementPayload } from "@/lib/tracking/server/ga4";
+import {
+  buildGa4MeasurementPayload,
+  GA4_MEASUREMENT_ENGAGEMENT_TIME_MSEC,
+  ga4CollectUrl,
+  ga4ValidationUrl,
+} from "@/lib/tracking/server/ga4";
 import { buildMetaServerEvent } from "@/lib/tracking/server/meta";
 
 const purchase = purchaseEventSchema.parse({
@@ -79,6 +87,8 @@ describe("provider payloads", () => {
       phone: "+370 600 00000",
       firstName: "Customer",
       lastName: "Example",
+      city: "Vilnius",
+      postal: "LT-01100",
       country: "LT",
     };
     const hashedExternalId = await hashMetaExternalId(purchase.visitor_id);
@@ -90,6 +100,8 @@ describe("provider payloads", () => {
       ph: "37060000000",
       fn: "customer",
       ln: "example",
+      ct: "vilnius",
+      zp: "lt01100",
       country: "lt",
       external_id: hashedExternalId,
     });
@@ -97,13 +109,25 @@ describe("provider payloads", () => {
     expect(capi.user_data.ph).toEqual([sha256(pixelUser.ph)]);
     expect(capi.user_data.fn).toEqual([sha256(pixelUser.fn)]);
     expect(capi.user_data.ln).toEqual([sha256(pixelUser.ln)]);
+    expect(capi.user_data.ct).toEqual([sha256(pixelUser.ct)]);
+    expect(capi.user_data.zp).toEqual([sha256(pixelUser.zp)]);
     expect(capi.user_data.country).toEqual([sha256(pixelUser.country)]);
     expect(capi.user_data.external_id).toEqual([pixelUser.external_id]);
     expect(normalizeMetaEmail(contact.email)).toBe(pixelUser.em);
     expect(normalizePhoneE164(contact.phone, contact.country)).toBe(
       pixelUser.ph,
     );
+    expect(normalizeMetaCity(contact.city)).toBe(pixelUser.ct);
+    expect(normalizeMetaPostal(contact.postal)).toBe(pixelUser.zp);
     expect(normalizeMetaText(contact.country)).toBe(pixelUser.country);
+  });
+
+  test("omits client_ip_address when it is not an IP", () => {
+    const invalid = buildMetaServerEvent(purchase, { clientIp: "unknown" });
+    const valid = buildMetaServerEvent(purchase, { clientIp: "203.0.113.1" });
+
+    expect(invalid.user_data).not.toHaveProperty("client_ip_address");
+    expect(valid.user_data.client_ip_address).toBe("203.0.113.1");
   });
 
   test("normalizes local Lithuanian numbers to the same E.164 hash", () => {
@@ -128,7 +152,9 @@ describe("provider payloads", () => {
 
   test("keeps GA4 browser and server purchases on one transaction ID", () => {
     const web = buildGa4EventParams(purchase);
-    const measurement = buildGa4MeasurementPayload(purchase);
+    const measurement = buildGa4MeasurementPayload(purchase, {
+      debugMode: false,
+    });
     const serverParams = measurement.events[0]?.params;
     const webTransactionId =
       "transaction_id" in web ? web.transaction_id : undefined;
@@ -137,9 +163,61 @@ describe("provider payloads", () => {
     expect(serverParams?.transaction_id).toBe(purchase.properties.checkout_id);
     expect(measurement.client_id).toBe(purchase.ga_client_id);
     expect(typeof measurement.timestamp_micros).toBe("number");
-    expect(serverParams?.session_id).toBe(purchase.ga_session_id);
+    expect(serverParams?.session_id).toBe(Number(purchase.ga_session_id));
+    expect(typeof serverParams?.session_id).toBe("number");
+    expect(String(serverParams?.session_id)).toMatch(/^\d+$/);
     expect(serverParams?.items).toEqual(purchase.properties.items);
-    expect(serverParams).not.toHaveProperty("engagement_time_msec");
+    expect(serverParams?.engagement_time_msec).toBe(
+      GA4_MEASUREMENT_ENGAGEMENT_TIME_MSEC,
+    );
+    expect(serverParams).not.toHaveProperty("debug_mode");
+    expect(measurement).not.toHaveProperty("user_data");
+  });
+
+  test("omits Measurement Protocol session_id when it is not a digit string", () => {
+    const measurement = buildGa4MeasurementPayload(purchase, {
+      sessionId: "session",
+      debugMode: false,
+    });
+
+    expect(measurement.events[0]?.params).not.toHaveProperty("session_id");
+  });
+
+  test("sends hashed enhanced conversions on Measurement Protocol purchase", async () => {
+    const userData = await buildGa4MeasurementUserData({
+      email: "Customer@Example.com",
+      phone: "+370 600 00000",
+      firstName: "Customer",
+      lastName: "Example",
+      city: "Vilnius",
+      postal: "LT-01100",
+      country: "LT",
+    });
+    const measurement = buildGa4MeasurementPayload(purchase, {
+      userData,
+      debugMode: false,
+    });
+
+    expect(measurement.user_id).toBe(purchase.visitor_id);
+    expect(measurement.user_data?.sha256_email_address).toBe(
+      sha256("customer@example.com"),
+    );
+    expect(measurement.user_data?.sha256_phone_number).toBe(
+      sha256("+37060000000"),
+    );
+    expect(JSON.stringify(measurement.user_data)).not.toContain(
+      "Customer@Example.com",
+    );
+  });
+
+  test("ingests Measurement Protocol events instead of only validating them", () => {
+    expect(ga4CollectUrl().hostname).toBe("region1.google-analytics.com");
+    expect(ga4CollectUrl().pathname).toBe("/mp/collect");
+    expect(ga4ValidationUrl().pathname).toBe("/debug/mp/collect");
+    expect(
+      buildGa4MeasurementPayload(purchase, { debugMode: true }).events[0]
+        ?.params,
+    ).toMatchObject({ debug_mode: true });
   });
 
   test("maps every funnel event onto the same Meta event ID", () => {

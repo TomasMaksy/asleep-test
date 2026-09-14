@@ -68,6 +68,8 @@ export function CheckoutThanksSection() {
           lastName: next.lastName || stored?.lastName || "",
           email: next.email || stored?.email || "",
           phone: next.phone || stored?.phone || "",
+          city: stored?.city || draft.city,
+          postal: stored?.postal || draft.postal,
         };
         if (merged.email) {
           storeCheckoutThanks(merged);
@@ -99,6 +101,8 @@ export function CheckoutThanksSection() {
                 phone: merged.phone,
                 locale,
                 country: draft.country,
+                city: merged.city || draft.city,
+                postal: merged.postal || draft.postal,
                 company: "",
                 coupon: draft.appliedDiscountCode || undefined,
                 items: cartItems.map((item) => ({
@@ -144,6 +148,8 @@ export function CheckoutThanksSection() {
                   firstName: merged.firstName,
                   lastName: merged.lastName,
                   country: draft.country,
+                  city: merged.city || draft.city,
+                  postal: merged.postal || draft.postal,
                 });
                 completeCheckout(purchase.data.properties.checkout_id);
               }

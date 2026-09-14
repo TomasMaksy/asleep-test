@@ -2,6 +2,7 @@ import { clientTrackingConfig } from "@/lib/tracking/client/config";
 import {
   captureGa4Event,
   type GoogleIdentifiers,
+  identifyGa4User,
 } from "@/lib/tracking/client/ga4";
 import {
   captureMetaPixelEvent,
@@ -104,6 +105,16 @@ export async function dispatchAcceptedPurchase(
       reason: trackingErrorMessage(error),
     });
   }
+  try {
+    identifyGa4User(contact);
+  } catch (error) {
+    logTrackingIssue({
+      provider: "ga4",
+      eventName: event.name,
+      eventId: event.event_id,
+      reason: trackingErrorMessage(error),
+    });
+  }
   captureMetaPixelEvent(event);
   captureGa4Event(event, { immediate: true });
 }
@@ -175,7 +186,7 @@ function sendMetaCapiRelay(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body,
-      keepalive: Boolean(options.immediate),
+      keepalive: true,
     })
       .then((response) => {
         if (!response.ok) {

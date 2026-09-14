@@ -32,7 +32,7 @@ export async function sendPurchaseToServers(
       sendMetaCapiEvent(event, context, contact),
     ),
     withProviderRetry("ga4", event.name, event.event_id, () =>
-      sendGa4MeasurementPurchase(event),
+      sendGa4MeasurementPurchase(event, context, contact),
     ),
   ]);
 }

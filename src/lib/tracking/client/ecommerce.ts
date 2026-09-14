@@ -1,4 +1,5 @@
 import type { CartItem } from "@/lib/cart-store";
+import { resolveCatalogItem } from "@/lib/product-catalog";
 import { cartToTrackingItems, trackingItemsValue } from "@/lib/tracking/cart";
 import {
   createTrackingEvent,
@@ -12,6 +13,23 @@ import type {
 } from "@/lib/tracking/events";
 import { claimCheckoutInitiated, getCheckoutId } from "@/lib/tracking/ids";
 import { logTrackingIssue } from "@/lib/tracking/log";
+
+export function trackProductViewed(sizeId: string) {
+  const item = resolveCatalogItem(`matt-original-${sizeId}`, 1);
+  if (!item) {
+    return;
+  }
+
+  return trackClientEvent(
+    "product_viewed",
+    {
+      currency: "EUR",
+      value: item.price * item.quantity,
+      items: [item],
+    },
+    { source: "route" },
+  );
+}
 
 export function trackAddedCartItems(
   items: CartItem[],
