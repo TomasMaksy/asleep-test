@@ -4,7 +4,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const posthogHost = (
-  process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://us.i.posthog.com"
+  process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://eu.i.posthog.com"
 ).replace(/\/$/, "");
 const posthogAssetsHost = posthogHost
   .replace("://eu.i.", "://eu-assets.i.")

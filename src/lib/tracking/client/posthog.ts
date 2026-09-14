@@ -53,7 +53,7 @@ export function identifyVisitor(
     name?: string;
     newsletter_subscribed?: boolean;
   },
-  once: { newsletter_email?: string } = {},
+  once: { email?: string; newsletter_email?: string } = {},
 ) {
   if (!initialized) {
     return;
@@ -62,7 +62,6 @@ export function identifyVisitor(
   try {
     const email = normalizeEmail(properties.email);
     const checkoutEmail = normalizeEmail(properties.checkout_email) ?? email;
-    const newsletterEmail = normalizeEmail(once.newsletter_email);
     posthog.identify(
       getVisitorId(),
       compact({
@@ -70,7 +69,10 @@ export function identifyVisitor(
         email,
         checkout_email: checkoutEmail,
       }),
-      compact({ newsletter_email: newsletterEmail }),
+      compact({
+        email: normalizeEmail(once.email),
+        newsletter_email: normalizeEmail(once.newsletter_email),
+      }),
     );
   } catch {
     // Person properties must never block the UI.

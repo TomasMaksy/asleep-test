@@ -116,7 +116,7 @@ server credential is empty.
 - `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN`: PostHog project token from project
   settings. `NEXT_PUBLIC_POSTHOG_KEY` is accepted as a fallback.
 - `NEXT_PUBLIC_POSTHOG_HOST`: PostHog ingest region, e.g.
-  `https://us.i.posthog.com`.
+  `https://eu.i.posthog.com`.
 - `NEXT_PUBLIC_META_PIXEL_ID`: Meta dataset/pixel ID.
 - `META_CONVERSIONS_API_TOKEN`: server-only Meta CAPI access token.
 - `META_TEST_EVENT_CODE`: optional server-only code for Meta Test Events.
