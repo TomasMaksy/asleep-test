@@ -62,13 +62,14 @@ function getOrCreateUuid(storage: TrackingStorage, key: string) {
 export function claimCheckoutInitiated(
   checkoutId: string,
   storage: TrackingStorage = sessionStorage,
+  signature = "1",
 ) {
   const key = `${CHECKOUT_INITIATED_PREFIX}${checkoutId}`;
   try {
-    if (storage.getItem(key)) {
+    if (storage.getItem(key) === signature) {
       return false;
     }
-    storage.setItem(key, "1");
+    storage.setItem(key, signature);
     return true;
   } catch {
     return true;

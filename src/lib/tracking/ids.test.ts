@@ -64,6 +64,12 @@ describe("tracking identifiers", () => {
     expect(claimCheckoutInitiated("checkout-1", storage)).toBe(true);
     expect(claimCheckoutInitiated("checkout-1", storage)).toBe(false);
     expect(claimCheckoutInitiated("checkout-2", storage)).toBe(true);
+    expect(
+      claimCheckoutInitiated("checkout-1", storage, "matt-original-80x190:1"),
+    ).toBe(true);
+    expect(
+      claimCheckoutInitiated("checkout-1", storage, "matt-original-80x190:1"),
+    ).toBe(false);
   });
 
   test("completion clears only the matching checkout", () => {

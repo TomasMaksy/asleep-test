@@ -5,8 +5,13 @@ import {
   trackClientEvent,
 } from "@/lib/tracking/client/dispatcher";
 import { getGoogleIdentifiers } from "@/lib/tracking/client/ga4";
-import type { TrackingEventOf, TrackingSource } from "@/lib/tracking/events";
+import type {
+  TrackingEventOf,
+  TrackingItem,
+  TrackingSource,
+} from "@/lib/tracking/events";
 import { claimCheckoutInitiated, getCheckoutId } from "@/lib/tracking/ids";
+import { logTrackingIssue } from "@/lib/tracking/log";
 
 export function trackAddedCartItems(
   items: CartItem[],
@@ -41,11 +46,23 @@ export function trackCheckoutInitiated(
 
   const tracked = cartToTrackingItems(items);
   if (tracked.length === 0) {
+    logTrackingIssue({
+      eventName: "checkout_initiated",
+      reason: "catalog_mismatch",
+    });
     return;
   }
 
   const checkoutId = getCheckoutId();
-  if (!claimCheckoutInitiated(checkoutId)) {
+  const signature = checkoutCartSignature(tracked);
+  if (!claimCheckoutInitiated(checkoutId, sessionStorage, signature)) {
+    logTrackingIssue(
+      {
+        eventName: "checkout_initiated",
+        reason: "already_claimed",
+      },
+      { once: `checkout-initiated-${checkoutId}-${signature}` },
+    );
     return;
   }
 
@@ -60,6 +77,13 @@ export function trackCheckoutInitiated(
     },
     { source, immediate: source === "cart" },
   );
+}
+
+function checkoutCartSignature(items: TrackingItem[]) {
+  return items
+    .map((item) => `${item.item_id}:${item.quantity}`)
+    .sort()
+    .join(",");
 }
 
 export async function createPurchaseTrackingEvent({

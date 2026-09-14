@@ -10,7 +10,7 @@ const complete = {
   META_CONVERSIONS_API_TOKEN: "token",
   NEXT_PUBLIC_GA4_MEASUREMENT_ID: "G-TEST",
   GA4_MEASUREMENT_PROTOCOL_SECRET: "secret",
-} as NodeJS.ProcessEnv;
+};
 
 describe("tracking env", () => {
   test("lists missing required names", () => {
@@ -40,7 +40,7 @@ describe("tracking env", () => {
       expect(() =>
         assertTrackingEnvForBuild({
           NODE_ENV: "development",
-        } as NodeJS.ProcessEnv),
+        }),
       ).not.toThrow();
     } finally {
       console.warn = warn;
@@ -51,7 +51,7 @@ describe("tracking env", () => {
     expect(() =>
       assertTrackingEnvForBuild({
         NODE_ENV: "production",
-      } as NodeJS.ProcessEnv),
+      }),
     ).toThrow(/NEXT_PUBLIC_GA4_MEASUREMENT_ID/);
   });
 

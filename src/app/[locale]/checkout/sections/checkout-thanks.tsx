@@ -138,7 +138,13 @@ export function CheckoutThanksSection() {
                   checkout_email: merged.email,
                   name: `${merged.firstName} ${merged.lastName}`.trim(),
                 });
-                dispatchAcceptedPurchase(purchase.data);
+                await dispatchAcceptedPurchase(purchase.data, {
+                  email: merged.email,
+                  phone: merged.phone,
+                  firstName: merged.firstName,
+                  lastName: merged.lastName,
+                  country: draft.country,
+                });
                 completeCheckout(purchase.data.properties.checkout_id);
               }
             }

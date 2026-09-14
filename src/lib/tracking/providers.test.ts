@@ -1,7 +1,15 @@
 import { describe, expect, test } from "bun:test";
+import { createHash } from "node:crypto";
 import { buildGa4EventParams } from "@/lib/tracking/client/ga4";
 import { buildMetaPixelData } from "@/lib/tracking/client/meta";
 import { purchaseEventSchema } from "@/lib/tracking/events";
+import {
+  buildMetaPixelUserData,
+  hashMetaExternalId,
+  normalizeMetaEmail,
+  normalizeMetaText,
+} from "@/lib/tracking/meta-user-data";
+import { normalizePhoneE164 } from "@/lib/tracking/phone";
 import { buildGa4MeasurementPayload } from "@/lib/tracking/server/ga4";
 import { buildMetaServerEvent } from "@/lib/tracking/server/meta";
 
@@ -39,6 +47,13 @@ const purchase = purchaseEventSchema.parse({
 describe("provider payloads", () => {
   test("keeps Meta browser and server data on one event ID", () => {
     const pixel = buildMetaPixelData(purchase);
+    const contact = {
+      email: "Customer@Example.com",
+      phone: "+370 600 00000",
+      firstName: "Customer",
+      lastName: "Example",
+      country: "LT",
+    };
     const capi = buildMetaServerEvent(
       purchase,
       {
@@ -46,13 +61,7 @@ describe("provider payloads", () => {
         userAgent: "Example Browser",
         fbp: "fb.1.123.456",
       },
-      {
-        email: "Customer@Example.com",
-        phone: "+370 600 00000",
-        firstName: "Customer",
-        lastName: "Example",
-        country: "LT",
-      },
+      contact,
     );
 
     expect(capi.event_name).toBe("Purchase");
@@ -62,6 +71,39 @@ describe("provider payloads", () => {
       "Customer@Example.com",
     );
     expect(JSON.stringify(capi.user_data)).not.toContain("37060000000");
+  });
+
+  test("sends the same Advanced Matching set on Pixel and CAPI", async () => {
+    const contact = {
+      email: "Customer@Example.com",
+      phone: "+370 600 00000",
+      firstName: "Customer",
+      lastName: "Example",
+      country: "LT",
+    };
+    const hashedExternalId = await hashMetaExternalId(purchase.visitor_id);
+    const pixelUser = buildMetaPixelUserData(contact, hashedExternalId);
+    const capi = buildMetaServerEvent(purchase, {}, contact);
+
+    expect(pixelUser).toEqual({
+      em: "customer@example.com",
+      ph: "37060000000",
+      fn: "customer",
+      ln: "example",
+      country: "lt",
+      external_id: hashedExternalId,
+    });
+    expect(capi.user_data.em).toEqual([sha256(pixelUser.em)]);
+    expect(capi.user_data.ph).toEqual([sha256(pixelUser.ph)]);
+    expect(capi.user_data.fn).toEqual([sha256(pixelUser.fn)]);
+    expect(capi.user_data.ln).toEqual([sha256(pixelUser.ln)]);
+    expect(capi.user_data.country).toEqual([sha256(pixelUser.country)]);
+    expect(capi.user_data.external_id).toEqual([pixelUser.external_id]);
+    expect(normalizeMetaEmail(contact.email)).toBe(pixelUser.em);
+    expect(normalizePhoneE164(contact.phone, contact.country)).toBe(
+      pixelUser.ph,
+    );
+    expect(normalizeMetaText(contact.country)).toBe(pixelUser.country);
   });
 
   test("normalizes local Lithuanian numbers to the same E.164 hash", () => {
@@ -104,3 +146,10 @@ describe("provider payloads", () => {
     expect(buildMetaServerEvent(purchase, {}).event_id).toBe(purchase.event_id);
   });
 });
+
+function sha256(value: string | undefined) {
+  expect(value).toBeTruthy();
+  return createHash("sha256")
+    .update(value ?? "")
+    .digest("hex");
+}

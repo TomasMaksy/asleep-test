@@ -5,17 +5,16 @@ import {
   TRACKING_EVENT_REGISTRY,
 } from "@/lib/tracking/events";
 import { logTrackingIssue } from "@/lib/tracking/log";
+import {
+  type MetaContact,
+  normalizeMetaEmail,
+  normalizeMetaText,
+} from "@/lib/tracking/meta-user-data";
 import { normalizePhoneE164 } from "@/lib/tracking/phone";
 import { serverTrackingConfig } from "@/lib/tracking/server/config";
 import type { TrackingRequestContext } from "@/lib/tracking/server/request";
 
-export type MetaContact = {
-  email?: string;
-  phone?: string;
-  firstName?: string;
-  lastName?: string;
-  country?: string;
-};
+export type { MetaContact };
 
 export function buildMetaServerEvent(
   event: TrackingEvent,
@@ -30,13 +29,13 @@ export function buildMetaServerEvent(
   const userData = compact({
     client_ip_address: context.clientIp,
     client_user_agent: context.userAgent,
-    em: hashedArray(contact.email, normalizeEmail),
+    em: hashedArray(contact.email, normalizeMetaEmail),
     ph: hashedArray(contact.phone, (value) =>
       normalizePhoneE164(value, contact.country),
     ),
-    fn: hashedArray(contact.firstName, normalizeText),
-    ln: hashedArray(contact.lastName, normalizeText),
-    country: hashedArray(contact.country, normalizeText),
+    fn: hashedArray(contact.firstName, normalizeMetaText),
+    ln: hashedArray(contact.lastName, normalizeMetaText),
+    country: hashedArray(contact.country, normalizeMetaText),
     external_id: [hash(event.visitor_id)],
     fbp: context.fbp,
     fbc: context.fbc,
@@ -145,14 +144,6 @@ function hashedArray(
   }
   const normalized = normalize(value);
   return normalized ? [hash(normalized)] : undefined;
-}
-
-function normalizeEmail(value: string) {
-  return value.trim().toLowerCase();
-}
-
-function normalizeText(value: string) {
-  return value.trim().toLowerCase();
 }
 
 function compact<T extends Record<string, unknown>>(record: T) {

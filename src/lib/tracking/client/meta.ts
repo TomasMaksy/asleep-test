@@ -1,9 +1,17 @@
 import { clientTrackingConfig } from "@/lib/tracking/client/config";
 import type { TrackingEvent } from "@/lib/tracking/events";
 import { TRACKING_EVENT_REGISTRY } from "@/lib/tracking/events";
-import { logTrackingIssue } from "@/lib/tracking/log";
+import { getVisitorId } from "@/lib/tracking/ids";
+import { logTrackingIssue, trackingErrorMessage } from "@/lib/tracking/log";
+import {
+  buildMetaPixelUserData,
+  hashMetaExternalId,
+  type MetaContact,
+} from "@/lib/tracking/meta-user-data";
 
 let initialized = false;
+let pendingContact: MetaContact = {};
+let matchingGate = Promise.resolve();
 
 export function initializeMetaPixel() {
   if (initialized) {
@@ -45,7 +53,6 @@ export function initializeMetaPixel() {
   // PageViews on Next.js history changes.
   fbq.disablePushState = true;
   fbq("set", "autoConfig", false, clientTrackingConfig.metaPixelId);
-  fbq("init", clientTrackingConfig.metaPixelId);
 
   if (!document.querySelector('script[data-asleep-meta-pixel="true"]')) {
     const script = document.createElement("script");
@@ -54,6 +61,16 @@ export function initializeMetaPixel() {
     script.src = "https://connect.facebook.net/en_US/fbevents.js";
     document.head.append(script);
   }
+
+  enqueueMatching(() => applyAdvancedMatching());
+}
+
+export async function identifyMetaPixelUser(contact: MetaContact) {
+  pendingContact = { ...pendingContact, ...contact };
+  if (!initialized || !clientTrackingConfig.metaPixelId) {
+    return;
+  }
+  await enqueueMatching(() => applyAdvancedMatching());
 }
 
 export function buildMetaPixelData(event: TrackingEvent) {
@@ -106,7 +123,57 @@ export function captureMetaPixelEvent(event: TrackingEvent) {
     return;
   }
 
-  window.fbq("track", mapping.meta, buildMetaPixelData(event), {
-    eventID: event.event_id,
-  });
+  const fire = () => {
+    try {
+      if (!window.fbq) {
+        return;
+      }
+      window.fbq("track", mapping.meta, buildMetaPixelData(event), {
+        eventID: event.event_id,
+      });
+    } catch (error) {
+      logTrackingIssue({
+        provider: "meta",
+        eventName: event.name,
+        eventId: event.event_id,
+        reason: trackingErrorMessage(error),
+      });
+    }
+  };
+
+  void matchingGate.then(fire, fire);
+}
+
+function enqueueMatching(task: () => Promise<void>) {
+  matchingGate = matchingGate.then(task, task);
+  return matchingGate;
+}
+
+async function applyAdvancedMatching() {
+  const fbq = window.fbq;
+  const pixelId = clientTrackingConfig.metaPixelId;
+  if (!fbq || !pixelId) {
+    return;
+  }
+
+  let hashedExternalId: string | undefined;
+  try {
+    hashedExternalId = await hashMetaExternalId(getVisitorId());
+  } catch (error) {
+    logTrackingIssue(
+      {
+        provider: "meta",
+        reason: trackingErrorMessage(error),
+      },
+      { once: "meta-external-id-hash" },
+    );
+  }
+
+  // Manual Advanced Matching must live on init, not track(). Re-calling init
+  // with the same Pixel ID updates user data for later events in this session.
+  fbq(
+    "init",
+    pixelId,
+    buildMetaPixelUserData(pendingContact, hashedExternalId),
+  );
 }

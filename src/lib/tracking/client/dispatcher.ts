@@ -3,7 +3,10 @@ import {
   captureGa4Event,
   type GoogleIdentifiers,
 } from "@/lib/tracking/client/ga4";
-import { captureMetaPixelEvent } from "@/lib/tracking/client/meta";
+import {
+  captureMetaPixelEvent,
+  identifyMetaPixelUser,
+} from "@/lib/tracking/client/meta";
 import { getPersistedMetaClickIds } from "@/lib/tracking/client/meta-clicks";
 import {
   capturePostHogEvent,
@@ -20,6 +23,7 @@ import {
 } from "@/lib/tracking/events";
 import { createTrackingId, getVisitorId } from "@/lib/tracking/ids";
 import { logTrackingIssue, trackingErrorMessage } from "@/lib/tracking/log";
+import type { MetaContact } from "@/lib/tracking/meta-user-data";
 import { asHttpUrl, currentTrackingUrl } from "@/lib/tracking/urls";
 
 type CreateEventOptions = {
@@ -86,7 +90,20 @@ export function trackClientEvent<
   }
 }
 
-export function dispatchAcceptedPurchase(event: TrackingEventOf<"purchase">) {
+export async function dispatchAcceptedPurchase(
+  event: TrackingEventOf<"purchase">,
+  contact: MetaContact,
+) {
+  try {
+    await identifyMetaPixelUser(contact);
+  } catch (error) {
+    logTrackingIssue({
+      provider: "meta",
+      eventName: event.name,
+      eventId: event.event_id,
+      reason: trackingErrorMessage(error),
+    });
+  }
   captureMetaPixelEvent(event);
   captureGa4Event(event, { immediate: true });
 }

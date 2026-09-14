@@ -430,7 +430,13 @@ function CheckoutForm({
             newsletter ? { newsletter_email: contact.email } : {},
           );
           if (accepted.trackingAccepted && purchaseEvent.current) {
-            dispatchAcceptedPurchase(purchaseEvent.current);
+            await dispatchAcceptedPurchase(purchaseEvent.current, {
+              email: contact.email,
+              phone: contact.phone,
+              firstName: contact.firstName,
+              lastName: contact.lastName,
+              country,
+            });
           }
           if (purchaseEvent.current) {
             completeCheckout(purchaseEvent.current.properties.checkout_id);
@@ -448,7 +454,16 @@ function CheckoutForm({
         purchaseInFlight.current = false;
       }
     },
-    [appliedDiscount, clearCart, items, newsletter, router, saveLead, t],
+    [
+      appliedDiscount,
+      clearCart,
+      country,
+      items,
+      newsletter,
+      router,
+      saveLead,
+      t,
+    ],
   );
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {

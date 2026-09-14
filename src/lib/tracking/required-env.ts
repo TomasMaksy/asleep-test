@@ -3,6 +3,8 @@ type RequiredTrackingEnv = {
   aliases?: readonly string[];
 };
 
+type EnvBag = Record<string, string | undefined>;
+
 const REQUIRED_TRACKING_ENV: readonly RequiredTrackingEnv[] = [
   {
     name: "NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN",
@@ -14,7 +16,7 @@ const REQUIRED_TRACKING_ENV: readonly RequiredTrackingEnv[] = [
   { name: "GA4_MEASUREMENT_PROTOCOL_SECRET" },
 ];
 
-function envValue(env: NodeJS.ProcessEnv, names: readonly string[]) {
+function envValue(env: EnvBag, names: readonly string[]) {
   for (const name of names) {
     const value = env[name]?.trim();
     if (value) {
@@ -24,16 +26,14 @@ function envValue(env: NodeJS.ProcessEnv, names: readonly string[]) {
   return "";
 }
 
-export function missingTrackingEnv(env: NodeJS.ProcessEnv = process.env) {
+export function missingTrackingEnv(env: EnvBag = process.env) {
   return REQUIRED_TRACKING_ENV.flatMap((variable) => {
     const names = [variable.name, ...(variable.aliases ?? [])];
     return envValue(env, names) ? [] : [variable.name];
   });
 }
 
-export function assertTrackingEnvForBuild(
-  env: NodeJS.ProcessEnv = process.env,
-) {
+export function assertTrackingEnvForBuild(env: EnvBag = process.env) {
   const missing = missingTrackingEnv(env);
   const productionNode = env.NODE_ENV === "production";
   const vercelProduction = env.VERCEL_ENV === "production";

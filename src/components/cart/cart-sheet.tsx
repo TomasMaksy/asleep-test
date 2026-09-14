@@ -12,7 +12,6 @@ import {
   useCartStore,
 } from "@/lib/cart-store";
 import { useConfiguratorOverlayStore } from "@/lib/configurator-overlay-store";
-import { trackCheckoutInitiated } from "@/lib/tracking/client/ecommerce";
 import { cn } from "@/lib/utils";
 
 const sheetTransition = {
@@ -248,7 +247,6 @@ export function CartSheet() {
                     className="inline-flex h-12 w-full cursor-pointer items-center justify-center rounded-full bg-[#1A478A] font-sans text-base text-white transition-colors duration-300 hover:bg-[#2B2D41]"
                     href="/checkout"
                     onClick={(event) => {
-                      trackCheckoutInitiated(items, "cart");
                       closeCart();
                       if (!useConfiguratorOverlayStore.getState().isOpen) {
                         return;
