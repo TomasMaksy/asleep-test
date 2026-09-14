@@ -14,15 +14,23 @@ const PAYMENTS = [
   { id: "20", alt: "SprayPay" },
 ] as const;
 
+type FooterLink = {
+  href: string;
+  label: string;
+};
+
 type FooterColumnData = {
   title: string;
-  links: string[];
+  links: FooterLink[];
 };
+
+function isInternalHref(href: string) {
+  return href.startsWith("/");
+}
 
 export async function SiteFooter() {
   const t = await getTranslations("footer");
   const columns = t.raw("columns") as FooterColumnData[];
-  const [questions, follow, about, sleepinducing, products] = columns;
 
   return (
     <footer className="bg-[#2B2D41] pt-12 pb-24 text-white lg:pt-24">
@@ -55,26 +63,10 @@ export async function SiteFooter() {
           </div>
         </div>
 
-        <div className="grid w-full min-w-0 grid-cols-2 gap-x-6 gap-y-12 md:hidden">
-          <FooterColumn column={questions} />
-          <FooterColumn column={follow} />
-          <FooterColumn column={about} />
-          <FooterColumn column={sleepinducing} />
-          <FooterColumn className="col-span-2" column={products} />
-        </div>
-
-        <div className="hidden w-full min-w-0 grid-cols-3 gap-8 md:grid lg:w-2/3">
-          <div className="flex flex-col gap-12 lg:gap-[30px]">
-            <FooterColumn column={questions} />
-            <FooterColumn column={follow} />
-          </div>
-
-          <div className="flex flex-col gap-12 lg:gap-[30px]">
-            <FooterColumn column={about} />
-            <FooterColumn column={sleepinducing} />
-          </div>
-
-          <FooterColumn column={products} />
+        <div className="grid w-full min-w-0 grid-cols-2 gap-x-6 gap-y-12 md:grid-cols-3 lg:w-2/3">
+          {columns.map((column) => (
+            <FooterColumn column={column} key={column.title} />
+          ))}
         </div>
       </div>
 
@@ -95,16 +87,6 @@ export async function SiteFooter() {
   );
 }
 
-function hrefForFooterLink(label: string) {
-  if (label === "Contact" || label === "Kontaktai") {
-    return "/contact";
-  }
-  if (label === "FAQ" || label === "DUK") {
-    return "/contact#faq";
-  }
-  return "#";
-}
-
 function FooterColumn({
   column,
   className,
@@ -121,11 +103,23 @@ function FooterColumn({
         {column.links.map((link) => (
           <li
             className="list-none text-rg text-white leading-[1.85]"
-            key={link}
+            key={link.label}
           >
-            <Link className="hover:underline" href={hrefForFooterLink(link)}>
-              {link}
-            </Link>
+            {isInternalHref(link.href) ? (
+              <Link className="hover:underline" href={link.href}>
+                {link.label}
+              </Link>
+            ) : (
+              <a
+                className="hover:underline"
+                href={link.href}
+                {...(link.href.startsWith("http")
+                  ? { rel: "noopener noreferrer", target: "_blank" as const }
+                  : {})}
+              >
+                {link.label}
+              </a>
+            )}
           </li>
         ))}
       </ul>

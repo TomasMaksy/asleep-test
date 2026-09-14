@@ -1,18 +1,21 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
+import { resolveCatalogItem } from "@/lib/product-catalog";
 import { useOriginalSizeStore } from "@/lib/product-original-size-store";
-import { getMattressSize } from "@/lib/product-original-sizes";
+import {
+  resetConfiguratorVisit,
+  trackConfiguratorStarted,
+} from "@/lib/tracking/client/configurator";
 import { trackClientEvent } from "@/lib/tracking/client/dispatcher";
 import { asHttpUrl, currentTrackingUrl } from "@/lib/tracking/urls";
 
 const ORIGINAL_PRODUCT_PATH = /^\/(?:lt|en)\/products\/original\/?$/;
+const CONFIGURATOR_PATH = /^\/(?:lt|en)\/configurator\/?$/;
 
 export function TrackingRouteObserver() {
   const pathname = usePathname();
-  const productName = useTranslations("productOriginal.hero")("subtitle");
   const previousPath = useRef("");
   const previousUrl = useRef("");
 
@@ -37,30 +40,28 @@ export function TrackingRouteObserver() {
       { source: "route" },
     );
 
-    if (!ORIGINAL_PRODUCT_PATH.test(pathname)) {
-      return;
+    if (ORIGINAL_PRODUCT_PATH.test(pathname)) {
+      const sizeId = useOriginalSizeStore.getState().sizeId;
+      const item = resolveCatalogItem(`matt-original-${sizeId}`, 1);
+      if (item) {
+        trackClientEvent(
+          "product_viewed",
+          {
+            currency: "EUR",
+            value: item.price * item.quantity,
+            items: [item],
+          },
+          { source: "route" },
+        );
+      }
     }
 
-    const sizeId = useOriginalSizeStore.getState().sizeId;
-    const size = getMattressSize(sizeId);
-    trackClientEvent(
-      "product_viewed",
-      {
-        currency: "EUR",
-        value: size.originalCents / 100,
-        items: [
-          {
-            item_id: `matt-original-${sizeId}`,
-            item_name: productName,
-            item_variant: size.label,
-            price: size.originalCents / 100,
-            quantity: 1,
-          },
-        ],
-      },
-      { source: "route" },
-    );
-  }, [pathname, productName]);
+    if (CONFIGURATOR_PATH.test(pathname)) {
+      trackConfiguratorStarted();
+    } else {
+      resetConfiguratorVisit();
+    }
+  }, [pathname]);
 
   return null;
 }

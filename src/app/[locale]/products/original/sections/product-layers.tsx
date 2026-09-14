@@ -209,7 +209,7 @@ function Hotspot({
       aria-label={label}
       aria-pressed={active}
       className={cn(
-        "absolute z-30 flex size-[26px] -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-white outline-none transition-[opacity,background-color] duration-300 [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:ring-brand",
+        "absolute z-30 flex size-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-white outline-none transition-[opacity,background-color] duration-300 [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:ring-brand",
         visible
           ? "pointer-events-auto opacity-100"
           : "pointer-events-none opacity-0",
@@ -230,7 +230,7 @@ function Hotspot({
       />
       <span
         className={cn(
-          "layers-hotspot-dot size-2 rounded-full",
+          "layers-hotspot-dot size-2.5 rounded-full",
           active ? "bg-brand" : "bg-white",
         )}
       />
@@ -752,13 +752,13 @@ export function ProductLayers({
     <section
       aria-labelledby={headingId}
       className={cn(
-        "flex flex-col overflow-x-hidden bg-brand-muted py-16 pb-28 lg:pt-24 lg:pb-16",
+        "flex flex-col overflow-x-clip bg-brand-muted py-16 pb-28 lg:pt-24 lg:pb-16",
         className,
       )}
       id="product-layers"
       ref={rootRef}
     >
-      <div className="mx-auto flex w-full max-w-[1440px] flex-col">
+      <div className="mx-auto w-full max-w-[1440px] overflow-x-visible">
         <h2
           className="reveal heading mb-12 shrink-0 px-5 py-4 text-center text-brand-dark lg:mb-16 lg:py-6"
           id={headingId}
@@ -766,7 +766,7 @@ export function ProductLayers({
           {heading}
         </h2>
 
-        <div className="relative flex flex-col items-stretch gap-8 px-5 lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start lg:gap-10 lg:px-10 xl:px-16">
+        <div className="relative flex flex-col items-stretch gap-8 overflow-x-visible px-5 lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start lg:gap-20 lg:px-10 xl:gap-28 xl:px-16">
           <div className="relative z-10 hidden lg:block">
             <div className="grid">
               {navItems.map((item) => {
@@ -808,8 +808,8 @@ export function ProductLayers({
             </div>
           </div>
 
-          <div className="relative z-20 flex w-full items-start justify-start overflow-visible">
-            <div className="product-layers-stack w-[190%] max-w-none select-none lg:w-[64rem] xl:w-[82rem] 2xl:w-[104rem]">
+          <div className="relative z-20 overflow-x-visible">
+            <div className="product-layers-stack w-[155%] max-w-none shrink-0 select-none lg:w-[60vw]">
               {SLICES.map((slice, index) => {
                 const extras = EXTRA_HOTSPOTS.filter(
                   (hotspot) => hotspot.sliceId === slice.id,
@@ -855,7 +855,7 @@ export function ProductLayers({
                         draggable={false}
                         height={slice.height}
                         loading="lazy"
-                        sizes="(min-width: 2000px) 104rem, (min-width: 1440px) 82rem, (min-width: 1024px) 64rem, 190vw"
+                        sizes="(min-width: 1024px) 60vw, 155vw"
                         src={slice.src}
                         width={slice.width}
                       />

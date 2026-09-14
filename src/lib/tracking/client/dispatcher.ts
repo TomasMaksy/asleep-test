@@ -10,6 +10,7 @@ import {
   getPostHogSessionId,
 } from "@/lib/tracking/client/posthog";
 import {
+  isPostHogOnlyEventName,
   type TrackingEvent,
   type TrackingEventName,
   type TrackingEventOf,
@@ -91,6 +92,9 @@ function dispatchBrowserEvent(event: TrackingEvent, options: DispatchOptions) {
   } catch {
     // Provider delivery is independent.
   }
+  if (isPostHogOnlyEventName(event.name)) {
+    return;
+  }
   try {
     captureMetaPixelEvent(event);
   } catch {
@@ -107,7 +111,7 @@ function sendMetaCapiRelay(
   event: Exclude<TrackingEvent, TrackingEventOf<"purchase">>,
   options: DispatchOptions,
 ) {
-  if (!clientTrackingConfig.metaPixelId) {
+  if (!clientTrackingConfig.metaPixelId || isPostHogOnlyEventName(event.name)) {
     return;
   }
 

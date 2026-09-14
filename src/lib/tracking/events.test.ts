@@ -18,12 +18,13 @@ const item = {
   item_id: "matt-original-80x190",
   item_name: "asleep Original",
   item_variant: "80 x 190 cm",
+  size_id: "80x190",
   price: 748,
   quantity: 1,
 };
 
 describe("tracking event contract", () => {
-  test("maps every internal event to every provider", () => {
+  test("maps ads funnel events to every provider", () => {
     expect(TRACKING_EVENT_REGISTRY).toEqual({
       pageview: {
         posthog: "$pageview",
@@ -60,6 +61,51 @@ describe("tracking event contract", () => {
         owner: "server",
         googleAds: "primary",
       },
+      configurator_started: {
+        posthog: "configurator_started",
+        meta: null,
+        ga4: null,
+        owner: "client",
+        googleAds: null,
+      },
+      configurator_finished: {
+        posthog: "configurator_finished",
+        meta: null,
+        ga4: null,
+        owner: "client",
+        googleAds: null,
+      },
+    });
+  });
+
+  test("keeps configurator events off Meta and GA4", () => {
+    const started = trackingEventSchema.parse({
+      ...base,
+      path: "/lt/configurator",
+      url: "https://asleep.lt/lt/configurator",
+      name: "configurator_started",
+      source: "configurator",
+      properties: {},
+    });
+    const finished = trackingEventSchema.parse({
+      ...base,
+      path: "/lt/configurator",
+      url: "https://asleep.lt/lt/configurator",
+      name: "configurator_finished",
+      source: "configurator",
+      properties: {
+        bed: "double",
+        sleeping: "together",
+        size_id: "160x200",
+      },
+    });
+
+    expect(TRACKING_EVENT_REGISTRY[started.name].meta).toBeNull();
+    expect(TRACKING_EVENT_REGISTRY[started.name].ga4).toBeNull();
+    expect(TRACKING_EVENT_REGISTRY[finished.name].googleAds).toBeNull();
+    expect(finished).toMatchObject({
+      name: "configurator_finished",
+      properties: { size_id: "160x200", bed: "double", sleeping: "together" },
     });
   });
 

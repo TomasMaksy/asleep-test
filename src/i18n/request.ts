@@ -4,13 +4,24 @@ import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 
-export default getRequestConfig(async ({ locale }) => {
-  if (!locale) {
-    const paramValue = await rootParams.locale();
-    if (hasLocale(routing.locales, paramValue)) {
-      locale = paramValue;
+export default getRequestConfig(async ({ locale, requestLocale }) => {
+  if (!hasLocale(routing.locales, locale)) {
+    const fromRequest = await requestLocale;
+    if (hasLocale(routing.locales, fromRequest)) {
+      locale = fromRequest;
     } else {
-      notFound();
+      let paramValue: string | undefined;
+      try {
+        paramValue = await rootParams.locale();
+      } catch {
+        paramValue = undefined;
+      }
+
+      if (hasLocale(routing.locales, paramValue)) {
+        locale = paramValue;
+      } else {
+        notFound();
+      }
     }
   }
 

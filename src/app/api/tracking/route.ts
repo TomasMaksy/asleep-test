@@ -60,7 +60,11 @@ export async function POST(request: Request) {
   const event =
     parsed.data.name === "pageview"
       ? parsed.data
-      : withServerQuotedEcommerce(parsed.data);
+      : parsed.data.name === "product_viewed" ||
+          parsed.data.name === "add_to_cart" ||
+          parsed.data.name === "checkout_initiated"
+        ? withServerQuotedEcommerce(parsed.data)
+        : undefined;
 
   if (!event) {
     return NextResponse.json(

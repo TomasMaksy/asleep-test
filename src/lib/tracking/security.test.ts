@@ -34,16 +34,26 @@ describe("trusted site origins", () => {
     expect(isAllowedOrigin("http://localhost:3000", productionEnv)).toBe(false);
   });
 
-  test("allows localhost only outside production", () => {
+  test("allows localhost and the reserved tunnel host only outside production", () => {
     const developmentEnv = {
       NODE_ENV: "development",
       NEXT_PUBLIC_SITE_URL: "https://asleep.lt",
+      NEXT_PUBLIC_BASE_HOST: "example.ngrok-free.dev",
     } as NodeJS.ProcessEnv;
 
     expect(isAllowedOrigin("http://localhost:3000", developmentEnv)).toBe(true);
+    expect(
+      isAllowedOrigin("https://example.ngrok-free.dev", developmentEnv),
+    ).toBe(true);
+    expect(
+      isAllowedOrigin("https://other-tunnel.ngrok-free.dev", developmentEnv),
+    ).toBe(false);
     expect(isAllowedOrigin("https://untrusted.example", developmentEnv)).toBe(
       false,
     );
+    expect(
+      isAllowedOrigin("https://example.ngrok-free.dev", productionEnv),
+    ).toBe(false);
   });
 });
 
@@ -55,6 +65,18 @@ describe("catalog quotes", () => {
     );
     expect(quoted?.value).toBe(748);
     expect(quoted?.items[0]?.price).toBe(748);
+    expect(quoted?.items[0]?.size_id).toBe("80x190");
+    expect(quoted?.items[0]?.item_id).toBe("matt-original-80x190");
+  });
+
+  test("maps configurator cart ids onto the size SKU", () => {
+    const quoted = quoteCart(
+      [{ id: "matt-original-160x200-c3p5", quantity: 1 }],
+      undefined,
+    );
+    expect(quoted?.items[0]?.item_id).toBe("matt-original-160x200");
+    expect(quoted?.items[0]?.size_id).toBe("160x200");
+    expect(quoted?.items[0]?.item_variant).toBe("160 x 200 cm");
   });
 
   test("rejects unknown products and applies known discounts", () => {

@@ -17,6 +17,7 @@ bun run i18n:check
 ```bash
 bun install
 bun run dev
+bun run server
 bun run lint
 bun run format
 bun run build
@@ -24,6 +25,9 @@ bun run i18n:check
 ```
 
 Open [http://localhost:3000](http://localhost:3000) for the homepage.
+
+`bun run server` starts ngrok against port 3000 using `NEXT_PUBLIC_BASE_HOST`
+from `.env.local`. Keep `bun run dev` running in another terminal.
 
 ## Structure
 

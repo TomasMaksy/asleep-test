@@ -3,6 +3,7 @@ import { clientTrackingConfig } from "@/lib/tracking/client/config";
 import type { TrackingEvent } from "@/lib/tracking/events";
 import { TRACKING_EVENT_REGISTRY } from "@/lib/tracking/events";
 import { getVisitorId } from "@/lib/tracking/ids";
+import { posthogSharedProperties } from "@/lib/tracking/posthog-properties";
 
 let initialized = false;
 
@@ -121,17 +122,7 @@ export function capturePostHogEvent(
     return;
   }
 
-  const properties = {
-    ...event.properties,
-    event_id: event.event_id,
-    occurred_at: event.occurred_at,
-    visitor_id: event.visitor_id,
-    locale: event.locale,
-    path: event.path,
-    tracking_source: event.source,
-    $current_url: event.url,
-    $pathname: event.path,
-  };
+  const properties = posthogSharedProperties(event);
 
   posthog.capture(TRACKING_EVENT_REGISTRY[event.name].posthog, properties, {
     uuid: event.event_id,

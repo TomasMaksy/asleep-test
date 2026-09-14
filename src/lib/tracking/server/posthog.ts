@@ -1,6 +1,7 @@
 import { PostHog } from "posthog-node";
 import type { TrackingEventOf } from "@/lib/tracking/events";
 import { TRACKING_EVENT_REGISTRY } from "@/lib/tracking/events";
+import { posthogSharedProperties } from "@/lib/tracking/posthog-properties";
 import { serverTrackingConfig } from "@/lib/tracking/server/config";
 
 function createPostHogClient() {
@@ -40,15 +41,7 @@ export async function capturePostHogPurchase(
       timestamp: new Date(event.occurred_at),
       disableGeoip: true,
       properties: {
-        ...event.properties,
-        event_id: event.event_id,
-        occurred_at: event.occurred_at,
-        visitor_id: event.visitor_id,
-        locale: event.locale,
-        path: event.path,
-        tracking_source: event.source,
-        $current_url: event.url,
-        $pathname: event.path,
+        ...posthogSharedProperties(event),
         $session_id: event.posthog_session_id,
         $set: compact({
           email: contact.email?.trim().toLowerCase(),

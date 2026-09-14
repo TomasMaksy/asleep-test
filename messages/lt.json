@@ -2,38 +2,12 @@
   "nav": {
     "links": [
       {
-        "label": "Akcijos",
-        "href": "#",
-        "accent": true
+        "label": "Original",
+        "href": "/products/original"
       },
       {
-        "label": "Čiužiniai",
-        "href": "#",
-        "hasMenu": true
-      },
-      {
-        "label": "Lovos",
-        "href": "#",
-        "hasMenu": true
-      },
-      {
-        "label": "Pagalvės",
-        "href": "#"
-      },
-      {
-        "label": "Priedai",
-        "href": "#",
-        "hasMenu": true
-      },
-      {
-        "label": "Paklodės",
-        "href": "#",
-        "hasMenu": true
-      },
-      {
-        "label": "Daugiau",
-        "href": "#",
-        "hasMenu": true
+        "label": "Sukurti savo čiužinį",
+        "href": "/configurator"
       }
     ],
     "reviews": "Atsiliepimai",
@@ -64,38 +38,35 @@
     "marquee": "Susitiksime sapnuose",
     "columns": [
       {
-        "title": "Klausimai",
-        "links": ["Kontaktai", "Grąžinimas", "DUK"]
+        "title": "Pagalba",
+        "links": [
+          { "label": "DUK", "href": "/contact#faq" },
+          { "label": "Grąžinimo taisyklės", "href": "/contact" },
+          { "label": "Garantija", "href": "/products/original" },
+          { "label": "Privatumo politika", "href": "/contact" }
+        ]
       },
       {
         "title": "Sekite mus",
-        "links": ["Facebook", "Instagram", "Twitter"]
-      },
-      {
-        "title": "Apie mus",
-        "links": ["Jobs"]
-      },
-      {
-        "title": "asleep",
-        "links": ["Garantija", "Privatumo politika", "Taisyklės ir sąlygos"]
+        "links": [
+          { "label": "Facebook", "href": "#" },
+          { "label": "Instagram", "href": "#" }
+        ]
       },
       {
         "title": "Produktai",
         "links": [
-          "The mattress",
-          "The Hybrid Pro Mattress",
-          "The Original Boxspring",
-          "The Velvet Boxspring",
-          "The mattress protector",
-          "The topper",
-          "The refurbished mattress",
-          "The pillow",
-          "The seersucker bed sheets",
-          "The percal bed sheets",
-          "The fitted sheet"
+          { "label": "Original čiužinys", "href": "/products/original" },
+          { "label": "Sukurti savo čiužinį", "href": "/configurator" }
         ]
       }
     ]
+  },
+  "notFound": {
+    "metaTitle": "404 | asleep",
+    "title": "404",
+    "body": "Šio puslapio nėra.",
+    "cta": "Pradžia"
   },
   "metadata": {
     "title": "Ieškote tobulo čiužinio? | asleep",

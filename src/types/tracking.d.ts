@@ -6,6 +6,7 @@ declare global {
     loaded: boolean;
     version: string;
     push: MetaPixelFunction;
+    disablePushState?: boolean;
   };
 
   type GoogleTagFunction = (...args: unknown[]) => void;

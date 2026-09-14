@@ -1,6 +1,5 @@
 import type { CartItem } from "@/lib/cart-store";
-import { selectCartSubtotal } from "@/lib/cart-store";
-import { cartToTrackingItems } from "@/lib/tracking/cart";
+import { cartToTrackingItems, trackingItemsValue } from "@/lib/tracking/cart";
 import {
   createTrackingEvent,
   trackClientEvent,
@@ -16,7 +15,8 @@ export function trackAddedCartItems(
     "pdp_buy_box" | "pdp_sticky_bar" | "configurator"
   >,
 ) {
-  if (items.length === 0) {
+  const tracked = cartToTrackingItems(items);
+  if (tracked.length === 0) {
     return;
   }
 
@@ -24,8 +24,8 @@ export function trackAddedCartItems(
     "add_to_cart",
     {
       currency: "EUR",
-      value: selectCartSubtotal(items),
-      items: cartToTrackingItems(items),
+      value: trackingItemsValue(tracked),
+      items: tracked,
     },
     { source },
   );
@@ -36,6 +36,11 @@ export function trackCheckoutInitiated(
   source: Extract<TrackingSource, "cart" | "checkout_page">,
 ) {
   if (items.length === 0) {
+    return;
+  }
+
+  const tracked = cartToTrackingItems(items);
+  if (tracked.length === 0) {
     return;
   }
 
@@ -50,8 +55,8 @@ export function trackCheckoutInitiated(
     {
       checkout_id: checkoutId,
       currency: "EUR",
-      value: selectCartSubtotal(items),
-      items: cartToTrackingItems(items),
+      value: trackingItemsValue(tracked),
+      items: tracked,
     },
     { source, immediate: source === "cart" },
   );
@@ -68,6 +73,11 @@ export async function createPurchaseTrackingEvent({
   coupon?: string;
   paymentMethod: "card" | "express" | "unknown";
 }): Promise<TrackingEventOf<"purchase">> {
+  const tracked = cartToTrackingItems(items, coupon);
+  if (tracked.length === 0) {
+    throw new Error("Purchase items are not in the catalog.");
+  }
+
   const google = await getGoogleIdentifiers();
 
   return createTrackingEvent(
@@ -77,7 +87,7 @@ export async function createPurchaseTrackingEvent({
       checkout_mode: "fake_door",
       coupon: coupon || undefined,
       currency: "EUR",
-      items: cartToTrackingItems(items),
+      items: tracked,
       payment_method: paymentMethod,
       value,
     },

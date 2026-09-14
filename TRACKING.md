@@ -18,8 +18,14 @@ PostHog self-driving wizard on top of it.
 - `purchase`: PostHog `purchase`, Meta `Purchase`, GA4 `purchase`.
   Server-owned after `/api/checkout` accepts the checkout. Import to Google Ads
   as Primary.
+- `configurator_started`: PostHog `configurator_started` only. Browser-owned
+  when `/configurator` opens.
+- `configurator_finished`: PostHog `configurator_finished` only. Browser-owned
+  when the configurator reaches the result step. Properties are `size_id`,
+  `bed`, and `sleeping` only; firmness options are not attached because that
+  flow will change.
 
-All events contain:
+All ads-funnel events contain:
 
 ```json
 {
@@ -33,7 +39,9 @@ All events contain:
 }
 ```
 
-Ecommerce events add `currency`, `value`, and GA4-compatible `items`:
+Ecommerce events add `currency`, `value`, and GA4-compatible `items`. Each
+item uses the size SKU (`matt-original-160x200`), not a configurator suffix.
+`item_variant` is the size label only. `size_id` is `160x200`.
 
 ```json
 {
@@ -44,6 +52,7 @@ Ecommerce events add `currency`, `value`, and GA4-compatible `items`:
       "item_id": "matt-original-80x190",
       "item_name": "asleep Original",
       "item_variant": "80 x 190 cm",
+      "size_id": "80x190",
       "price": 0.75,
       "discount": 747.25,
       "quantity": 1
@@ -51,6 +60,10 @@ Ecommerce events add `currency`, `value`, and GA4-compatible `items`:
   ]
 }
 ```
+
+PostHog also gets top-level `size_id` (when the cart is one size), `size_ids`,
+and `item_ids` so Insights can break down without opening the nested `items`
+list. Use `size_id` for “most popular mattress size”.
 
 `value` is always the sum of discounted `price × quantity`. Item `price` is
 the unit price after discount; `discount` is the per-unit reduction.
@@ -61,8 +74,10 @@ it as `transaction_id`. Purchase also includes
 
 ## Delivery and deduplication
 
-- Browser-owned events go to PostHog, Meta Pixel, GA4, and the same-origin
-  `/api/tracking` Meta CAPI relay.
+- Browser-owned ads-funnel events go to PostHog, Meta Pixel, GA4, and the
+  same-origin `/api/tracking` Meta CAPI relay.
+- `configurator_started` and `configurator_finished` go to PostHog only. They
+  are not sent to Meta Pixel, CAPI, GA4, or Google Ads.
 - Pixel `eventID` and CAPI `event_id` are the same value. Meta deduplicates the
   browser and server copies by event name and ID.
 - Purchase goes to PostHog only from the server. The browser emits Meta Pixel
@@ -89,7 +104,9 @@ it as `transaction_id`. Purchase also includes
 `/api/checkout/void` require a browser `Origin` or `Referer` on the allowlist
 and reject `Sec-Fetch-Site: cross-site`. Missing origin headers are denied.
 Production allows `https://asleep.lt` and `https://www.asleep.lt` only.
-Local `bun dev` also allows `http://localhost`. Tunnel hosts are not allowed.
+Local `bun dev` also allows `http://localhost`. The reserved ngrok host in
+`NEXT_PUBLIC_BASE_HOST` is allowed only outside production. Other tunnel
+hosts are denied. `bun server` starts that ngrok tunnel to port 3000.
 
 The server also rate-limits by IP, ignores events older than ten minutes,
 and drops duplicate `event_id` / `checkout_id` values. Ecommerce item IDs
@@ -147,9 +164,13 @@ strip the buyer file you want to open.
 Tracking starts immediately without a consent gate, by product decision.
 PostHog initializes before hydration with explicit events only: autocapture
 is off and session replay is on with inputs masked. Meta and Google scripts
-load asynchronously. The GA4 tag has automatic pageviews disabled; in GA4
-Admin → Data streams → Enhanced measurement, also turn off "Page changes
-based on browser history events".
+load asynchronously. Meta Pixel `autoConfig` and `disablePushState` are off
+so the pixel does not infer `SubscribedButtonClick`, `Lead`, or extra
+`PageView`s from buttons or Next.js history changes. The GA4 tag has
+automatic pageviews disabled; in GA4 Admin → Data streams → Enhanced
+measurement, also turn off "Page changes based on browser history events".
+In Meta Events Manager, leave "Track events automatically from this
+website" off.
 
 PostHog browser traffic uses the same-origin `/ingest` reverse proxy from
 [PostHog's Next.js rewrite guide](https://posthog.com/docs/advanced/proxy/nextjs).
@@ -166,10 +187,14 @@ responses, and restart the Next.js server after changing `next.config.ts` or
 After adding credentials:
 
 1. Open PostHog Live Events. Confirm one `$pageview` per navigation and
-   inspect the funnel event properties.
+   inspect the funnel event properties. Opening the configurator should emit
+   `configurator_started`; reaching the result step should emit
+   `configurator_finished`. For unique people, use unique users on those two
+   events.
 2. Set `META_TEST_EVENT_CODE`, use Meta Events Manager → Test Events, and
    complete the funnel. Pixel and server copies must show the same event ID and
-   one deduplicated event.
+   one deduplicated event. Size, quantity, and nav clicks must not appear as
+   `SubscribedButtonClick` or other inferred button events.
 3. Use GA4 DebugView while developing. Non-production Measurement Protocol
    calls go to the validation endpoint. A purchase's browser and server copies
    must share one `transaction_id`, and item `price × quantity` must equal

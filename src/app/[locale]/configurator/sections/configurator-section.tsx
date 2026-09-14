@@ -41,6 +41,7 @@ import {
   type MattressSizeId,
   SINGLE_MATTRESS_SIZES,
 } from "@/lib/product-original-sizes";
+import { trackConfiguratorFinished } from "@/lib/tracking/client/configurator";
 import { trackAddedCartItems } from "@/lib/tracking/client/ecommerce";
 import { cn } from "@/lib/utils";
 
@@ -452,6 +453,11 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
 
     setStep(5);
     playPackaging();
+    trackConfiguratorFinished({
+      bed,
+      sleeping,
+      size_id: sizeId,
+    });
   }
 
   function handleBack() {

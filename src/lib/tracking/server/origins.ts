@@ -34,7 +34,10 @@ export function isAllowedOrigin(origin: string, env = process.env) {
     return false;
   }
 
-  return allowedProductionHosts(env).has(parsed.host);
+  return (
+    allowedProductionHosts(env).has(parsed.host) ||
+    configuredTunnelHost(env) === parsed.host
+  );
 }
 
 export function isAllowedEventUrl(urlValue: string, env = process.env) {
@@ -80,6 +83,19 @@ function hostFromEnvUrl(value: string) {
   } catch {
     return undefined;
   }
+}
+
+function configuredTunnelHost(env = process.env) {
+  const raw = env.NEXT_PUBLIC_BASE_HOST?.trim().replace(/^["']|["']$/g, "");
+  if (!raw) {
+    return undefined;
+  }
+
+  if (raw.includes("://")) {
+    return hostFromEnvUrl(raw);
+  }
+
+  return raw.replace(/\/$/, "").toLowerCase();
 }
 
 function parseOrigin(origin: string) {

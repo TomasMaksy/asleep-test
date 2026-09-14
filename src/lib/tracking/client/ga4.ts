@@ -57,6 +57,10 @@ export function buildGa4EventParams(event: TrackingEvent) {
     };
   }
 
+  if (!("items" in event.properties)) {
+    return common;
+  }
+
   const ecommerce = {
     ...common,
     currency: event.properties.currency,
@@ -89,11 +93,12 @@ export function captureGa4Event(
   event: TrackingEvent,
   options: { immediate?: boolean } = {},
 ) {
-  if (!initialized || !window.gtag) {
+  const mapping = TRACKING_EVENT_REGISTRY[event.name];
+  if (!initialized || !window.gtag || mapping.ga4 === null) {
     return;
   }
 
-  window.gtag("event", TRACKING_EVENT_REGISTRY[event.name].ga4, {
+  window.gtag("event", mapping.ga4, {
     ...buildGa4EventParams(event),
     transport_type: options.immediate ? "beacon" : undefined,
   });

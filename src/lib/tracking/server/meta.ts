@@ -1,6 +1,9 @@
 import { createHash } from "node:crypto";
 import type { TrackingEvent } from "@/lib/tracking/events";
-import { TRACKING_EVENT_REGISTRY } from "@/lib/tracking/events";
+import {
+  isPostHogOnlyEventName,
+  TRACKING_EVENT_REGISTRY,
+} from "@/lib/tracking/events";
 import { normalizePhoneE164 } from "@/lib/tracking/phone";
 import { serverTrackingConfig } from "@/lib/tracking/server/config";
 import type { TrackingRequestContext } from "@/lib/tracking/server/request";
@@ -18,6 +21,11 @@ export function buildMetaServerEvent(
   context: TrackingRequestContext,
   contact: MetaContact = {},
 ) {
+  const mapping = TRACKING_EVENT_REGISTRY[event.name];
+  if (mapping.meta === null) {
+    throw new Error("PostHog-only events are not sent to Meta.");
+  }
+
   const userData = compact({
     client_ip_address: context.clientIp,
     client_user_agent: context.userAgent,
@@ -34,7 +42,7 @@ export function buildMetaServerEvent(
   });
 
   return {
-    event_name: TRACKING_EVENT_REGISTRY[event.name].meta,
+    event_name: mapping.meta,
     event_time: Math.floor(new Date(event.occurred_at).getTime() / 1000),
     event_id: event.event_id,
     event_source_url: event.url,
@@ -51,7 +59,8 @@ export async function sendMetaCapiEvent(
 ) {
   if (
     !serverTrackingConfig.metaPixelId ||
-    !serverTrackingConfig.metaAccessToken
+    !serverTrackingConfig.metaAccessToken ||
+    isPostHogOnlyEventName(event.name)
   ) {
     return;
   }
@@ -81,7 +90,7 @@ export async function sendMetaCapiEvent(
 }
 
 function buildMetaCustomData(event: TrackingEvent) {
-  if (event.name === "pageview") {
+  if (event.name === "pageview" || !("items" in event.properties)) {
     return {};
   }
 

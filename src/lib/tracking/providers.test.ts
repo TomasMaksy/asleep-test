@@ -26,6 +26,7 @@ const purchase = purchaseEventSchema.parse({
         item_id: "matt-original-80x190",
         item_name: "asleep Original",
         item_variant: "80 x 190 cm",
+        size_id: "80x190",
         price: 748,
         quantity: 1,
       },

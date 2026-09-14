@@ -6,7 +6,7 @@ import {
 } from "@/lib/product-original-sizes";
 import type { TrackingItem } from "@/lib/tracking/events";
 
-const ORIGINAL_ITEM_ID_RE = /^matt-original-(\d+x\d+)(?:-c[1-6](?:p[1-6])?)?$/;
+const ORIGINAL_ITEM_ID_RE = /^matt-original-(\d+x\d+)/;
 const CATALOG_ITEM_NAME = "asleep Original";
 const MAX_LINE_QUANTITY = 10;
 const MAX_LINES = 20;
@@ -78,13 +78,18 @@ export function resolveCatalogItem(
   const price = unitCents / 100;
 
   return {
-    item_id: id.trim(),
+    item_id: catalogProductId(sizeId),
     item_name: CATALOG_ITEM_NAME,
     item_variant: size.label,
+    size_id: sizeId,
     price,
     quantity: qty,
     ...(discountCents > 0 ? { discount: discountCents / 100 } : {}),
   };
+}
+
+export function catalogProductId(sizeId: string) {
+  return `matt-original-${sizeId}`;
 }
 
 function isMattressSizeId(value: string): value is MattressSizeId {

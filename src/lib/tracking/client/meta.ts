@@ -32,6 +32,11 @@ export function initializeMetaPixel() {
   if (!fbq) {
     return;
   }
+  // Manual catalog only. autoConfig infers SubscribedButtonClick/Lead from
+  // any <button>, including the size picker. disablePushState stops extra
+  // PageViews on Next.js history changes.
+  fbq.disablePushState = true;
+  fbq("set", "autoConfig", false, clientTrackingConfig.metaPixelId);
   fbq("init", clientTrackingConfig.metaPixelId);
 
   if (!document.querySelector('script[data-asleep-meta-pixel="true"]')) {
@@ -44,7 +49,7 @@ export function initializeMetaPixel() {
 }
 
 export function buildMetaPixelData(event: TrackingEvent) {
-  if (event.name === "pageview") {
+  if (event.name === "pageview" || !("items" in event.properties)) {
     return {};
   }
 
@@ -76,14 +81,12 @@ export function buildMetaPixelData(event: TrackingEvent) {
 }
 
 export function captureMetaPixelEvent(event: TrackingEvent) {
-  if (!initialized || !window.fbq) {
+  const mapping = TRACKING_EVENT_REGISTRY[event.name];
+  if (!initialized || !window.fbq || mapping.meta === null) {
     return;
   }
 
-  window.fbq(
-    "track",
-    TRACKING_EVENT_REGISTRY[event.name].meta,
-    buildMetaPixelData(event),
-    { eventID: event.event_id },
-  );
+  window.fbq("track", mapping.meta, buildMetaPixelData(event), {
+    eventID: event.event_id,
+  });
 }

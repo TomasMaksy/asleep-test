@@ -4,6 +4,7 @@ export const trackingItemSchema = z.object({
   item_id: z.string().trim().min(1).max(200),
   item_name: z.string().trim().min(1).max(200),
   item_variant: z.string().trim().max(200),
+  size_id: z.string().trim().min(1).max(40),
   price: z.number().finite().nonnegative().max(1_000_000),
   quantity: z.number().int().positive().max(100),
   discount: z.number().finite().nonnegative().max(1_000_000).optional(),
@@ -100,12 +101,30 @@ export const purchaseEventSchema = baseEventSchema.extend({
   }),
 });
 
+export const configuratorStartedEventSchema = baseEventSchema.extend({
+  name: z.literal("configurator_started"),
+  source: z.literal("configurator"),
+  properties: z.object({}),
+});
+
+export const configuratorFinishedEventSchema = baseEventSchema.extend({
+  name: z.literal("configurator_finished"),
+  source: z.literal("configurator"),
+  properties: z.object({
+    bed: z.enum(["single", "double"]),
+    sleeping: z.enum(["alone", "together"]),
+    size_id: z.string().trim().min(1).max(40),
+  }),
+});
+
 export const trackingEventSchema = z.discriminatedUnion("name", [
   pageviewEventSchema,
   productViewedEventSchema,
   addToCartEventSchema,
   checkoutInitiatedEventSchema,
   purchaseEventSchema,
+  configuratorStartedEventSchema,
+  configuratorFinishedEventSchema,
 ]);
 
 export type TrackingItem = z.infer<typeof trackingItemSchema>;
@@ -119,7 +138,7 @@ export type TrackingProperties<Name extends TrackingEventName> =
   TrackingEventOf<Name>["properties"];
 export type TrackingSource = TrackingEvent["source"];
 
-type ProviderMapping = {
+type AdsProviderMapping = {
   posthog: string;
   meta:
     | "PageView"
@@ -136,6 +155,16 @@ type ProviderMapping = {
   owner: "client" | "server";
   googleAds: "traffic" | "secondary" | "primary";
 };
+
+type PostHogOnlyProviderMapping = {
+  posthog: string;
+  meta: null;
+  ga4: null;
+  owner: "client";
+  googleAds: null;
+};
+
+type ProviderMapping = AdsProviderMapping | PostHogOnlyProviderMapping;
 
 export const TRACKING_EVENT_REGISTRY = {
   pageview: {
@@ -173,7 +202,32 @@ export const TRACKING_EVENT_REGISTRY = {
     owner: "server",
     googleAds: "primary",
   },
+  configurator_started: {
+    posthog: "configurator_started",
+    meta: null,
+    ga4: null,
+    owner: "client",
+    googleAds: null,
+  },
+  configurator_finished: {
+    posthog: "configurator_finished",
+    meta: null,
+    ga4: null,
+    owner: "client",
+    googleAds: null,
+  },
 } as const satisfies Record<TrackingEventName, ProviderMapping>;
+
+export type PostHogOnlyEventName = Extract<
+  TrackingEventName,
+  "configurator_started" | "configurator_finished"
+>;
+
+export function isPostHogOnlyEventName(
+  name: TrackingEventName,
+): name is PostHogOnlyEventName {
+  return TRACKING_EVENT_REGISTRY[name].meta === null;
+}
 
 export function parseTrackingEvent(value: unknown) {
   return trackingEventSchema.parse(value);
