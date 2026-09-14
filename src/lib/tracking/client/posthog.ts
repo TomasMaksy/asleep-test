@@ -3,12 +3,20 @@ import { clientTrackingConfig } from "@/lib/tracking/client/config";
 import type { TrackingEvent } from "@/lib/tracking/events";
 import { TRACKING_EVENT_REGISTRY } from "@/lib/tracking/events";
 import { getVisitorId } from "@/lib/tracking/ids";
+import { logTrackingIssue } from "@/lib/tracking/log";
 import { posthogSharedProperties } from "@/lib/tracking/posthog-properties";
 
 let initialized = false;
 
 export function initializePostHog() {
-  if (initialized || !clientTrackingConfig.posthogKey) {
+  if (initialized) {
+    return;
+  }
+  if (!clientTrackingConfig.posthogKey) {
+    logTrackingIssue(
+      { provider: "posthog", reason: "missing_project_token" },
+      { once: "posthog-missing-key" },
+    );
     return;
   }
 
@@ -118,7 +126,19 @@ export function capturePostHogEvent(
   event: TrackingEvent,
   options: { immediate?: boolean } = {},
 ) {
-  if (!initialized || event.name === "purchase") {
+  if (event.name === "purchase") {
+    return;
+  }
+  if (!initialized) {
+    logTrackingIssue(
+      {
+        provider: "posthog",
+        eventName: event.name,
+        eventId: event.event_id,
+        reason: "not_initialized",
+      },
+      { once: "posthog-not-ready" },
+    );
     return;
   }
 

@@ -1,11 +1,19 @@
 import { clientTrackingConfig } from "@/lib/tracking/client/config";
 import type { TrackingEvent } from "@/lib/tracking/events";
 import { TRACKING_EVENT_REGISTRY } from "@/lib/tracking/events";
+import { logTrackingIssue } from "@/lib/tracking/log";
 
 let initialized = false;
 
 export function initializeMetaPixel() {
-  if (initialized || !clientTrackingConfig.metaPixelId) {
+  if (initialized) {
+    return;
+  }
+  if (!clientTrackingConfig.metaPixelId) {
+    logTrackingIssue(
+      { provider: "meta", reason: "missing_pixel_id" },
+      { once: "meta-missing-id" },
+    );
     return;
   }
 
@@ -82,7 +90,19 @@ export function buildMetaPixelData(event: TrackingEvent) {
 
 export function captureMetaPixelEvent(event: TrackingEvent) {
   const mapping = TRACKING_EVENT_REGISTRY[event.name];
-  if (!initialized || !window.fbq || mapping.meta === null) {
+  if (mapping.meta === null) {
+    return;
+  }
+  if (!initialized || !window.fbq) {
+    logTrackingIssue(
+      {
+        provider: "meta",
+        eventName: event.name,
+        eventId: event.event_id,
+        reason: initialized ? "fbq_missing" : "not_initialized",
+      },
+      { once: "meta-not-ready" },
+    );
     return;
   }
 

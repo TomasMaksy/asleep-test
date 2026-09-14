@@ -1,6 +1,7 @@
 import { PostHog } from "posthog-node";
 import type { TrackingEventOf } from "@/lib/tracking/events";
 import { TRACKING_EVENT_REGISTRY } from "@/lib/tracking/events";
+import { logTrackingIssue } from "@/lib/tracking/log";
 import { posthogSharedProperties } from "@/lib/tracking/posthog-properties";
 import { serverTrackingConfig } from "@/lib/tracking/server/config";
 
@@ -30,6 +31,15 @@ export async function capturePostHogPurchase(
 ) {
   const posthog = createPostHogClient();
   if (!posthog) {
+    logTrackingIssue(
+      {
+        provider: "posthog",
+        eventName: event.name,
+        eventId: event.event_id,
+        reason: "missing_credentials",
+      },
+      { once: "posthog-server-creds" },
+    );
     return;
   }
 

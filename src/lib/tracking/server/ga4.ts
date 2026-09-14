@@ -1,4 +1,5 @@
 import type { TrackingEventOf } from "@/lib/tracking/events";
+import { logTrackingIssue } from "@/lib/tracking/log";
 import { serverTrackingConfig } from "@/lib/tracking/server/config";
 
 export function buildGa4MeasurementPayload(event: TrackingEventOf<"purchase">) {
@@ -42,9 +43,26 @@ export async function sendGa4MeasurementPurchase(
 ) {
   if (
     !serverTrackingConfig.ga4MeasurementId ||
-    !serverTrackingConfig.ga4ApiSecret ||
-    !event.ga_client_id
+    !serverTrackingConfig.ga4ApiSecret
   ) {
+    logTrackingIssue(
+      {
+        provider: "ga4",
+        eventName: event.name,
+        eventId: event.event_id,
+        reason: "missing_credentials",
+      },
+      { once: "ga4-server-creds" },
+    );
+    return;
+  }
+  if (!event.ga_client_id) {
+    logTrackingIssue({
+      provider: "ga4",
+      eventName: event.name,
+      eventId: event.event_id,
+      reason: "missing_client_id",
+    });
     return;
   }
 

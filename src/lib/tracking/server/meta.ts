@@ -4,6 +4,7 @@ import {
   isPostHogOnlyEventName,
   TRACKING_EVENT_REGISTRY,
 } from "@/lib/tracking/events";
+import { logTrackingIssue } from "@/lib/tracking/log";
 import { normalizePhoneE164 } from "@/lib/tracking/phone";
 import { serverTrackingConfig } from "@/lib/tracking/server/config";
 import type { TrackingRequestContext } from "@/lib/tracking/server/request";
@@ -57,11 +58,22 @@ export async function sendMetaCapiEvent(
   context: TrackingRequestContext,
   contact: MetaContact = {},
 ) {
+  if (isPostHogOnlyEventName(event.name)) {
+    return;
+  }
   if (
     !serverTrackingConfig.metaPixelId ||
-    !serverTrackingConfig.metaAccessToken ||
-    isPostHogOnlyEventName(event.name)
+    !serverTrackingConfig.metaAccessToken
   ) {
+    logTrackingIssue(
+      {
+        provider: "meta",
+        eventName: event.name,
+        eventId: event.event_id,
+        reason: "missing_credentials",
+      },
+      { once: "meta-server-creds" },
+    );
     return;
   }
 

@@ -19,6 +19,7 @@ import {
   trackingEventSchema,
 } from "@/lib/tracking/events";
 import { createTrackingId, getVisitorId } from "@/lib/tracking/ids";
+import { logTrackingIssue, trackingErrorMessage } from "@/lib/tracking/log";
 import { asHttpUrl, currentTrackingUrl } from "@/lib/tracking/urls";
 
 type CreateEventOptions = {
@@ -76,7 +77,11 @@ export function trackClientEvent<
     dispatchBrowserEvent(event, options);
     sendMetaCapiRelay(event, options);
     return event;
-  } catch {
+  } catch (error) {
+    logTrackingIssue({
+      eventName: name,
+      reason: trackingErrorMessage(error),
+    });
     return undefined;
   }
 }
@@ -89,21 +94,36 @@ export function dispatchAcceptedPurchase(event: TrackingEventOf<"purchase">) {
 function dispatchBrowserEvent(event: TrackingEvent, options: DispatchOptions) {
   try {
     capturePostHogEvent(event, options);
-  } catch {
-    // Provider delivery is independent.
+  } catch (error) {
+    logTrackingIssue({
+      provider: "posthog",
+      eventName: event.name,
+      eventId: event.event_id,
+      reason: trackingErrorMessage(error),
+    });
   }
   if (isPostHogOnlyEventName(event.name)) {
     return;
   }
   try {
     captureMetaPixelEvent(event);
-  } catch {
-    // Provider delivery is independent.
+  } catch (error) {
+    logTrackingIssue({
+      provider: "meta",
+      eventName: event.name,
+      eventId: event.event_id,
+      reason: trackingErrorMessage(error),
+    });
   }
   try {
     captureGa4Event(event, options);
-  } catch {
-    // Provider delivery is independent.
+  } catch (error) {
+    logTrackingIssue({
+      provider: "ga4",
+      eventName: event.name,
+      eventId: event.event_id,
+      reason: trackingErrorMessage(error),
+    });
   }
 }
 
@@ -118,10 +138,19 @@ function sendMetaCapiRelay(
   const body = JSON.stringify(event);
   try {
     if (options.immediate && navigator.sendBeacon) {
-      navigator.sendBeacon(
-        "/api/tracking",
-        new Blob([body], { type: "application/json" }),
-      );
+      if (
+        !navigator.sendBeacon(
+          "/api/tracking",
+          new Blob([body], { type: "application/json" }),
+        )
+      ) {
+        logTrackingIssue({
+          provider: "meta",
+          eventName: event.name,
+          eventId: event.event_id,
+          reason: "capi_beacon_rejected",
+        });
+      }
       return;
     }
 
@@ -130,9 +159,33 @@ function sendMetaCapiRelay(
       headers: { "Content-Type": "application/json" },
       body,
       keepalive: Boolean(options.immediate),
-    }).catch(() => undefined);
-  } catch {
-    // CAPI relay is best-effort and must never break the UI.
+    })
+      .then((response) => {
+        if (!response.ok) {
+          logTrackingIssue({
+            provider: "meta",
+            eventName: event.name,
+            eventId: event.event_id,
+            reason: "capi_relay_rejected",
+            status: response.status,
+          });
+        }
+      })
+      .catch((error) => {
+        logTrackingIssue({
+          provider: "meta",
+          eventName: event.name,
+          eventId: event.event_id,
+          reason: trackingErrorMessage(error),
+        });
+      });
+  } catch (error) {
+    logTrackingIssue({
+      provider: "meta",
+      eventName: event.name,
+      eventId: event.event_id,
+      reason: trackingErrorMessage(error),
+    });
   }
 }
 

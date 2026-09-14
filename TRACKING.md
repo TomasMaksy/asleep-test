@@ -127,8 +127,13 @@ honeypot submissions do not generate purchases.
 
 ## Environment
 
-All tracking is disabled safely when the matching public identifier or
-server credential is empty.
+Production `next build` fails if any of these are empty. `bun dev` warns and
+leaves that provider off. `META_TEST_EVENT_CODE` must be empty on Vercel
+Production; a set value fails that deploy.
+
+Tracking failures log `[tracking]` with provider, event name, event id, and a
+reason. Tokens, contact data, IP addresses, and provider payloads are not
+logged.
 
 - `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN`: PostHog project token from project
   settings. `NEXT_PUBLIC_POSTHOG_KEY` is accepted as a fallback.
@@ -137,6 +142,7 @@ server credential is empty.
 - `NEXT_PUBLIC_META_PIXEL_ID`: Meta dataset/pixel ID.
 - `META_CONVERSIONS_API_TOKEN`: server-only Meta CAPI access token.
 - `META_TEST_EVENT_CODE`: optional server-only code for Meta Test Events.
+  Empty in production.
 - `META_GRAPH_API_VERSION`: Meta Graph API version; currently `v26.0`.
 - `NEXT_PUBLIC_GA4_MEASUREMENT_ID`: GA4 web stream ID (`G-...`).
 - `GA4_MEASUREMENT_PROTOCOL_SECRET`: server-only GA4 API secret.

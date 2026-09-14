@@ -3,6 +3,7 @@ import {
   type TrackingEventOf,
   trackingEventSchema,
 } from "@/lib/tracking/events";
+import { logTrackingIssue } from "@/lib/tracking/log";
 import { sendBrowserEventToMeta } from "@/lib/tracking/server/dispatch";
 import { claimOnce } from "@/lib/tracking/server/idempotency";
 import {
@@ -20,6 +21,10 @@ const MAX_BODY_BYTES = 64_000;
 
 export async function POST(request: Request) {
   if (!isTrustedSiteRequest(request)) {
+    logTrackingIssue(
+      { reason: "invalid_origin", status: 403 },
+      { once: "invalid-origin" },
+    );
     return NextResponse.json({ error: "Invalid origin." }, { status: 403 });
   }
 
@@ -41,6 +46,10 @@ export async function POST(request: Request) {
 
   const parsed = trackingEventSchema.safeParse(raw);
   if (!parsed.success || parsed.data.name === "purchase") {
+    logTrackingIssue(
+      { reason: "invalid_event", status: 400 },
+      { once: "invalid-event" },
+    );
     return NextResponse.json(
       { error: "Invalid tracking event." },
       { status: 400 },

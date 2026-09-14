@@ -1,3 +1,5 @@
+import { logTrackingIssue, trackingErrorMessage } from "@/lib/tracking/log";
+
 export async function withProviderRetry(
   provider: "posthog" | "meta" | "ga4",
   eventName: string,
@@ -12,11 +14,12 @@ export async function withProviderRetry(
       return;
     } catch (error) {
       lastError = error;
-      console.warn("[tracking]", {
+      logTrackingIssue({
         provider,
         eventName,
         eventId,
         attempt,
+        reason: trackingErrorMessage(error),
         status: statusFromError(error),
       });
       if (attempt < 3) {

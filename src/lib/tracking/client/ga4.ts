@@ -1,6 +1,7 @@
 import { clientTrackingConfig } from "@/lib/tracking/client/config";
 import type { TrackingEvent } from "@/lib/tracking/events";
 import { TRACKING_EVENT_REGISTRY } from "@/lib/tracking/events";
+import { logTrackingIssue } from "@/lib/tracking/log";
 
 let initialized = false;
 const GOOGLE_IDENTIFIERS_KEY = "asleep.tracking.google_identifiers";
@@ -12,17 +13,24 @@ export type GoogleIdentifiers = {
 
 export function initializeGoogleTag() {
   const measurementId = clientTrackingConfig.ga4MeasurementId;
-  if (initialized || !measurementId) {
+  if (initialized) {
+    return;
+  }
+  if (!measurementId) {
+    logTrackingIssue(
+      { provider: "ga4", reason: "missing_measurement_id" },
+      { once: "ga4-missing-id" },
+    );
     return;
   }
 
   initialized = true;
   window.dataLayer = window.dataLayer ?? [];
-  window.gtag =
-    window.gtag ??
-    ((...args: unknown[]) => {
-      window.dataLayer?.push(args);
-    });
+  window.gtag = function gtag() {
+    // gtag.js only treats Arguments objects as commands, not Arrays.
+    // biome-ignore lint/complexity/noArguments: official gtag snippet requires arguments
+    window.dataLayer?.push(arguments);
+  };
 
   window.gtag("js", new Date());
   window.gtag("config", measurementId, {
@@ -94,13 +102,25 @@ export function captureGa4Event(
   options: { immediate?: boolean } = {},
 ) {
   const mapping = TRACKING_EVENT_REGISTRY[event.name];
-  if (!initialized || !window.gtag || mapping.ga4 === null) {
+  if (mapping.ga4 === null) {
+    return;
+  }
+  if (!initialized || !window.gtag) {
+    logTrackingIssue(
+      {
+        provider: "ga4",
+        eventName: event.name,
+        eventId: event.event_id,
+        reason: initialized ? "gtag_missing" : "not_initialized",
+      },
+      { once: "ga4-not-ready" },
+    );
     return;
   }
 
   window.gtag("event", mapping.ga4, {
     ...buildGa4EventParams(event),
-    transport_type: options.immediate ? "beacon" : undefined,
+    ...(options.immediate ? { transport_type: "beacon" } : {}),
   });
 }
 

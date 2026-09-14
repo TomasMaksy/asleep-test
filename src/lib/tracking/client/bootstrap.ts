@@ -2,27 +2,40 @@ import { initializeGoogleTag } from "@/lib/tracking/client/ga4";
 import { initializeMetaPixel } from "@/lib/tracking/client/meta";
 import { persistMetaClickIds } from "@/lib/tracking/client/meta-clicks";
 import { initializePostHog } from "@/lib/tracking/client/posthog";
+import { logTrackingIssue, trackingErrorMessage } from "@/lib/tracking/log";
 
 export function initializeTracking() {
   try {
     persistMetaClickIds();
-  } catch {
-    // Click IDs must never block page load.
+  } catch (error) {
+    logTrackingIssue(
+      { reason: trackingErrorMessage(error) },
+      { once: "click-ids" },
+    );
   }
   try {
     initializePostHog();
-  } catch {
-    // Tracking must never block page load.
+  } catch (error) {
+    logTrackingIssue({
+      provider: "posthog",
+      reason: trackingErrorMessage(error),
+    });
   }
   try {
     initializeMetaPixel();
-  } catch {
-    // Tracking must never block page load.
+  } catch (error) {
+    logTrackingIssue({
+      provider: "meta",
+      reason: trackingErrorMessage(error),
+    });
   }
   try {
     initializeGoogleTag();
-  } catch {
-    // Tracking must never block page load.
+  } catch (error) {
+    logTrackingIssue({
+      provider: "ga4",
+      reason: trackingErrorMessage(error),
+    });
   }
   scheduleMetaClickIdPersist();
 }
