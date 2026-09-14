@@ -31,6 +31,7 @@ import {
   type Sleeping,
   suggestedSingleSizeId,
   VIDEO_PLAYBACK_RATE,
+  VIDEO_PLAYBACK_RATE_CATCHUP,
   VIDEO_PLAYBACK_RATE_FLUSH,
   VIDEO_PLAYBACK_RATE_QUEUED,
 } from "@/lib/configurator";
@@ -89,7 +90,6 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   const [partner, setPartner] = useState<Firmness>(DEFAULT_FIRMNESS);
   const [mindTheGap, setMindTheGap] = useState(false);
   const [clip, setClip] = useState<ConfiguratorClip | null>(null);
-  const [introPlaying, setIntroPlaying] = useState(false);
   const [playbackRate, setPlaybackRate] = useState(VIDEO_PLAYBACK_RATE);
   const [catchingUp, setCatchingUp] = useState(false);
   const [stageReady, setStageReady] = useState(false);
@@ -106,6 +106,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   const queueRef = useRef<QueuedTransition[]>([]);
   const playingClipRef = useRef<ConfiguratorClip | null>(null);
   const pendingPackagingRef = useRef(false);
+  const catchupRef = useRef(false);
   const profileRef = useRef({
     yourWeight,
     yourPreference,
@@ -183,9 +184,24 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     return next;
   }
 
+  function requestCatchup() {
+    catchupRef.current = true;
+    setCatchingUp(false);
+    setPlaybackRate(VIDEO_PLAYBACK_RATE_CATCHUP);
+  }
+
+  function activePlaybackRate() {
+    return catchupRef.current
+      ? VIDEO_PLAYBACK_RATE_CATCHUP
+      : VIDEO_PLAYBACK_RATE;
+  }
+
+  function videoIsBusy() {
+    return playingClipRef.current != null || queueRef.current.length > 0;
+  }
+
   function playIntro(afterStep: Step) {
     clipIdRef.current += 1;
-    setIntroPlaying(true);
     const nextClip: ConfiguratorClip = {
       id: clipIdRef.current,
       kind: "intro",
@@ -199,7 +215,6 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
 
   function playIntroReverse(afterStep: Step) {
     clipIdRef.current += 1;
-    setIntroPlaying(true);
     setStageReady(false);
     queueRef.current = [];
     setCatchingUp(false);
@@ -249,7 +264,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
 
   function playClose() {
     clipIdRef.current += 1;
-    setPlaybackRate(VIDEO_PLAYBACK_RATE);
+    setPlaybackRate(activePlaybackRate());
     const nextClip: ConfiguratorClip = {
       id: clipIdRef.current,
       kind: "intro",
@@ -276,6 +291,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
 
   function playHold(firmness: Firmness) {
     pendingPackagingRef.current = false;
+    catchupRef.current = false;
     clipIdRef.current += 1;
     setPlaybackRate(VIDEO_PLAYBACK_RATE);
     const nextClip: ConfiguratorClip = {
@@ -331,7 +347,11 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
       queueRef.current =
         afterCurrent === target ? [] : [{ from: afterCurrent, to: target }];
       setCatchingUp(true);
-      setPlaybackRate(VIDEO_PLAYBACK_RATE_FLUSH);
+      setPlaybackRate(
+        catchupRef.current
+          ? VIDEO_PLAYBACK_RATE_CATCHUP
+          : VIDEO_PLAYBACK_RATE_FLUSH,
+      );
       return;
     }
 
@@ -354,22 +374,23 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     playingClipRef.current = null;
 
     if (played.kind === "packaging" || played.kind === "hold") {
+      catchupRef.current = false;
       setPlaybackRate(VIDEO_PLAYBACK_RATE);
       setCatchingUp(false);
       return;
     }
 
     if (played.kind === "intro") {
-      setIntroPlaying(false);
       shownYouRef.current = DEFAULT_FIRMNESS;
       if (played.reverse) {
         queueRef.current = [];
-        setPlaybackRate(VIDEO_PLAYBACK_RATE);
         setCatchingUp(false);
         if (pendingPackagingRef.current) {
           startPackaging();
           return;
         }
+        catchupRef.current = false;
+        setPlaybackRate(VIDEO_PLAYBACK_RATE);
         setStageReady(false);
         return;
       }
@@ -379,6 +400,10 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
       setYou(next.you);
       setPartner(next.partner);
       setMindTheGap(next.mindTheGap);
+      if (pendingPackagingRef.current) {
+        startClosingThenPackaging();
+        return;
+      }
       if (next.you !== DEFAULT_FIRMNESS) {
         queueRef.current = [{ from: DEFAULT_FIRMNESS, to: next.you }];
       }
@@ -390,7 +415,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     const next = queued[0];
     if (next) {
       queueRef.current = queued.slice(1);
-      if (queueRef.current.length > 0) {
+      if (!catchupRef.current && queueRef.current.length > 0) {
         setPlaybackRate(VIDEO_PLAYBACK_RATE_QUEUED);
       }
       playTransition(next.from, next.to);
@@ -402,6 +427,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
       return;
     }
 
+    catchupRef.current = false;
     setPlaybackRate(VIDEO_PLAYBACK_RATE);
     setCatchingUp(false);
   }
@@ -425,8 +451,8 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   }
 
   function handleConfirm() {
-    if (introPlaying) {
-      return;
+    if (videoIsBusy()) {
+      requestCatchup();
     }
 
     if (step === 1) {
@@ -461,8 +487,8 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   }
 
   function handleBack() {
-    if (introPlaying) {
-      return;
+    if (videoIsBusy()) {
+      requestCatchup();
     }
     if (step === 1) {
       if (onDismiss) {
@@ -532,16 +558,13 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     step === 1 || step === 5 ? t("goBack") : t("previousQuestion");
 
   return (
-    <section
-      className={cn(
-        "relative flex h-dvh flex-col-reverse overflow-x-hidden overflow-y-hidden bg-white lg:flex-row lg:justify-end",
-        step === 5 && "h-auto min-h-dvh overflow-y-auto lg:h-dvh",
-      )}
-    >
+    <section className="relative flex h-dvh flex-col-reverse overflow-x-hidden overflow-y-hidden bg-white lg:flex-row lg:justify-end">
       <div
         className={cn(
-          "configurator-form-panel z-10 flex w-full min-w-0 shrink-0 flex-col overflow-hidden bg-white lg:h-auto lg:min-h-0 lg:w-[40%]",
-          step === 5 && "h-auto",
+          "configurator-form-panel z-10 flex w-full min-w-0 flex-col overflow-hidden bg-white lg:h-auto lg:min-h-0 lg:w-[40%]",
+          step === 5
+            ? "min-h-0 flex-1 max-lg:transition-none lg:flex-none"
+            : "shrink-0",
         )}
         style={
           !isDesktop && step !== 5 && formHeight != null
@@ -550,7 +573,10 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
         }
       >
         <div
-          className="flex w-full min-w-0 flex-col lg:h-full"
+          className={cn(
+            "flex w-full min-w-0 flex-col lg:h-full",
+            step === 5 && "h-full min-h-0 overflow-hidden",
+          )}
           ref={formInnerRef}
         >
           <div
@@ -559,7 +585,8 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
               step === 1
                 ? "pb-8 lg:flex lg:flex-col lg:overflow-hidden"
                 : "pb-4",
-              step !== 1 && "lg:overflow-y-auto",
+              step === 5 && "min-h-0 flex-1 overflow-y-auto overscroll-contain",
+              step !== 1 && step !== 5 && "lg:overflow-y-auto",
             )}
           >
             {step === 1 ? (
@@ -570,7 +597,6 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
                   </h1>
                   <button
                     className="flex h-[52px] w-full items-center justify-between rounded-full border border-grey py-1 pr-5 pl-4 text-brand-dark"
-                    disabled={introPlaying}
                     onClick={() => setSizeSheetOpen(true)}
                     type="button"
                   >
@@ -611,14 +637,12 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
                 <div className="flex flex-col gap-3">
                   <SleepingOption
                     checked={sleeping === "alone"}
-                    disabled={introPlaying}
                     label={t("alone")}
                     name={sizeFieldId}
                     onSelect={() => setSleeping("alone")}
                   />
                   <SleepingOption
                     checked={sleeping === "together"}
-                    disabled={introPlaying}
                     label={t("together")}
                     name={sizeFieldId}
                     onSelect={() => setSleeping("together")}
@@ -713,7 +737,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
             ) : null}
 
             {step === 5 ? (
-              <div className="pb-8">
+              <div>
                 <h2 className="mb-4 font-bold font-heading text-brand-dark text-xl lg:text-[32px]">
                   {t("resultTitle")}
                 </h2>
@@ -746,60 +770,42 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
                     summary={t("configuration", { number: partner })}
                   />
                 ) : null}
-
-                <button
-                  className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-brand font-normal text-base text-white transition-colors hover:bg-brand-dark"
-                  onClick={handleAddToCart}
-                  type="button"
-                >
-                  {t("addToBasket")}
-                </button>
-                <button
-                  className="mt-3 inline-flex h-12 w-full items-center justify-center gap-2 text-brand text-sm"
-                  onClick={handleBack}
-                  type="button"
-                >
-                  <ChevronLeft className="size-4" />
-                  {t("goBack")}
-                </button>
               </div>
             ) : null}
           </div>
 
-          {step !== 5 ? (
-            <div className="z-100 shrink-0 border-[#D9D9D9] border-t bg-white pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:pb-0">
-              <div
-                className="relative -top-0.5 h-1 bg-brand transition-all duration-500 ease-in-out"
-                style={{ width: `${20 * step}%` }}
-              />
-              <div className="flex items-center justify-between gap-3 px-5 py-3 lg:px-10 lg:py-4">
-                <button
-                  className="flex min-w-0 items-center gap-2 py-2 text-brand text-sm disabled:opacity-50 lg:py-4"
-                  disabled={introPlaying}
-                  onClick={handleBack}
-                  type="button"
-                >
-                  <ChevronLeft className="size-4 shrink-0" />
-                  <span className="truncate">{backLabel}</span>
-                </button>
-                <button
-                  className="inline-flex h-11 min-w-[140px] shrink-0 items-center justify-center rounded-full bg-brand px-6 text-base text-white transition-colors hover:bg-brand-dark disabled:opacity-50 sm:min-w-[167px] lg:h-12"
-                  disabled={introPlaying}
-                  onClick={handleConfirm}
-                  type="button"
-                >
-                  {t("confirm")}
-                </button>
-              </div>
+          <div className="z-100 shrink-0 border-[#D9D9D9] border-t bg-white pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:pb-0">
+            <div
+              className="relative -top-0.5 h-1 bg-brand transition-all duration-500 ease-in-out"
+              style={{ width: `${20 * step}%` }}
+            />
+            <div className="flex items-center justify-between gap-3 px-5 py-3 lg:px-10 lg:py-4">
+              <button
+                className="flex min-w-0 items-center gap-2 py-2 text-brand text-sm lg:py-4"
+                onClick={handleBack}
+                type="button"
+              >
+                <ChevronLeft className="size-4 shrink-0" />
+                <span className="truncate">{backLabel}</span>
+              </button>
+              <button
+                className="inline-flex h-11 min-w-[140px] shrink-0 items-center justify-center rounded-full bg-brand px-6 text-base text-white transition-colors hover:bg-brand-dark sm:min-w-[167px] lg:h-12"
+                onClick={step === 5 ? handleAddToCart : handleConfirm}
+                type="button"
+              >
+                {step === 5 ? t("addToBasket") : t("confirm")}
+              </button>
             </div>
-          ) : null}
+          </div>
         </div>
       </div>
 
       <div
         className={cn(
-          "relative z-[100] min-h-0 w-full flex-1 overflow-hidden lg:h-auto lg:min-h-full lg:w-[60%] lg:flex-grow",
-          step === 5 && "min-h-[42vh] lg:min-h-full",
+          "relative z-[100] min-h-0 w-full overflow-hidden lg:h-auto lg:min-h-full lg:w-[60%]",
+          step === 5
+            ? "h-[42vh] min-h-[42vh] flex-none lg:h-auto lg:min-h-full lg:flex-1"
+            : "flex-1 lg:flex-grow",
         )}
       >
         <ConfiguratorVideos

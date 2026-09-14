@@ -21,6 +21,7 @@ export const CONFIGURATOR_DEFAULT_SIZE_ID: MattressSizeId = "80x200";
 export const VIDEO_PLAYBACK_RATE = 1.5;
 export const VIDEO_PLAYBACK_RATE_QUEUED = 2.4;
 export const VIDEO_PLAYBACK_RATE_FLUSH = 3.2;
+export const VIDEO_PLAYBACK_RATE_CATCHUP = 12;
 export const MAX_TRANSITION_QUEUE = 2;
 
 const FIRMNESS_TABLE: Firmness[][] = [

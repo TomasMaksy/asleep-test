@@ -12,6 +12,7 @@ import {
   packagingVideoSrc,
   transitionVideoSrc,
   VIDEO_PLAYBACK_RATE,
+  VIDEO_PLAYBACK_RATE_CATCHUP,
 } from "@/lib/configurator";
 import { cn } from "@/lib/utils";
 
@@ -99,6 +100,33 @@ function videoNavyStyle(
     : navyFilterStyle;
 }
 
+function applyPlaybackRate(video: HTMLVideoElement, rate: number) {
+  try {
+    video.playbackRate = rate;
+  } catch {
+    try {
+      video.playbackRate = 2;
+    } catch {
+      return;
+    }
+  }
+
+  if (rate < VIDEO_PLAYBACK_RATE_CATCHUP || video.playbackRate >= 4) {
+    return;
+  }
+
+  const duration = video.duration;
+  if (!Number.isFinite(duration) || duration <= 0) {
+    return;
+  }
+
+  try {
+    video.currentTime = duration;
+  } catch {
+    // Some engines reject seeks while the source is still loading.
+  }
+}
+
 function videoHasPath(video: HTMLVideoElement, path: string) {
   const src = video.currentSrc || video.getAttribute("src") || video.src;
   const stem = path.replace(/\.(webm|mov|mp4)$/i, "");
@@ -168,7 +196,7 @@ export function ConfiguratorVideos({
     const rate = playbackRate;
     for (const video of [videoARef.current, videoBRef.current]) {
       if (video) {
-        video.playbackRate = rate;
+        applyPlaybackRate(video, rate);
       }
     }
   }, [playbackRate]);
@@ -208,7 +236,7 @@ export function ConfiguratorVideos({
     }
 
     const src = clipSrc(clip);
-    incoming.playbackRate = playbackRateRef.current;
+    applyPlaybackRate(incoming, playbackRateRef.current);
     if (!videoHasPath(incoming, src)) {
       incoming.src = src;
       incoming.load();
@@ -264,7 +292,7 @@ export function ConfiguratorVideos({
         return;
       }
       started = true;
-      incoming.playbackRate = playbackRateRef.current;
+      applyPlaybackRate(incoming, playbackRateRef.current);
       if (reducedMotion || clip.kind === "hold") {
         try {
           incoming.currentTime = Number.isFinite(incoming.duration)
@@ -282,6 +310,7 @@ export function ConfiguratorVideos({
           return;
         }
         reveal();
+        applyPlaybackRate(incoming, playbackRateRef.current);
         const playResult = incoming.play();
         if (playResult) {
           playResult.catch(() => finish());
