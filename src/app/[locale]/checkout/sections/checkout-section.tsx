@@ -42,6 +42,17 @@ import {
   writeCheckoutDraft,
 } from "@/lib/checkout-draft";
 import { confirmAndVoidPayment } from "@/lib/checkout-stripe-flow";
+import { dispatchAcceptedPurchase } from "@/lib/tracking/client/dispatcher";
+import {
+  createPurchaseTrackingEvent,
+  trackCheckoutInitiated,
+} from "@/lib/tracking/client/ecommerce";
+import { identifyVisitor } from "@/lib/tracking/client/posthog";
+import {
+  purchaseEventSchema,
+  type TrackingEventOf,
+} from "@/lib/tracking/events";
+import { completeCheckout } from "@/lib/tracking/ids";
 import { cn } from "@/lib/utils";
 import styles from "./checkout.module.css";
 
@@ -185,6 +196,9 @@ function CheckoutForm({
   const [billingPostal, setBillingPostal] = useState(saved.billingPostal);
   const [billingCity, setBillingCity] = useState(saved.billingCity);
   const leadSaved = useRef(false);
+  const purchaseEvent = useRef<TrackingEventOf<"purchase"> | null>(null);
+  const purchaseCompleted = useRef(false);
+  const purchaseInFlight = useRef(false);
 
   const amountCents = Math.max(
     discountedCents(productCents, appliedDiscount),
@@ -231,6 +245,10 @@ function CheckoutForm({
     phone,
     postal,
   ]);
+
+  useEffect(() => {
+    trackCheckoutInitiated(items, "checkout_page");
+  }, [items]);
 
   function clearError(key: string) {
     setErrors((current) => {
@@ -285,9 +303,12 @@ function CheckoutForm({
   }
 
   const saveLead = useCallback(
-    async (contact?: Partial<CheckoutContact>) => {
+    async (
+      contact: Partial<CheckoutContact>,
+      tracking?: TrackingEventOf<"purchase">,
+    ) => {
       if (leadSaved.current) {
-        return true;
+        return { ok: true, trackingAccepted: Boolean(tracking) };
       }
 
       const response = await fetch("/api/checkout", {
@@ -299,35 +320,131 @@ function CheckoutForm({
           email: (contact?.email ?? email).trim().toLowerCase(),
           phone: (contact?.phone ?? phone).trim(),
           locale,
+          country,
           company: "",
-          cartBalance: discountedMoney(
-            selectCartSubtotal(items),
-            appliedDiscount,
-          ),
+          coupon: appliedDiscount || undefined,
+          items: items.map((item) => ({
+            id: item.id,
+            quantity: item.quantity,
+          })),
+          tracking: tracking
+            ? {
+                event_id: tracking.event_id,
+                occurred_at: tracking.occurred_at,
+                visitor_id: tracking.visitor_id,
+                locale: tracking.locale,
+                path: tracking.path,
+                url: tracking.url,
+                source: tracking.source,
+                posthog_session_id: tracking.posthog_session_id,
+                ga_client_id: tracking.ga_client_id,
+                ga_session_id: tracking.ga_session_id,
+                fbp: tracking.fbp,
+                fbc: tracking.fbc,
+                checkout_id: tracking.properties.checkout_id,
+                payment_method: tracking.properties.payment_method,
+              }
+            : undefined,
         }),
       });
 
       if (!response.ok) {
-        return false;
+        return { ok: false, trackingAccepted: false };
       }
 
+      const result = (await response.json()) as {
+        trackingAccepted?: boolean;
+        purchase?: unknown;
+      };
       leadSaved.current = true;
-      return true;
+      const purchase = purchaseEventSchema.safeParse(result.purchase);
+      if (purchase.success) {
+        purchaseEvent.current = purchase.data;
+      }
+      return {
+        ok: true,
+        trackingAccepted: Boolean(result.trackingAccepted && purchase.success),
+      };
     },
-    [appliedDiscount, email, firstName, items, lastName, locale, phone],
+    [
+      appliedDiscount,
+      country,
+      email,
+      firstName,
+      items,
+      lastName,
+      locale,
+      phone,
+    ],
   );
 
   const finishCheckout = useCallback(
-    async (contact: CheckoutContact) => {
-      await saveLead(contact);
-      storeCheckoutThanks(contact);
-      clearCheckoutDraft();
-      if (!checkoutConfig.fakeDoor) {
-        clearCart();
+    async (
+      contact: CheckoutContact,
+      paymentMethod: "card" | "express" | "unknown",
+    ) => {
+      if (purchaseCompleted.current || purchaseInFlight.current) {
+        return;
       }
-      router.push("/checkout/thank-you");
+      purchaseInFlight.current = true;
+
+      try {
+        const value = discountedMoney(
+          selectCartSubtotal(items),
+          appliedDiscount,
+        );
+        if (!purchaseEvent.current) {
+          try {
+            purchaseEvent.current = await createPurchaseTrackingEvent({
+              items,
+              value,
+              coupon: appliedDiscount,
+              paymentMethod,
+            });
+          } catch {
+            purchaseEvent.current = null;
+          }
+        }
+
+        const accepted = await saveLead(
+          contact,
+          purchaseEvent.current ?? undefined,
+        );
+        if (!accepted.ok) {
+          throw new Error(t("expressUnavailable"));
+        }
+
+        purchaseCompleted.current = true;
+        try {
+          identifyVisitor(
+            {
+              email: contact.email,
+              checkout_email: contact.email,
+              name: `${contact.firstName} ${contact.lastName}`.trim(),
+              newsletter_subscribed: newsletter || undefined,
+            },
+            newsletter ? { newsletter_email: contact.email } : {},
+          );
+          if (accepted.trackingAccepted && purchaseEvent.current) {
+            dispatchAcceptedPurchase(purchaseEvent.current);
+          }
+          if (purchaseEvent.current) {
+            completeCheckout(purchaseEvent.current.properties.checkout_id);
+          }
+        } catch {
+          // Browser analytics must never block an accepted checkout.
+        }
+        storeCheckoutThanks(contact);
+        clearCheckoutDraft();
+        if (!checkoutConfig.fakeDoor) {
+          clearCart();
+        }
+        router.push("/checkout/thank-you");
+      } finally {
+        purchaseInFlight.current = false;
+      }
     },
-    [clearCart, router, saveLead],
+    [appliedDiscount, clearCart, items, newsletter, router, saveLead, t],
   );
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -369,7 +486,7 @@ function CheckoutForm({
 
     if (checkoutConfig.fakeDoor) {
       try {
-        await finishCheckout(contact);
+        await finishCheckout(contact, "card");
       } catch (cause) {
         setPayError(
           cause instanceof Error ? cause.message : t("expressUnavailable"),
@@ -408,12 +525,15 @@ function CheckoutForm({
         returnUrl: thankYouUrl,
         stripe,
       });
-      await finishCheckout({
-        firstName: paid.firstName || contact.firstName,
-        lastName: paid.lastName || contact.lastName,
-        email: paid.email || contact.email,
-        phone: paid.phone || contact.phone,
-      });
+      await finishCheckout(
+        {
+          firstName: paid.firstName || contact.firstName,
+          lastName: paid.lastName || contact.lastName,
+          email: paid.email || contact.email,
+          phone: paid.phone || contact.phone,
+        },
+        "card",
+      );
     } catch (cause) {
       setPayError(
         cause instanceof Error ? cause.message : t("expressUnavailable"),
@@ -475,7 +595,7 @@ function CheckoutForm({
                     },
                   ]}
                   onPaid={(contact) => {
-                    void finishCheckout(contact);
+                    void finishCheckout(contact, "express");
                   }}
                   returnUrl={thankYouUrl}
                 />

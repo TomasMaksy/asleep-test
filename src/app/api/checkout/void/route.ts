@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe-server";
+import {
+  consumeMutationRateLimit,
+  isSameOriginRequest,
+} from "@/lib/tracking/server/request";
 
 function asId(value: unknown) {
   if (typeof value !== "string") {
@@ -9,6 +13,14 @@ function asId(value: unknown) {
 }
 
 export async function POST(request: Request) {
+  if (!isSameOriginRequest(request)) {
+    return NextResponse.json({ error: "Invalid origin." }, { status: 403 });
+  }
+
+  if (!consumeMutationRateLimit(request, "intent")) {
+    return NextResponse.json({ error: "Too many requests." }, { status: 429 });
+  }
+
   const stripe = getStripe();
   if (!stripe) {
     return NextResponse.json(

@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { checkoutConfig } from "@/lib/checkout-config";
 import { getStripe } from "@/lib/stripe-server";
+import {
+  consumeMutationRateLimit,
+  isSameOriginRequest,
+} from "@/lib/tracking/server/request";
 
 const MAX_AMOUNT_CENTS = 500_000;
 const MIN_AMOUNT_CENTS = 50;
@@ -14,6 +18,14 @@ function asAmount(value: unknown) {
 }
 
 export async function POST(request: Request) {
+  if (!isSameOriginRequest(request)) {
+    return NextResponse.json({ error: "Invalid origin." }, { status: 403 });
+  }
+
+  if (!consumeMutationRateLimit(request, "intent")) {
+    return NextResponse.json({ error: "Too many requests." }, { status: 429 });
+  }
+
   const stripe = getStripe();
   if (!stripe) {
     return NextResponse.json(

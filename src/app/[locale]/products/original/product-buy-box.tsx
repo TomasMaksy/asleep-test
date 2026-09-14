@@ -15,6 +15,7 @@ import {
   getMattressSize,
   packshotSrc,
 } from "@/lib/product-original-sizes";
+import { trackAddedCartItems } from "@/lib/tracking/client/ecommerce";
 
 export function ProductBuyBox() {
   const t = useTranslations("productOriginal.hero");
@@ -35,17 +36,16 @@ export function ProductBuyBox() {
     setSizeOpen(true);
   }
 
-  function handleAddToCart() {
-    addItem(
-      {
-        id: `matt-original-${sizeId}`,
-        name: t("subtitle"),
-        price: activeCents / 100,
-        image: packshotSrc(sizeId),
-        variant: size.label,
-      },
-      quantity,
-    );
+  function handleAddToCart(source: "pdp_buy_box" | "pdp_sticky_bar") {
+    const product = {
+      id: `matt-original-${sizeId}`,
+      name: t("subtitle"),
+      price: activeCents / 100,
+      image: packshotSrc(sizeId),
+      variant: size.label,
+    };
+    addItem(product, quantity);
+    trackAddedCartItems([{ ...product, quantity }], source);
     setSizeOpen(false);
     openCart();
   }
@@ -114,7 +114,7 @@ export function ProductBuyBox() {
           />
           <button
             className="inline-flex h-12 flex-1 items-center justify-center rounded-full bg-brand px-6 font-normal text-base text-white transition-colors hover:bg-brand-dark"
-            onClick={handleAddToCart}
+            onClick={() => handleAddToCart("pdp_buy_box")}
             type="button"
           >
             {t("addToCart")}
@@ -130,7 +130,7 @@ export function ProductBuyBox() {
       <ProductStickyBuyBar
         activeCents={activeCents}
         observeId="product-info-slider"
-        onAddToCart={handleAddToCart}
+        onAddToCart={() => handleAddToCart("pdp_sticky_bar")}
         onOpenSize={openSizeSheet}
         packshotSrc={packshotSrc(sizeId)}
         productName={t("stickyBar.originalName")}

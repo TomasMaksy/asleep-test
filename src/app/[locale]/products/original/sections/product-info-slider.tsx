@@ -108,7 +108,7 @@ export function ProductInfoSlider({
   useEffect(() => {
     const canvas = canvasRef.current;
     const track = trackRef.current;
-    const ctx = canvas?.getContext("2d", { alpha: false });
+    const ctx = canvas?.getContext("2d", { alpha: true });
     if (!canvas || !track || !ctx) {
       return;
     }
@@ -182,15 +182,11 @@ export function ProductInfoSlider({
       return clamp(scrolled / range, 0, 1);
     };
 
-    let sequenceStarted = false;
-
     const paint = (progress: number) => {
       progressRef.current = progress;
       const frame = adjustableFrameIndex(progress);
       frameIndexRef.current = frame;
-      if (sequenceStarted) {
-        paintAdjustableFrame(ctx, frame, () => frameIndexRef.current === frame);
-      }
+      paintAdjustableFrame(ctx, frame, () => frameIndexRef.current === frame);
       updateStops(progress);
     };
 
@@ -206,36 +202,35 @@ export function ProductInfoSlider({
     const initialProgress = reduceMotion ? 1 : progressFromScroll();
     paint(initialProgress);
 
-    const startSequence = () => {
-      if (sequenceStarted) {
+    const firstFrame = adjustableFrameIndex(initialProgress);
+    whenAdjustableFrameReady(firstFrame, () => {
+      if (cancelled) {
         return;
       }
-      sequenceStarted = true;
-      const frame = adjustableFrameIndex(progressFromScrollRef.current());
-      prefetchAdjustableFrames(frame);
-      whenAdjustableFrameReady(frame, () => {
-        if (!cancelled) {
-          paint(progressFromScrollRef.current());
-          setSequenceReady(true);
-        }
-      });
-    };
+      paint(progressFromScrollRef.current());
+      setSequenceReady(true);
+    });
 
     let preloadObserver: IntersectionObserver | null = null;
+    const startLookahead = () => {
+      prefetchAdjustableFrames(
+        adjustableFrameIndex(progressFromScrollRef.current()),
+      );
+    };
     const nearViewport =
-      track.getBoundingClientRect().top < window.innerHeight + 400;
+      track.getBoundingClientRect().top < window.innerHeight + 800;
     if (nearViewport) {
-      startSequence();
+      startLookahead();
     } else {
       preloadObserver = new IntersectionObserver(
         ([entry]) => {
           if (!entry?.isIntersecting) {
             return;
           }
-          startSequence();
+          startLookahead();
           preloadObserver?.disconnect();
         },
-        { rootMargin: "400px 0px" },
+        { rootMargin: "800px 0px" },
       );
       preloadObserver.observe(track);
     }
@@ -248,7 +243,9 @@ export function ProductInfoSlider({
       if (!frame) {
         frame = window.requestAnimationFrame(() => {
           frame = 0;
-          paint(progressFromScroll());
+          const progress = progressFromScroll();
+          paint(progress);
+          prefetchAdjustableFrames(adjustableFrameIndex(progress));
         });
       }
     };
@@ -334,14 +331,13 @@ export function ProductInfoSlider({
             ) : null}
           </div>
 
-          {/* Poster must share the canvas frame URL so the first decode is cached. */}
+          {/* Poster stays visible until the canvas has a decoded frame. */}
           {/* biome-ignore lint/performance/noImgElement: same URL as the sequence loader */}
           <img
             alt=""
             aria-hidden
             className={cn(SEQUENCE_CLASS, sequenceReady && "opacity-0")}
             decoding="async"
-            loading="lazy"
             height={ADJUSTABLE_FRAME_HEIGHT}
             src={adjustableFrameUrl(0)}
             style={navyFilterStyle}
@@ -349,7 +345,7 @@ export function ProductInfoSlider({
           />
           <canvas
             aria-hidden
-            className={SEQUENCE_CLASS}
+            className={cn(SEQUENCE_CLASS, !sequenceReady && "opacity-0")}
             height={ADJUSTABLE_FRAME_HEIGHT}
             ref={canvasRef}
             style={navyFilterStyle}

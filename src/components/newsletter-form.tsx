@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
+import { captureNewsletterSignup } from "@/lib/tracking/client/posthog";
 import { cn } from "@/lib/utils";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -117,6 +118,11 @@ export function NewsletterForm() {
       setMessage("");
       setEmail("");
       setTouched(false);
+      try {
+        captureNewsletterSignup(trimmed, "website-footer");
+      } catch {
+        // Tracking must never block a successful subscribe.
+      }
     } catch {
       setStatus("error");
       setMessage("Network error. Check your connection and try again.");

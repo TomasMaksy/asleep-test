@@ -630,6 +630,7 @@ function LayerPopup({
 
 export function ProductLayers({
   advantagesLabel,
+  className,
   closeLabel,
   heading,
   items,
@@ -637,6 +638,7 @@ export function ProductLayers({
   previousLabel,
 }: {
   advantagesLabel: string;
+  className?: string;
   closeLabel: string;
   heading: string;
   items: LayerItem[];
@@ -749,7 +751,10 @@ export function ProductLayers({
   return (
     <section
       aria-labelledby={headingId}
-      className="flex flex-col overflow-x-hidden bg-brand-muted py-16 pb-28 lg:pt-24 lg:pb-16"
+      className={cn(
+        "flex flex-col overflow-x-hidden bg-brand-muted py-16 pb-28 lg:pt-24 lg:pb-16",
+        className,
+      )}
       id="product-layers"
       ref={rootRef}
     >
@@ -804,7 +809,7 @@ export function ProductLayers({
           </div>
 
           <div className="relative z-20 flex w-full items-start justify-start overflow-visible">
-            <div className="product-layers-stack w-[160%] max-w-none select-none lg:w-[56rem] xl:w-[64rem] 2xl:w-[72rem]">
+            <div className="product-layers-stack w-[190%] max-w-none select-none lg:w-[64rem] xl:w-[82rem] 2xl:w-[104rem]">
               {SLICES.map((slice, index) => {
                 const extras = EXTRA_HOTSPOTS.filter(
                   (hotspot) => hotspot.sliceId === slice.id,
@@ -850,7 +855,7 @@ export function ProductLayers({
                         draggable={false}
                         height={slice.height}
                         loading="lazy"
-                        sizes="(min-width: 2000px) 72rem, (min-width: 1440px) 64rem, (min-width: 1024px) 56rem, 160vw"
+                        sizes="(min-width: 2000px) 104rem, (min-width: 1440px) 82rem, (min-width: 1024px) 64rem, 190vw"
                         src={slice.src}
                         width={slice.width}
                       />

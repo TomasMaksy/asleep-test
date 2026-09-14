@@ -3,11 +3,12 @@ import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import type { ReactNode } from "react";
+import { type ReactNode, Suspense } from "react";
 import { AsleepNavyFilter } from "@/components/asleep-navy-filter";
 import { CartSheetHost } from "@/components/cart/cart-sheet-host";
 import { ConfiguratorShell } from "@/components/configurator/configurator-shell";
 import { RevealObserver } from "@/components/reveal-observer";
+import { TrackingRouteObserver } from "@/components/tracking/route-observer";
 import { routing } from "@/i18n/routing";
 import { getSiteUrl } from "@/lib/site-url";
 import { cn } from "@/lib/utils";
@@ -78,6 +79,9 @@ export default async function LocaleLayout({
       <body className="relative min-h-full font-sans">
         <AsleepNavyFilter />
         <NextIntlClientProvider>
+          <Suspense fallback={null}>
+            <TrackingRouteObserver />
+          </Suspense>
           <RevealObserver />
           <ConfiguratorShell overlay={modal}>{children}</ConfiguratorShell>
           <CartSheetHost />

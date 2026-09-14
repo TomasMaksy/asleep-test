@@ -14,7 +14,7 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <ProductsSection />
-        <ProductLayersSection />
+        <ProductLayersSection className="bg-highlight-default" />
         <PromiseSection />
         <ReviewsSection />
         <SupportSection />

@@ -1,17 +1,17 @@
-import { STATIC_IMAGE_CACHE_VERSION } from "@/lib/static-image-url";
+import { staticImageUrl } from "@/lib/static-image-url";
 
 export const ADJUSTABLE_FRAME_COUNT = 277;
 export const ADJUSTABLE_FRAME_WIDTH = 1126;
 export const ADJUSTABLE_FRAME_HEIGHT = 880;
 
 const FRAME_DIR = "/images/original-scroll/adjustable";
-const LOOKAHEAD = 25;
+const LOOKAHEAD = 12;
 
 let frames: Array<HTMLImageElement | undefined> | undefined;
 
 export function adjustableFrameUrl(index: number) {
   const frame = clampFrame(index);
-  return `${FRAME_DIR}/${String(frame).padStart(3, "0")}.jpg?v=${STATIC_IMAGE_CACHE_VERSION}`;
+  return staticImageUrl(`${FRAME_DIR}/${String(frame).padStart(3, "0")}.jpg`);
 }
 
 export function adjustableFrameIndex(progress: number) {
@@ -27,7 +27,6 @@ export function prefetchAdjustableFrames(from: number, count = LOOKAHEAD) {
 }
 
 export function whenAdjustableFrameReady(index: number, onReady: () => void) {
-  prefetchAdjustableFrames(index);
   const img = getFrame(index);
   if (img.complete && img.naturalWidth > 0) {
     onReady();
@@ -42,7 +41,6 @@ export function paintAdjustableFrame(
   isCurrent: () => boolean,
 ) {
   const frame = clampFrame(index);
-  prefetchAdjustableFrames(frame);
   const img = getFrame(frame);
 
   if (blit(ctx, img)) {
@@ -56,11 +54,15 @@ export function paintAdjustableFrame(
     }
   }
 
-  img.onload = () => {
-    if (isCurrent()) {
-      blit(ctx, img);
-    }
-  };
+  img.addEventListener(
+    "load",
+    () => {
+      if (isCurrent()) {
+        blit(ctx, img);
+      }
+    },
+    { once: true },
+  );
 }
 
 function getFrame(index: number) {
@@ -73,9 +75,7 @@ function getFrame(index: number) {
 
   const img = new Image();
   img.decoding = "async";
-  if (frame === 0) {
-    img.fetchPriority = "high";
-  }
+  img.fetchPriority = frame === 0 ? "high" : "low";
   img.src = adjustableFrameUrl(frame);
   list[frame] = img;
   return img;

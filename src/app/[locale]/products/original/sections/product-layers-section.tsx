@@ -15,7 +15,11 @@ const ITEM_IDS = [
   "cover",
 ] as const;
 
-export async function ProductLayersSection() {
+export async function ProductLayersSection({
+  className,
+}: {
+  className?: string;
+}) {
   const t = await getTranslations("productOriginal.layers");
 
   const items: LayerItem[] = ITEM_IDS.map((id) => {
@@ -42,6 +46,7 @@ export async function ProductLayersSection() {
   return (
     <ProductLayers
       advantagesLabel={t("advantages")}
+      className={className}
       closeLabel={t("close")}
       heading={t("heading")}
       items={items}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { selectCartSubtotal, useCartStore } from "@/lib/cart-store";
 import { checkoutConfig } from "@/lib/checkout-config";
@@ -10,7 +10,17 @@ import {
   readCheckoutThanks,
   storeCheckoutThanks,
 } from "@/lib/checkout-contact";
+import { discountedMoney } from "@/lib/checkout-discount";
+import { readCheckoutDraft } from "@/lib/checkout-draft";
 import { voidPayment } from "@/lib/checkout-stripe-flow";
+import { dispatchAcceptedPurchase } from "@/lib/tracking/client/dispatcher";
+import { createPurchaseTrackingEvent } from "@/lib/tracking/client/ecommerce";
+import { identifyVisitor } from "@/lib/tracking/client/posthog";
+import {
+  purchaseEventSchema,
+  type TrackingEventOf,
+} from "@/lib/tracking/events";
+import { completeCheckout } from "@/lib/tracking/ids";
 import { cn } from "@/lib/utils";
 import styles from "./checkout.module.css";
 
@@ -21,6 +31,7 @@ export function CheckoutThanksSection() {
   const clearCart = useCartStore((state) => state.clearCart);
   const [contact, setContact] = useState<CheckoutContact | null>(null);
   const [ready, setReady] = useState(false);
+  const recoveryInFlight = useRef(false);
 
   useEffect(() => {
     const stored = readCheckoutThanks();
@@ -37,7 +48,13 @@ export function CheckoutThanksSection() {
       return;
     }
 
+    if (recoveryInFlight.current) {
+      return;
+    }
+    recoveryInFlight.current = true;
+
     const cartItems = useCartStore.getState().items;
+    const draft = readCheckoutDraft();
 
     void (async () => {
       try {
@@ -55,7 +72,24 @@ export function CheckoutThanksSection() {
         if (merged.email) {
           storeCheckoutThanks(merged);
           if (!stored) {
-            await fetch("/api/checkout", {
+            let tracking: TrackingEventOf<"purchase"> | undefined;
+            if (cartItems.length > 0) {
+              try {
+                tracking = await createPurchaseTrackingEvent({
+                  items: cartItems,
+                  value: discountedMoney(
+                    selectCartSubtotal(cartItems),
+                    draft.appliedDiscountCode,
+                  ),
+                  coupon: draft.appliedDiscountCode || undefined,
+                  paymentMethod: "unknown",
+                });
+              } catch {
+                tracking = undefined;
+              }
+            }
+
+            const response = await fetch("/api/checkout", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -64,10 +98,50 @@ export function CheckoutThanksSection() {
                 email: merged.email,
                 phone: merged.phone,
                 locale,
+                country: draft.country,
                 company: "",
-                cartBalance: selectCartSubtotal(cartItems),
+                coupon: draft.appliedDiscountCode || undefined,
+                items: cartItems.map((item) => ({
+                  id: item.id,
+                  quantity: item.quantity,
+                })),
+                tracking: tracking
+                  ? {
+                      event_id: tracking.event_id,
+                      occurred_at: tracking.occurred_at,
+                      visitor_id: tracking.visitor_id,
+                      locale: tracking.locale,
+                      path: tracking.path,
+                      url: tracking.url,
+                      source: tracking.source,
+                      posthog_session_id: tracking.posthog_session_id,
+                      ga_client_id: tracking.ga_client_id,
+                      ga_session_id: tracking.ga_session_id,
+                      fbp: tracking.fbp,
+                      fbc: tracking.fbc,
+                      checkout_id: tracking.properties.checkout_id,
+                      payment_method: tracking.properties.payment_method,
+                    }
+                  : undefined,
               }),
             });
+
+            if (response.ok) {
+              const result = (await response.json()) as {
+                trackingAccepted?: boolean;
+                purchase?: unknown;
+              };
+              const purchase = purchaseEventSchema.safeParse(result.purchase);
+              if (result.trackingAccepted && purchase.success) {
+                identifyVisitor({
+                  email: merged.email,
+                  checkout_email: merged.email,
+                  name: `${merged.firstName} ${merged.lastName}`.trim(),
+                });
+                dispatchAcceptedPurchase(purchase.data);
+                completeCheckout(purchase.data.properties.checkout_id);
+              }
+            }
           }
         }
         setContact(merged);
@@ -79,6 +153,7 @@ export function CheckoutThanksSection() {
         setContact(stored);
       } finally {
         setReady(true);
+        recoveryInFlight.current = false;
       }
     })();
   }, [clearCart, locale]);

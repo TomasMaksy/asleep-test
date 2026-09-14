@@ -1,10 +1,29 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { saveEmail } from "@/lib/airtable";
+import { quoteCart } from "@/lib/product-catalog";
+import {
+  cartSelectionSchema,
+  purchaseEventSchema,
+  purchaseTrackingClientSchema,
+  type TrackingEventOf,
+} from "@/lib/tracking/events";
+import { sendPurchaseToServers } from "@/lib/tracking/server/dispatch";
+import { claimOnce } from "@/lib/tracking/server/idempotency";
+import {
+  isAllowedEventUrl,
+  isTrustedSiteRequest,
+} from "@/lib/tracking/server/origins";
+import { isWithinReplayWindow } from "@/lib/tracking/server/replay";
+import {
+  consumeMutationRateLimit,
+  getTrackingRequestContext,
+} from "@/lib/tracking/server/request";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MAX_EMAIL_LENGTH = 254;
 const MAX_NAME_LENGTH = 80;
 const MAX_PHONE_LENGTH = 40;
+const MAX_BODY_BYTES = 64_000;
 
 type CheckoutLead = {
   firstName: string;
@@ -12,8 +31,8 @@ type CheckoutLead = {
   email: string;
   phone: string;
   locale: string;
+  country: string;
   company: string;
-  cartBalance: number;
 };
 
 function asTrimmedString(value: unknown, max: number) {
@@ -25,8 +44,7 @@ function asTrimmedString(value: unknown, max: number) {
 
 /** Whitelist only — payment fields are ignored and never logged. */
 function pickLead(body: unknown): CheckoutLead {
-  const source =
-    body && typeof body === "object" ? (body as Record<string, unknown>) : {};
+  const source = asRecord(body);
 
   return {
     firstName: asTrimmedString(source.firstName, MAX_NAME_LENGTH),
@@ -34,20 +52,25 @@ function pickLead(body: unknown): CheckoutLead {
     email: asTrimmedString(source.email, MAX_EMAIL_LENGTH).toLowerCase(),
     phone: asTrimmedString(source.phone, MAX_PHONE_LENGTH),
     locale: asTrimmedString(source.locale, 8) || "lt",
+    country: asTrimmedString(source.country, 2).toLowerCase(),
     company: asTrimmedString(source.company, 120),
-    cartBalance: asMoney(source.cartBalance),
   };
 }
 
-function asMoney(value: unknown) {
-  const amount = typeof value === "number" ? value : Number(value);
-  if (!Number.isFinite(amount) || amount < 0) {
-    return 0;
-  }
-  return Math.round(amount * 100) / 100;
-}
-
 export async function POST(request: Request) {
+  if (!isTrustedSiteRequest(request)) {
+    return NextResponse.json({ error: "Invalid origin." }, { status: 403 });
+  }
+
+  if (!consumeMutationRateLimit(request, "checkout")) {
+    return NextResponse.json({ error: "Too many requests." }, { status: 429 });
+  }
+
+  const contentLength = Number(request.headers.get("content-length") ?? 0);
+  if (contentLength > MAX_BODY_BYTES) {
+    return NextResponse.json({ error: "Request too large." }, { status: 413 });
+  }
+
   let raw: unknown;
 
   try {
@@ -57,6 +80,7 @@ export async function POST(request: Request) {
   }
 
   const lead = pickLead(raw);
+  const source = asRecord(raw);
 
   if (lead.company) {
     return NextResponse.json({ ok: true });
@@ -90,20 +114,99 @@ export async function POST(request: Request) {
     );
   }
 
+  const quoted = quoteSubmittedCart(source);
+  const purchase = buildPurchaseEvent(source.tracking, quoted);
+
   try {
     await saveEmail(lead.email, "checkout-completed", {
       firstName: lead.firstName,
       lastName: lead.lastName,
       phone: lead.phone,
-      cartBalance: lead.cartBalance,
+      cartBalance: quoted?.value ?? 0,
     });
   } catch {
     // Lead is still accepted; Airtable can be retried later.
   }
 
-  return NextResponse.json({ ok: true });
+  if (purchase) {
+    const context = getTrackingRequestContext(request, purchase);
+    after(() =>
+      sendPurchaseToServers(purchase, context, {
+        email: lead.email,
+        phone: lead.phone,
+        firstName: lead.firstName,
+        lastName: lead.lastName,
+        country: lead.country,
+      }),
+    );
+  }
+
+  return NextResponse.json({
+    ok: true,
+    trackingAccepted: Boolean(purchase),
+    purchase: purchase ?? undefined,
+  });
+}
+
+function quoteSubmittedCart(source: Record<string, unknown>) {
+  const items = cartSelectionSchema.array().max(20).safeParse(source.items);
+  if (!items.success) {
+    return undefined;
+  }
+  const coupon = typeof source.coupon === "string" ? source.coupon : undefined;
+  return quoteCart(items.data, coupon);
+}
+
+function buildPurchaseEvent(
+  rawTracking: unknown,
+  quoted: ReturnType<typeof quoteSubmittedCart>,
+): TrackingEventOf<"purchase"> | undefined {
+  if (!quoted) {
+    return undefined;
+  }
+
+  const tracking = purchaseTrackingClientSchema.safeParse(rawTracking);
+  if (!tracking.success) {
+    return undefined;
+  }
+
+  if (
+    !isWithinReplayWindow(tracking.data.occurred_at) ||
+    !isAllowedEventUrl(tracking.data.url)
+  ) {
+    return undefined;
+  }
+
+  if (
+    !claimOnce(`checkout:${tracking.data.checkout_id}`) ||
+    !claimOnce(`event:${tracking.data.event_id}`)
+  ) {
+    return undefined;
+  }
+
+  const parsed = purchaseEventSchema.safeParse({
+    ...tracking.data,
+    name: "purchase",
+    properties: {
+      checkout_id: tracking.data.checkout_id,
+      checkout_mode: "fake_door",
+      coupon: quoted.coupon,
+      currency: "EUR",
+      items: quoted.items,
+      payment_method: tracking.data.payment_method,
+      value: quoted.value,
+    },
+  });
+
+  return parsed.success ? parsed.data : undefined;
 }
 
 function digitsIn(value: string) {
   return value.replace(/\D/g, "").length;
+}
+
+function asRecord(value: unknown) {
+  return value && typeof value === "object"
+    ? (value as Record<string, unknown>)
+    : {};
 }

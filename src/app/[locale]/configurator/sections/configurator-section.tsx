@@ -41,6 +41,7 @@ import {
   type MattressSizeId,
   SINGLE_MATTRESS_SIZES,
 } from "@/lib/product-original-sizes";
+import { trackAddedCartItems } from "@/lib/tracking/client/ecommerce";
 import { cn } from "@/lib/utils";
 
 type Step = 1 | 2 | 3 | 4 | 5;
@@ -495,26 +496,26 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     const size = getMattressSize(cartSizeId);
     const youLabel = scale[you - 1] ?? "";
     const partnerLabel = scale[partner - 1] ?? "";
+    const quantity = splitId ? 2 : 1;
+    const product = {
+      id: `matt-original-${cartSizeId}-c${you}${together ? `p${partner}` : ""}`,
+      name: productName,
+      price: size.originalCents / 100,
+      image: "/images/product-original-hero-lifestyle.webp",
+      variant: configuratorCartVariant({
+        sizeId: cartSizeId,
+        sleeping,
+        bed: splitId ? "single" : bed,
+        you,
+        partner,
+        youLabel,
+        partnerLabel,
+        mindTheGap,
+      }),
+    };
 
-    addItem(
-      {
-        id: `matt-original-${cartSizeId}-c${you}${together ? `p${partner}` : ""}`,
-        name: productName,
-        price: size.originalCents / 100,
-        image: "/images/product-original-hero-lifestyle.webp",
-        variant: configuratorCartVariant({
-          sizeId: cartSizeId,
-          sleeping,
-          bed: splitId ? "single" : bed,
-          you,
-          partner,
-          youLabel,
-          partnerLabel,
-          mindTheGap,
-        }),
-      },
-      splitId ? 2 : 1,
-    );
+    addItem(product, quantity);
+    trackAddedCartItems([{ ...product, quantity }], "configurator");
     openCart();
   }
 

@@ -1,10 +1,7 @@
 const FALLBACK_SITE_URL = "https://asleep.lt";
 
 export function getSiteUrl() {
-  const fromEnv =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    process.env.NEXT_PUBLIC_BASE_HOST ??
-    process.env.VERCEL_URL;
+  const fromEnv = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.VERCEL_URL;
 
   if (!fromEnv) {
     return FALLBACK_SITE_URL;
