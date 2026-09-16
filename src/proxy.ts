@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "@/i18n/routing";
+import { applyMetaFbcCookies } from "@/lib/tracking/meta-clicks";
 
 const handleI18nRouting = createMiddleware(routing);
 
@@ -17,7 +18,9 @@ export default function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  return handleI18nRouting(request);
+  // Set `_fbc` / `asleep_fbc` on the i18n response (including locale
+  // redirects) so Click ID survives before the Pixel or client JS runs.
+  return applyMetaFbcCookies(request, handleI18nRouting(request));
 }
 
 export const config = {

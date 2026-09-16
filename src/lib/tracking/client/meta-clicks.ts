@@ -1,10 +1,22 @@
+import {
+  ASLEEP_FBC_COOKIE,
+  ASLEEP_FBP_COOKIE,
+  cookieDomainAttribute,
+  META_CLICK_ID_MAX_AGE_SECONDS,
+  PIXEL_FBC_COOKIE,
+  PIXEL_FBP_COOKIE,
+  resolveMetaFbc,
+  resolveMetaFbp,
+} from "@/lib/tracking/meta-clicks";
+
+export {
+  cookieDomainAttribute,
+  resolveMetaFbc,
+  resolveMetaFbp,
+} from "@/lib/tracking/meta-clicks";
+
 const FBP_KEY = "asleep.tracking.fbp";
 const FBC_KEY = "asleep.tracking.fbc";
-const FBP_COOKIE = "asleep_fbp";
-const FBC_COOKIE = "asleep_fbc";
-const PIXEL_FBP = "_fbp";
-const PIXEL_FBC = "_fbc";
-const NINETY_DAYS_SECONDS = 60 * 60 * 24 * 90;
 
 export function persistMetaClickIds() {
   if (typeof window === "undefined") {
@@ -12,25 +24,25 @@ export function persistMetaClickIds() {
   }
 
   const fbc = resolveMetaFbc({
-    pixelFbc: readCookie(PIXEL_FBC),
-    storedFbc: readStoredValue(FBC_KEY, FBC_COOKIE),
+    pixelFbc: readCookie(PIXEL_FBC_COOKIE),
+    storedFbc: readStoredValue(FBC_KEY, ASLEEP_FBC_COOKIE),
     fbclid: fbclidFromLocation(),
   });
   const fbp = resolveMetaFbp({
-    pixelFbp: readCookie(PIXEL_FBP),
-    storedFbp: readStoredValue(FBP_KEY, FBP_COOKIE),
+    pixelFbp: readCookie(PIXEL_FBP_COOKIE),
+    storedFbp: readStoredValue(FBP_KEY, ASLEEP_FBP_COOKIE),
   });
 
   if (fbc) {
-    storeValue(FBC_KEY, FBC_COOKIE, fbc);
-    if (!readCookie(PIXEL_FBC)) {
-      writeCookie(PIXEL_FBC, fbc);
+    storeValue(FBC_KEY, ASLEEP_FBC_COOKIE, fbc);
+    if (readCookie(PIXEL_FBC_COOKIE) !== fbc) {
+      writeCookie(PIXEL_FBC_COOKIE, fbc);
     }
   }
   if (fbp) {
-    storeValue(FBP_KEY, FBP_COOKIE, fbp);
-    if (!readCookie(PIXEL_FBP)) {
-      writeCookie(PIXEL_FBP, fbp);
+    storeValue(FBP_KEY, ASLEEP_FBP_COOKIE, fbp);
+    if (readCookie(PIXEL_FBP_COOKIE) !== fbp) {
+      writeCookie(PIXEL_FBP_COOKIE, fbp);
     }
   }
 }
@@ -38,63 +50,13 @@ export function persistMetaClickIds() {
 export function getPersistedMetaClickIds() {
   persistMetaClickIds();
   return {
-    fbp: readCookie(PIXEL_FBP) ?? readStoredValue(FBP_KEY, FBP_COOKIE),
-    fbc: readCookie(PIXEL_FBC) ?? readStoredValue(FBC_KEY, FBC_COOKIE),
+    fbp:
+      readCookie(PIXEL_FBP_COOKIE) ??
+      readStoredValue(FBP_KEY, ASLEEP_FBP_COOKIE),
+    fbc:
+      readCookie(PIXEL_FBC_COOKIE) ??
+      readStoredValue(FBC_KEY, ASLEEP_FBC_COOKIE),
   };
-}
-
-export function resolveMetaFbc({
-  pixelFbc,
-  storedFbc,
-  fbclid,
-  now = Date.now(),
-}: {
-  pixelFbc?: string;
-  storedFbc?: string;
-  fbclid?: string;
-  now?: number;
-}) {
-  if (pixelFbc) {
-    return pixelFbc;
-  }
-  if (storedFbc && (!fbclid || clickIdFromFbc(storedFbc) === fbclid)) {
-    return storedFbc;
-  }
-  if (!fbclid) {
-    return storedFbc;
-  }
-  return `fb.1.${now}.${fbclid}`;
-}
-
-export function resolveMetaFbp({
-  pixelFbp,
-  storedFbp,
-  now = Date.now(),
-  randomId = createFbpRandomId(),
-}: {
-  pixelFbp?: string;
-  storedFbp?: string;
-  now?: number;
-  randomId?: string;
-}) {
-  if (pixelFbp) {
-    return pixelFbp;
-  }
-  if (storedFbp) {
-    return storedFbp;
-  }
-  return `fb.1.${now}.${randomId}`;
-}
-
-export function cookieDomainAttribute(hostname: string) {
-  const host = hostname.replace(/\.$/, "").toLowerCase();
-  if (host === "localhost" || host.endsWith(".localhost")) {
-    return "";
-  }
-  if (host === "asleep.lt" || host.endsWith(".asleep.lt")) {
-    return "; Domain=.asleep.lt";
-  }
-  return "";
 }
 
 function fbclidFromLocation() {
@@ -105,17 +67,6 @@ function fbclidFromLocation() {
   } catch {
     return undefined;
   }
-}
-
-function clickIdFromFbc(value: string) {
-  const parts = value.split(".");
-  return parts.length >= 4 ? parts.slice(3).join(".") : undefined;
-}
-
-function createFbpRandomId() {
-  const bytes = new Uint32Array(2);
-  crypto.getRandomValues(bytes);
-  return `${bytes[0]}${bytes[1]}`;
 }
 
 function readStoredValue(storageKey: string, cookieName: string) {
@@ -156,5 +107,5 @@ function readCookie(name: string) {
 function writeCookie(name: string, value: string) {
   const secure = window.location.protocol === "https:" ? "; Secure" : "";
   // biome-ignore lint/suspicious/noDocumentCookie: persist click IDs first-party
-  document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${NINETY_DAYS_SECONDS}; Path=/; SameSite=Lax${secure}${cookieDomainAttribute(window.location.hostname)}`;
+  document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${META_CLICK_ID_MAX_AGE_SECONDS}; Path=/; SameSite=Lax${secure}${cookieDomainAttribute(window.location.hostname)}`;
 }

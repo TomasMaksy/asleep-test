@@ -99,10 +99,14 @@ it as `transaction_id`. Purchase also includes
 - Browser events are not mirrored to PostHog server-side. That keeps the richer
   browser event and avoids replacing it with a thinner server duplicate.
 - `_fbp`, `_fbc`, and first-party `asleep_fbp` / `asleep_fbc` cookies, plus
-  the landing `fbclid`, are read by server routes. Checkout contact fields
-  are normalized to E.164 using the selected country and SHA-256 hashed
-  before Meta CAPI. Purchase also sends hashed email and phone to GA4 as
-  user-provided data (`gtag('set', 'user_data')` and Measurement Protocol
+  the landing `fbclid`, are read by server routes. On the first HTML
+  response with `?fbclid=`, `src/proxy.ts` sets `_fbc` and `asleep_fbc`
+  (90 days, `.asleep.lt`) before Pixel or client JS runs. The client still
+  reconciles click IDs after load and prefers a Pixel-written `_fbc` when
+  it matches the current `fbclid`. Checkout contact fields are normalized
+  to E.164 using the selected country and SHA-256 hashed before Meta CAPI.
+  Purchase also sends hashed email and phone to GA4 as user-provided data
+  (`gtag('set', 'user_data')` and Measurement Protocol
   `sha256_email_address` / `sha256_phone_number`). Phone is not sent to
   PostHog. PostHog person properties store email and name so a buyer profile
   can show the journey.

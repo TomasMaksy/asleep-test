@@ -61,6 +61,9 @@ export function quoteCart(
     }
     items.push(item);
     value += item.price * item.quantity;
+    if (!isMattressSizeId(item.size_id)) {
+      return undefined;
+    }
     const size = getMattressSize(item.size_id);
     compareValue += (mattressCompareCents(size) / 100) * item.quantity;
   }
@@ -116,7 +119,7 @@ export function cartLinePricing(
   quantity: number,
 ): CartLinePricing | undefined {
   const item = resolveCatalogItem(id, quantity);
-  if (!item) {
+  if (!item || !isMattressSizeId(item.size_id)) {
     return undefined;
   }
 
