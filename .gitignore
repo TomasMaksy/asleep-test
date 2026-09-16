@@ -23,6 +23,10 @@
 # misc
 .DS_Store
 *.pem
+.tmp/
+
+# Configurator videos live on CDN — keep local only (do not push)
+/public/configurator/
 
 # debug
 npm-debug.log*
@@ -39,3 +43,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local encode / media tooling (not needed on CI)
+/scripts/encode-configurator-videos.sh
+/scripts/encode-hevc-alpha.sh
+/scripts/fix-hevc-premultiply.sh
+/scripts/export-adjustable-frames.py
+/scripts/lift-layers-videos.py
+/scripts/encode-size-packshots.py
+/CONFIGURATOR_VIDEO_REVIEW.md

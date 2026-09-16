@@ -19,23 +19,29 @@ import { SaleBadge, SalePrice } from "@/components/product/sale-price";
 import { useRouter } from "@/i18n/navigation";
 import { useCartStore } from "@/lib/cart-store";
 import {
+  type BedKind,
   CONFIGURATOR_DEFAULT_SIZE_ID,
   configuratorCartVariant,
-  DEFAULT_FIRMNESS,
   DEFAULT_PREFERENCE,
   DEFAULT_WEIGHT_KG,
   type Firmness,
+  isMindTheGapTogether,
   MAX_TRANSITION_QUEUE,
   MAX_WEIGHT_KG,
   MIN_WEIGHT_KG,
-  recommendFirmness,
   type Sleeping,
   suggestedSingleSizeId,
+  TOGETHER_FIRMNESS_LEVELS,
   VIDEO_PLAYBACK_RATE,
   VIDEO_PLAYBACK_RATE_CATCHUP,
   VIDEO_PLAYBACK_RATE_FLUSH,
   VIDEO_PLAYBACK_RATE_QUEUED,
 } from "@/lib/configurator";
+import {
+  defaultVisualState,
+  resolveVisual,
+  videoMode,
+} from "@/lib/configurator-video-map";
 import {
   DOUBLE_MATTRESS_SIZES,
   formatMattPrice,
@@ -54,8 +60,9 @@ import { cn } from "@/lib/utils";
 type Step = 1 | 2 | 3 | 4 | 5;
 
 type QueuedTransition = {
-  from: Firmness;
-  to: Firmness;
+  from: number;
+  to: number;
+  clipBed: BedKind;
 };
 
 type Advice = {
@@ -81,6 +88,9 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
 
   const scale = t.raw("scale") as string[];
   const advice = t.raw("advice") as Advice[];
+  const togetherScale = [t("soft"), t("medium"), t("firm")];
+  /** Map Together 1/2/3 → Soft / Medium / Firm advice from the 6-level copy. */
+  const togetherAdviceIndex = [1, 2, 4] as const;
 
   const [step, setStep] = useState<Step>(1);
   const [sizeId, setSizeId] = useState<MattressSizeId>(
@@ -92,8 +102,8 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   const [partnerWeight, setPartnerWeight] = useState(DEFAULT_WEIGHT_KG);
   const [partnerPreference, setPartnerPreference] =
     useState(DEFAULT_PREFERENCE);
-  const [you, setYou] = useState<Firmness>(DEFAULT_FIRMNESS);
-  const [partner, setPartner] = useState<Firmness>(DEFAULT_FIRMNESS);
+  const [you, setYou] = useState<Firmness>(3);
+  const [partner, setPartner] = useState<Firmness>(3);
   const [mindTheGap, setMindTheGap] = useState(false);
   const [clip, setClip] = useState<ConfiguratorClip | null>(null);
   const [playbackRate, setPlaybackRate] = useState(VIDEO_PLAYBACK_RATE);
@@ -108,7 +118,8 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   const formInnerRef = useRef<HTMLDivElement>(null);
 
   const clipIdRef = useRef(0);
-  const shownYouRef = useRef<Firmness>(DEFAULT_FIRMNESS);
+  const shownStateRef = useRef(defaultVisualState("single"));
+  const clipBedRef = useRef<BedKind>("single");
   const queueRef = useRef<QueuedTransition[]>([]);
   const playingClipRef = useRef<ConfiguratorClip | null>(null);
   const pendingPackagingRef = useRef(false);
@@ -174,19 +185,23 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     if (key === "partnerPreference") setPartnerPreference(value);
   }
 
-  function currentRecommendation() {
-    return recommendFirmness({
+  function currentResolution() {
+    return resolveVisual({
       bed,
       sleeping,
-      ...profileRef.current,
+      profile: profileRef.current,
     });
   }
 
   function applyRecommendation() {
-    const next = currentRecommendation();
-    setYou(next.you);
-    setPartner(next.partner);
-    setMindTheGap(next.mindTheGap);
+    const next = currentResolution();
+    setYou(next.youLevel);
+    setPartner(next.partnerLevel);
+    setMindTheGap(
+      together
+        ? isMindTheGapTogether(next.youLevel, next.partnerLevel)
+        : false,
+    );
     return next;
   }
 
@@ -208,6 +223,9 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
 
   function playIntro(afterStep: Step) {
     clipIdRef.current += 1;
+    const mode = videoMode(bed, sleeping);
+    shownStateRef.current = defaultVisualState(mode);
+    clipBedRef.current = bed;
     const nextClip: ConfiguratorClip = {
       id: clipIdRef.current,
       kind: "intro",
@@ -235,12 +253,13 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     setStep(afterStep);
   }
 
-  function playTransition(from: Firmness, to: Firmness) {
+  function playTransition(from: number, to: number, clipBed: BedKind) {
     clipIdRef.current += 1;
     const nextClip: ConfiguratorClip = {
       id: clipIdRef.current,
       kind: "transition",
       bed,
+      clipBed,
       from,
       to,
     };
@@ -259,12 +278,9 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   }
 
   function startClosingThenPackaging() {
+    // Result step: close mattress, then package — no firmness transitions.
     pendingPackagingRef.current = true;
     setCatchingUp(false);
-    if (shownYouRef.current !== DEFAULT_FIRMNESS) {
-      playTransition(shownYouRef.current, DEFAULT_FIRMNESS);
-      return;
-    }
     playClose();
   }
 
@@ -295,22 +311,25 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     setClip(nextClip);
   }
 
-  function playHold(firmness: Firmness) {
+  function playHold(state: number, clipBed: BedKind) {
     pendingPackagingRef.current = false;
     catchupRef.current = false;
     clipIdRef.current += 1;
     setPlaybackRate(VIDEO_PLAYBACK_RATE);
+    const mode = videoMode(bed, sleeping);
     const nextClip: ConfiguratorClip = {
       id: clipIdRef.current,
       kind: "hold",
       bed,
-      firmness,
+      clipBed,
+      state,
+      defaultState: defaultVisualState(mode),
     };
     playingClipRef.current = nextClip;
     setClip(nextClip);
   }
 
-  function chainEnd(): Firmness {
+  function chainEnd(): number {
     const queued = queueRef.current;
     const lastQueued = queued[queued.length - 1];
     if (lastQueued) {
@@ -320,22 +339,23 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     if (playing?.kind === "transition") {
       return playing.to;
     }
-    return shownYouRef.current;
+    return shownStateRef.current;
   }
 
-  function enqueueFirmness(target: Firmness) {
+  function enqueueState(target: number, clipBed: BedKind) {
     if (!stageReady) {
       return;
     }
 
     const playing = playingClipRef.current;
     const transitionPlaying = playing?.kind === "transition";
+    clipBedRef.current = clipBed;
 
     if (!transitionPlaying && queueRef.current.length === 0) {
-      if (shownYouRef.current === target) {
+      if (shownStateRef.current === target) {
         return;
       }
-      playTransition(shownYouRef.current, target);
+      playTransition(shownStateRef.current, target, clipBed);
       return;
     }
 
@@ -346,12 +366,14 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
 
     setPlaybackRate(VIDEO_PLAYBACK_RATE_QUEUED);
 
-    const nextQueue = [...queueRef.current, { from, to: target }];
+    const nextQueue = [...queueRef.current, { from, to: target, clipBed }];
     if (nextQueue.length > MAX_TRANSITION_QUEUE) {
       const afterCurrent =
-        playing?.kind === "transition" ? playing.to : shownYouRef.current;
+        playing?.kind === "transition" ? playing.to : shownStateRef.current;
       queueRef.current =
-        afterCurrent === target ? [] : [{ from: afterCurrent, to: target }];
+        afterCurrent === target
+          ? []
+          : [{ from: afterCurrent, to: target, clipBed }];
       setCatchingUp(true);
       setPlaybackRate(
         catchupRef.current
@@ -367,7 +389,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   function commitProfiles(sleeper: 1 | 2) {
     setActiveSleeper(sleeper);
     const next = applyRecommendation();
-    enqueueFirmness(next.you);
+    enqueueState(next.state, next.clipBed);
   }
 
   function handleClipReady() {
@@ -387,7 +409,9 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     }
 
     if (played.kind === "intro") {
-      shownYouRef.current = DEFAULT_FIRMNESS;
+      const mode = videoMode(bed, sleeping);
+      shownStateRef.current = defaultVisualState(mode);
+      clipBedRef.current = bed;
       if (played.reverse) {
         queueRef.current = [];
         setCatchingUp(false);
@@ -402,19 +426,30 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
       }
       setStageReady(true);
       setActiveSleeper(1);
-      const next = currentRecommendation();
-      setYou(next.you);
-      setPartner(next.partner);
-      setMindTheGap(next.mindTheGap);
+      const next = currentResolution();
+      setYou(next.youLevel);
+      setPartner(next.partnerLevel);
+      setMindTheGap(
+        together
+          ? isMindTheGapTogether(next.youLevel, next.partnerLevel)
+          : false,
+      );
       if (pendingPackagingRef.current) {
         startClosingThenPackaging();
         return;
       }
-      if (next.you !== DEFAULT_FIRMNESS) {
-        queueRef.current = [{ from: DEFAULT_FIRMNESS, to: next.you }];
+      if (next.state !== shownStateRef.current) {
+        queueRef.current = [
+          {
+            from: shownStateRef.current,
+            to: next.state,
+            clipBed: next.clipBed,
+          },
+        ];
       }
     } else {
-      shownYouRef.current = played.to;
+      shownStateRef.current = played.to;
+      clipBedRef.current = played.clipBed;
     }
 
     const queued = queueRef.current;
@@ -424,7 +459,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
       if (!catchupRef.current && queueRef.current.length > 0) {
         setPlaybackRate(VIDEO_PLAYBACK_RATE_QUEUED);
       }
-      playTransition(next.from, next.to);
+      playTransition(next.from, next.to, next.clipBed);
       return;
     }
 
@@ -520,8 +555,10 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     if (step === 5) {
       const next = together && !isDesktop ? 4 : 3;
       setActiveSleeper(next === 4 ? 2 : 1);
-      shownYouRef.current = you;
-      playHold(you);
+      const resolution = currentResolution();
+      shownStateRef.current = resolution.state;
+      clipBedRef.current = resolution.clipBed;
+      playHold(resolution.state, resolution.clipBed);
       setStep(next);
       return;
     }
@@ -532,8 +569,8 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     const splitId = mindTheGap ? suggestedSingleSizeId(sizeId) : null;
     const cartSizeId = splitId ?? sizeId;
     const size = getMattressSize(cartSizeId);
-    const youLabel = scale[you - 1] ?? "";
-    const partnerLabel = scale[partner - 1] ?? "";
+    const youLabel = (together ? togetherScale : scale)[you - 1] ?? "";
+    const partnerLabel = (together ? togetherScale : scale)[partner - 1] ?? "";
     const quantity = splitId ? 2 : 1;
     const product = {
       id: `matt-original-${cartSizeId}-c${you}${together ? `p${partner}` : ""}`,
@@ -557,8 +594,14 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     openCart();
   }
 
-  const youAdvice = advice[you - 1];
-  const partnerAdvice = advice[partner - 1];
+  const youAdvice = together
+    ? advice[togetherAdviceIndex[you - 1] ?? 2]
+    : advice[you - 1];
+  const partnerAdvice = together
+    ? advice[togetherAdviceIndex[partner - 1] ?? 2]
+    : advice[partner - 1];
+  const overlayScale = together ? togetherScale : scale;
+  const overlayLevels = together ? TOGETHER_FIRMNESS_LEVELS : undefined;
   const sizeLabel = getMattressSize(sizeId).label;
   const resultSplitId = mindTheGap ? suggestedSingleSizeId(sizeId) : null;
   const resultSize = getMattressSize(resultSplitId ?? sizeId);
@@ -895,7 +938,8 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
           <ConfiguratorFirmnessScale
             active={you}
             dimmed={together && activeSleeper !== 1}
-            labels={scale}
+            labels={overlayScale}
+            levels={overlayLevels}
           />
         </div>
 
@@ -910,7 +954,8 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
           <ConfiguratorFirmnessScale
             active={partner}
             dimmed={activeSleeper !== 2}
-            labels={scale}
+            labels={overlayScale}
+            levels={overlayLevels}
             mirror
           />
         </div>

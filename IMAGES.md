@@ -34,7 +34,9 @@ Layer detail media sits in ~`aspect-video` panels (~400–700px CSS wide). Homep
 | `public/images/product-gallery/` | PDP media gallery (hero, lifestyle, sizes, add-ons) | Original product gallery / buy box |
 | `public/images/product-specs/` | Specs / firmness stills | Original PDP |
 | `public/images/product-difference/` | “Why asleep” loop videos | Home / difference section |
-| `public/images/configurator/` | Configurator visuals | `/configurator` |
+| `public/images/configurator/` | Configurator stills (if any) | `/configurator` |
+| `public/configurator/single/` | Single mattress stage videos (VP9 webm + HEVC mp4, ~1280×1520) | Configurator |
+| `public/configurator/double/` | Double mattress stage videos (VP9 webm + HEVC mp4, ~1280×1520) | Configurator |
 | `public/images/reviews/` | Review page media | `/reviews` |
 | `public/images/logo/`, `icons/`, `payments/`, `media/` | Chrome, icons, press logos | Global |
 

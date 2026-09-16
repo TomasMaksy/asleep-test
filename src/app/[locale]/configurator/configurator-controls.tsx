@@ -199,11 +199,13 @@ export function ConfiguratorFirmnessScale({
   active,
   dimmed,
   labels,
+  levels = FIRMNESS_LEVELS,
   mirror,
 }: {
   active: Firmness;
   dimmed?: boolean;
   labels: string[];
+  levels?: readonly Firmness[];
   mirror?: boolean;
 }) {
   return (
@@ -220,7 +222,7 @@ export function ConfiguratorFirmnessScale({
           mirror ? "right-[3px]" : "left-[3px]",
         )}
       />
-      {FIRMNESS_LEVELS.map((level, index) => {
+      {levels.map((level, index) => {
         const selected = active === level;
         const label = labels[index] ?? "";
         return (

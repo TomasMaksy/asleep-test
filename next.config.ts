@@ -18,6 +18,8 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   devIndicators: false,
   skipTrailingSlashRedirect: true,
+  // ngrok tunnels (HMR /_next/*); wildcard so rotating free subdomains work
+  allowedDevOrigins: ["*.ngrok-free.dev"],
   experimental: {
     globalNotFound: true,
   },

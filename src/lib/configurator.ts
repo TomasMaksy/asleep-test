@@ -10,6 +10,8 @@ export type Firmness = 1 | 2 | 3 | 4 | 5 | 6;
 export type Sleeping = "alone" | "together";
 
 export const FIRMNESS_LEVELS = [1, 2, 3, 4, 5, 6] as const;
+/** Double Together per docs: soft / medium / hard only. */
+export const TOGETHER_FIRMNESS_LEVELS = [1, 2, 3] as const;
 export const DEFAULT_FIRMNESS: Firmness = 3;
 export const DEFAULT_WEIGHT_KG = 75;
 export const DEFAULT_PREFERENCE = 35;
@@ -77,6 +79,11 @@ export function isMindTheGap(you: Firmness, partner: Firmness): boolean {
   );
 }
 
+/** Together 3×3: soft↔hard is too far for one double top layer. */
+export function isMindTheGapTogether(you: Firmness, partner: Firmness): boolean {
+  return Math.abs(you - partner) >= 2;
+}
+
 export function recommendFirmness(input: {
   bed: BedKind;
   sleeping: Sleeping;
@@ -102,22 +109,22 @@ export function introVideoSrc(bed: BedKind, reverse = false): string {
   if (bed === "single") {
     return transparentVideoSrc(
       reverse
-        ? "/configurator/Single/Configurator/MAT_Anim_Single_Opening_Reverse.webm"
-        : "/configurator/Single/Configurator/MAT_Anim_Single_Opening.webm",
+        ? "/configurator/single/MAT_Anim_Single_Opening_Reverse.webm"
+        : "/configurator/single/MAT_Anim_Single_Opening.webm",
     );
   }
   return transparentVideoSrc(
     reverse
-      ? "/configurator/Double/MAT_Anim_Double_Opening_Reverse.webm"
-      : "/configurator/Double/MAT_Anim_Double_Opening.webm",
+      ? "/configurator/double/MAT_Anim_Double_Opening_Reverse.webm"
+      : "/configurator/double/MAT_Anim_Double_Opening.webm",
   );
 }
 
 export function packagingVideoSrc(bed: BedKind): string {
   return transparentVideoSrc(
     bed === "single"
-      ? "/configurator/Single/Configurator/SCN_Single_Packaging.webm"
-      : "/configurator/Double/SCN_Double_Packaging.webm",
+      ? "/configurator/single/SCN_Single_Packaging.webm"
+      : "/configurator/double/SCN_Double_Packaging.webm",
   );
 }
 
@@ -129,15 +136,16 @@ export function holdVideoSrc(bed: BedKind, firmness: Firmness): string {
   return transitionVideoSrc(bed, from, firmness);
 }
 
+/** Visual mattress-state transition (doc SCN_*_{old}_{new}). */
 export function transitionVideoSrc(
   bed: BedKind,
-  from: Firmness,
-  to: Firmness,
+  from: number,
+  to: number,
 ): string {
   return transparentVideoSrc(
     bed === "single"
-      ? `/configurator/Single/Configurator/SCN_Single_${from}_${to}.webm`
-      : `/configurator/Double/SCN_Double_${from}_${to}.webm`,
+      ? `/configurator/single/SCN_Single_${from}_${to}.webm`
+      : `/configurator/double/SCN_Double_${from}_${to}.webm`,
   );
 }
 

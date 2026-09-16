@@ -5,9 +5,6 @@ import { asleepNavyPackagingFilterStyle } from "@/components/asleep-navy-filter"
 import { useAsleepNavyFilterStyle } from "@/components/asleep-navy-filter-style";
 import {
   type BedKind,
-  DEFAULT_FIRMNESS,
-  type Firmness,
-  holdVideoSrc,
   introVideoSrc,
   packagingVideoSrc,
   transitionVideoSrc,
@@ -24,11 +21,20 @@ export type ConfiguratorClip =
       id: number;
       kind: "transition";
       bed: BedKind;
-      from: Firmness;
-      to: Firmness;
+      /** Asset folder — Double (alone or together) uses Double SCN files. */
+      clipBed: BedKind;
+      from: number;
+      to: number;
     }
   | { id: number; kind: "packaging"; bed: BedKind }
-  | { id: number; kind: "hold"; bed: BedKind; firmness: Firmness };
+  | {
+      id: number;
+      kind: "hold";
+      bed: BedKind;
+      clipBed: BedKind;
+      state: number;
+      defaultState: number;
+    };
 
 type ConfiguratorVideosProps = {
   bed: BedKind;
@@ -59,9 +65,12 @@ function clipSrc(clip: ConfiguratorClip): string {
     return packagingVideoSrc(clip.bed);
   }
   if (clip.kind === "hold") {
-    return holdVideoSrc(clip.bed, clip.firmness);
+    if (clip.state === clip.defaultState) {
+      return introVideoSrc(clip.bed);
+    }
+    return transitionVideoSrc(clip.clipBed, clip.defaultState, clip.state);
   }
-  return transitionVideoSrc(clip.bed, clip.from, clip.to);
+  return transitionVideoSrc(clip.clipBed, clip.from, clip.to);
 }
 
 function frameKind(clip: ConfiguratorClip): ClipKind {
@@ -69,7 +78,7 @@ function frameKind(clip: ConfiguratorClip): ClipKind {
     return "packaging";
   }
   if (clip.kind === "hold") {
-    return clip.firmness === DEFAULT_FIRMNESS ? "intro" : "transition";
+    return clip.state === clip.defaultState ? "intro" : "transition";
   }
   return clip.kind;
 }
