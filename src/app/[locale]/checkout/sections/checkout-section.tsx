@@ -23,7 +23,7 @@ import { CheckoutPayment } from "@/app/[locale]/checkout/sections/checkout-payme
 import { CheckoutSummary } from "@/app/[locale]/checkout/sections/checkout-summary";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link, useRouter } from "@/i18n/navigation";
-import { selectCartSubtotal, useCartStore } from "@/lib/cart-store";
+import { useCartStore } from "@/lib/cart-store";
 import {
   type CheckoutCountryCode,
   checkoutConfig,
@@ -33,7 +33,6 @@ import type { CheckoutContact } from "@/lib/checkout-contact";
 import { storeCheckoutThanks } from "@/lib/checkout-contact";
 import {
   discountedCents,
-  discountedMoney,
   useCheckoutDiscountStore,
 } from "@/lib/checkout-discount";
 import {
@@ -46,6 +45,7 @@ import {
   PaymentValidationError,
   validatePaymentElement,
 } from "@/lib/checkout-stripe-flow";
+import { quoteCart } from "@/lib/product-catalog";
 import { dispatchAcceptedPurchase } from "@/lib/tracking/client/dispatcher";
 import {
   createPurchaseTrackingEvent,
@@ -79,17 +79,20 @@ const FIELD_ORDER = [
 
 export function CheckoutSection() {
   const items = useCartStore((state) => state.items);
+  const applied = useCheckoutDiscountStore((state) => state.applied);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     setReady(true);
   }, []);
 
-  const productCents = items.reduce(
-    (sum, item) => sum + Math.round(item.price * 100) * item.quantity,
-    0,
+  const quotedSale = quoteCart(
+    items.map((item) => ({ id: item.id, quantity: item.quantity })),
   );
-  const applied = useCheckoutDiscountStore((state) => state.applied);
+  const productCents = Math.max(
+    quotedSale ? Math.round(quotedSale.value * 100) : 50,
+    50,
+  );
   const payableCents = Math.max(discountedCents(productCents, applied), 50);
 
   const themeStyle = useMemo(
@@ -397,10 +400,11 @@ function CheckoutForm({
       purchaseInFlight.current = true;
 
       try {
-        const value = discountedMoney(
-          selectCartSubtotal(items),
+        const quoted = quoteCart(
+          items.map((item) => ({ id: item.id, quantity: item.quantity })),
           appliedDiscount,
         );
+        const value = quoted?.value ?? 0;
         if (!purchaseEvent.current) {
           try {
             purchaseEvent.current = await createPurchaseTrackingEvent({
@@ -605,12 +609,19 @@ function CheckoutForm({
                 <CheckoutExpress
                   amountCents={amountCents}
                   lineItems={[
-                    ...items.map((item) => ({
-                      name: item.variant
-                        ? `${item.name} (${item.variant})`
-                        : item.name,
-                      amount: Math.round(item.price * 100) * item.quantity,
-                    })),
+                    ...items.map((item) => {
+                      const line = quoteCart([
+                        { id: item.id, quantity: item.quantity },
+                      ]);
+                      return {
+                        name: item.variant
+                          ? `${item.name} (${item.variant})`
+                          : item.name,
+                        amount: Math.round(
+                          (line?.value ?? item.price * item.quantity) * 100,
+                        ),
+                      };
+                    }),
                     {
                       name: t("summary.shipping"),
                       amount: 0,

@@ -90,7 +90,8 @@
     "total": "Total",
     "taxIncluded": "Including {amount} VAT",
     "currency": "EUR",
-    "inStock": "In stock, 5–8 business days delivery"
+    "inStock": "In stock, 5–8 business days delivery",
+    "saveAmount": "save {amount}"
   },
   "closed": {
     "title": "We're not accepting new orders yet",

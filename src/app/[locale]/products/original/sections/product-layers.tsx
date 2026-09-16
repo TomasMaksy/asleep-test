@@ -45,44 +45,44 @@ type Slice = {
 const SLICES: Slice[] = [
   {
     id: "tencel",
-    src: "/images/product-layers/laag1.webp",
+    src: "/images/product-layers/slice-tencel.webp",
     width: 2300,
     height: 210,
     hotspotX: "20%",
   },
   {
     id: "memoryFoam",
-    src: "/images/product-layers/laag3.webp",
+    src: "/images/product-layers/slice-memory-foam.webp",
     width: 2300,
     height: 130,
     hotspotX: "12%",
   },
   {
     id: "hypersupport",
-    src: "/images/product-layers/laag2.webp",
+    src: "/images/product-layers/slice-hypersupport.webp",
     width: 2300,
     height: 130,
     hotspotX: "30%",
   },
   {
     id: "coldFoamSoft",
-    src: "/images/product-layers/laag4.webp",
+    src: "/images/product-layers/slice-cold-foam-soft.webp",
     width: 2300,
     height: 175,
     hotspotX: "30%",
   },
   {
     id: "coldFoamFirm",
-    src: "/images/product-layers/laag5.webp",
+    src: "/images/product-layers/slice-cold-foam-firm.webp",
     width: 2300,
     height: 160,
     hotspotX: "20%",
   },
   {
     id: "nonSlip",
-    src: "/images/product-layers/laag6.webp",
-    width: 2300,
-    height: 290,
+    src: "/images/product-layers/slice-non-slip.webp",
+    width: 1600,
+    height: 202,
     hotspotX: "10%",
     hotspotTop: "92%",
   },
@@ -121,8 +121,8 @@ const MEDIA: Record<
   memoryFoam: layerVideo("memory-foam"),
   coldFoamSoft: layerVideo("cold-foam-soft"),
   coldFoamFirm: layerVideo("cold-foam-firm"),
-  nonSlip: { type: "image", src: "/images/product-layers/non-slip.jpg" },
-  cover: { type: "image", src: "/images/product-layers/cover.jpg" },
+  nonSlip: { type: "image", src: "/images/product-layers/non-slip.webp" },
+  cover: { type: "image", src: "/images/product-layers/cover-corner.webp" },
 };
 
 const SLICE_MID = (SLICES.length - 1) / 2;
@@ -316,9 +316,9 @@ function LayerMedia({
         <Image
           alt={item.mediaAlt}
           className="h-full w-full object-cover"
-          height={352}
+          height={media.src.includes("cover-corner") ? 599 : 352}
           src={media.src}
-          width={710}
+          width={media.src.includes("cover-corner") ? 1000 : 710}
         />
       )}
     </div>
@@ -970,7 +970,7 @@ export function ProductLayers({
                         className="pointer-events-none absolute top-[125%] left-0 z-0 h-auto w-full"
                         height={255}
                         loading="lazy"
-                        src="/images/product-layers/laag7.webp"
+                        src="/images/product-layers/slice-stack-base.webp"
                         width={2300}
                       />
                     ) : null}

@@ -1,16 +1,16 @@
 "use client";
 
+import { Check } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useState } from "react";
 import { ChevronIcon } from "@/app/[locale]/checkout/sections/checkout-icons";
-import { selectCartSubtotal, useCartStore } from "@/lib/cart-store";
+import { SaleBadge } from "@/components/product/sale-price";
+import { useCartStore } from "@/lib/cart-store";
 import { checkoutConfig, formatCheckoutMoney } from "@/lib/checkout-config";
-import {
-  discountedMoney,
-  useCheckoutDiscountStore,
-} from "@/lib/checkout-discount";
+import { useCheckoutDiscountStore } from "@/lib/checkout-discount";
 import { readCheckoutDraft, writeCheckoutDraft } from "@/lib/checkout-draft";
+import { quoteCart } from "@/lib/product-catalog";
 import { cn } from "@/lib/utils";
 import styles from "./checkout.module.css";
 
@@ -21,9 +21,13 @@ export function CheckoutSummary() {
   const items = useCartStore((state) => state.items);
   const applied = useCheckoutDiscountStore((state) => state.applied);
   const applyDiscountCode = useCheckoutDiscountStore((state) => state.apply);
-  const subtotal = selectCartSubtotal(items);
-  const discount = subtotal - discountedMoney(subtotal, applied);
-  const total = subtotal - discount;
+  const quoted = quoteCart(
+    items.map((item) => ({ id: item.id, quantity: item.quantity })),
+    applied,
+  );
+  const compareTotal = quoted?.compareValue ?? 0;
+  const discount = quoted?.discountValue ?? 0;
+  const total = quoted?.value ?? 0;
   const taxAmount = checkoutConfig.taxIncluded
     ? total - total / (1 + checkoutConfig.taxRate)
     : 0;
@@ -58,6 +62,7 @@ export function CheckoutSummary() {
                   alt=""
                   className="object-cover"
                   fill
+                  quality={90}
                   sizes="96px"
                   src={item.image}
                 />
@@ -79,9 +84,12 @@ export function CheckoutSummary() {
                   {t("inStock")}
                 </p>
               </div>
-              <p className="shrink-0 font-medium">
-                {formatCheckoutMoney(item.price * item.quantity)}
-              </p>
+              <CheckoutLinePrice
+                coupon={applied}
+                fallback={item.price * item.quantity}
+                id={item.id}
+                quantity={item.quantity}
+              />
             </div>
           </li>
         ))}
@@ -125,7 +133,7 @@ export function CheckoutSummary() {
       <dl className="mt-5 flex flex-col gap-2 text-[14px]">
         <div className="flex items-center justify-between">
           <dt>{t("subtotal")}</dt>
-          <dd>{formatCheckoutMoney(subtotal)}</dd>
+          <dd>{formatCheckoutMoney(compareTotal)}</dd>
         </div>
         <div className="flex items-center justify-between">
           <dt>{t("shipping")}</dt>
@@ -197,23 +205,49 @@ export function CheckoutSummary() {
   );
 }
 
+function CheckoutLinePrice({
+  coupon,
+  fallback,
+  id,
+  quantity,
+}: {
+  coupon?: string;
+  fallback: number;
+  id: string;
+  quantity: number;
+}) {
+  const t = useTranslations("checkoutPage.summary");
+  const line = quoteCart([{ id, quantity }], coupon);
+  const sale = line?.value ?? fallback;
+  const compare = line?.compareValue ?? sale;
+  const save = line?.discountValue ?? 0;
+
+  return (
+    <div className="shrink-0 text-right">
+      {save > 0 ? (
+        <p
+          aria-hidden="true"
+          className="text-[13px] text-copy-muted line-through"
+        >
+          {formatCheckoutMoney(compare)}
+        </p>
+      ) : null}
+      <p className="font-medium">{formatCheckoutMoney(sale)}</p>
+      {save > 0 ? (
+        <p className="mt-1">
+          <SaleBadge>
+            {t("saveAmount", { amount: formatCheckoutMoney(save) })}
+          </SaleBadge>
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 function StockCheckIcon() {
   return (
     <span className="inline-flex size-4 shrink-0 items-center justify-center rounded-full bg-brand text-white">
-      <svg
-        aria-hidden="true"
-        className="size-2.5"
-        fill="none"
-        viewBox="0 0 12 10"
-      >
-        <path
-          d="M1 5.5 4.5 9 11 1"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.75"
-        />
-      </svg>
+      <Check className="size-2.5" strokeWidth={2.5} />
     </span>
   );
 }

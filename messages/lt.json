@@ -24,6 +24,10 @@
     "continue": "Tęsti apsipirkimą",
     "checkout": "Apmokėti",
     "subtotal": "Suma",
+    "discount": "Nuolaida",
+    "delivery": "Pristatymas",
+    "deliveryFree": "Nemokamai",
+    "total": "Iš viso",
     "remove": "Pašalinti",
     "quantity": "Kiekis",
     "open": "Atidaryti krepšelį",
@@ -57,7 +61,7 @@
         "title": "Produktai",
         "links": [
           { "label": "Original čiužinys", "href": "/products/original" },
-          { "label": "Konfiguratorius", "href": "/configurator" }
+          { "label": "Sukurti savo čiužinį", "href": "/configurator" }
         ]
       }
     ]

@@ -3,6 +3,8 @@ import {
   getMattressSize,
   MATTRESS_SIZES,
   type MattressSizeId,
+  mattressCompareCents,
+  mattressSaleCents,
 } from "@/lib/product-original-sizes";
 import type { TrackingItem } from "@/lib/tracking/events";
 
@@ -19,8 +21,21 @@ export type CartSelection = {
 export type QuotedCart = {
   items: TrackingItem[];
   value: number;
+  compareValue: number;
+  discountValue: number;
   coupon?: string;
 };
+
+export type CartLinePricing = {
+  sale: number;
+  compare: number;
+  save: number;
+  onSale: boolean;
+};
+
+function roundMoney(value: number) {
+  return Math.round(value * 100) / 100;
+}
 
 export function quoteCart(
   selections: CartSelection[],
@@ -33,6 +48,7 @@ export function quoteCart(
   const acceptedCoupon = acceptedDiscountCode(coupon);
   const items: TrackingItem[] = [];
   let value = 0;
+  let compareValue = 0;
 
   for (const selection of selections) {
     const item = resolveCatalogItem(
@@ -45,11 +61,18 @@ export function quoteCart(
     }
     items.push(item);
     value += item.price * item.quantity;
+    const size = getMattressSize(item.size_id);
+    compareValue += (mattressCompareCents(size) / 100) * item.quantity;
   }
+
+  const roundedValue = roundMoney(value);
+  const roundedCompare = roundMoney(compareValue);
 
   return {
     items,
-    value: Math.round(value * 100) / 100,
+    value: roundedValue,
+    compareValue: roundedCompare,
+    discountValue: roundMoney(roundedCompare - roundedValue),
     coupon: acceptedCoupon,
   };
 }
@@ -71,10 +94,10 @@ export function resolveCatalogItem(
   }
 
   const size = getMattressSize(sizeId);
-  const unitCents = coupon
-    ? discountedCents(size.originalCents, coupon)
-    : size.originalCents;
-  const discountCents = size.originalCents - unitCents;
+  const compareCents = mattressCompareCents(size);
+  const saleCents = mattressSaleCents(size);
+  const unitCents = coupon ? discountedCents(saleCents, coupon) : saleCents;
+  const discountCents = compareCents - unitCents;
   const price = unitCents / 100;
 
   return {
@@ -85,6 +108,27 @@ export function resolveCatalogItem(
     price,
     quantity: qty,
     ...(discountCents > 0 ? { discount: discountCents / 100 } : {}),
+  };
+}
+
+export function cartLinePricing(
+  id: string,
+  quantity: number,
+): CartLinePricing | undefined {
+  const item = resolveCatalogItem(id, quantity);
+  if (!item) {
+    return undefined;
+  }
+
+  const size = getMattressSize(item.size_id);
+  const compare = roundMoney((mattressCompareCents(size) / 100) * quantity);
+  const sale = roundMoney(item.price * item.quantity);
+
+  return {
+    sale,
+    compare,
+    save: roundMoney(compare - sale),
+    onSale: sale < compare,
   };
 }
 

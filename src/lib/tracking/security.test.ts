@@ -63,8 +63,11 @@ describe("catalog quotes", () => {
       [{ id: "matt-original-80x190", quantity: 1 }],
       undefined,
     );
-    expect(quoted?.value).toBe(748);
-    expect(quoted?.items[0]?.price).toBe(748);
+    expect(quoted?.value).toBe(411.4);
+    expect(quoted?.items[0]?.price).toBe(411.4);
+    expect(quoted?.items[0]?.discount).toBe(336.6);
+    expect(quoted?.compareValue).toBe(748);
+    expect(quoted?.discountValue).toBe(336.6);
     expect(quoted?.items[0]?.size_id).toBe("80x190");
     expect(quoted?.items[0]?.item_id).toBe("matt-original-80x190");
   });
@@ -86,9 +89,9 @@ describe("catalog quotes", () => {
       "LUCKY99",
     );
     expect(quoted?.coupon).toBe("LUCKY99");
-    expect(quoted?.items[0]?.price).toBe(0.75);
-    expect(quoted?.items[0]?.discount).toBe(747.25);
-    expect(quoted?.value).toBe(0.75);
+    expect(quoted?.items[0]?.price).toBe(0.41);
+    expect(quoted?.items[0]?.discount).toBe(747.59);
+    expect(quoted?.value).toBe(0.41);
     expect(
       quoted?.items.reduce(
         (total, item) => total + item.price * item.quantity,

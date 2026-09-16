@@ -6,12 +6,12 @@ import { staticImageUrl } from "@/lib/static-image-url";
 
 const HERO_TYPE: Record<Locale, { desktop: string; mobile: string }> = {
   en: {
-    desktop: "top-[23.4%] w-[54%] text-[7.4cqw]",
-    mobile: "top-[29.8%] w-[94%] text-[14cqw]",
+    desktop: "top-[21.4%] w-[54%] text-[7.4cqw]",
+    mobile: "top-[27.8%] w-[94%] text-[14cqw]",
   },
   lt: {
-    desktop: "top-[23.4%] w-[60%] text-[7.4cqw]",
-    mobile: "top-[29.8%] w-[98%] text-[12.5cqw]",
+    desktop: "top-[21.4%] w-[60%] text-[7.4cqw]",
+    mobile: "top-[27.8%] w-[98%] text-[12.5cqw]",
   },
 };
 

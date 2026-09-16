@@ -41,25 +41,31 @@ All ads-funnel events contain:
 
 Ecommerce events add `currency`, `value`, and GA4-compatible `items`. Each
 item uses the size SKU (`matt-original-160x200`), not a configurator suffix.
-`item_variant` is the size label only. `size_id` is `160x200`.
+`item_variant` is the size label only. `size_id` is `160x200`. Catalog `price`
+and event `value` are the current 45% sale amount the customer pays
+(`plusCents`), not the struck-through list price. `discount` is list minus
+that selling price, plus any extra checkout code.
 
 ```json
 {
   "currency": "EUR",
-  "value": 0.75,
+  "value": 411.4,
   "items": [
     {
       "item_id": "matt-original-80x190",
       "item_name": "asleep Original",
       "item_variant": "80 x 190 cm",
       "size_id": "80x190",
-      "price": 0.75,
-      "discount": 747.25,
+      "price": 411.4,
+      "discount": 336.6,
       "quantity": 1
     }
   ]
 }
 ```
+
+An extra checkout code such as `LUCKY99` is applied on top of the sale
+(`price` 0.41, `discount` 747.59 for 80x190).
 
 PostHog also gets top-level `size_id` (when the cart is one size), `size_ids`,
 and `item_ids` so Insights can break down without opening the nested `items`

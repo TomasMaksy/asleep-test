@@ -106,7 +106,6 @@ function checkoutCartSignature(items: TrackingItem[]) {
 
 export async function createPurchaseTrackingEvent({
   items,
-  value,
   coupon,
   paymentMethod,
 }: {
@@ -131,7 +130,7 @@ export async function createPurchaseTrackingEvent({
       currency: "EUR",
       items: tracked,
       payment_method: paymentMethod,
-      value,
+      value: trackingItemsValue(tracked),
     },
     { source: "checkout_page", google },
   );

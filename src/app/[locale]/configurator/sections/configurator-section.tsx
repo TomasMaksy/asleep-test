@@ -15,6 +15,7 @@ import {
   type ConfiguratorClip,
   ConfiguratorVideos,
 } from "@/app/[locale]/configurator/configurator-videos";
+import { SaleBadge, SalePrice } from "@/components/product/sale-price";
 import { useRouter } from "@/i18n/navigation";
 import { useCartStore } from "@/lib/cart-store";
 import {
@@ -37,9 +38,13 @@ import {
 } from "@/lib/configurator";
 import {
   DOUBLE_MATTRESS_SIZES,
+  formatMattPrice,
   getMattressSize,
   isDoubleMattressSize,
   type MattressSizeId,
+  mattressCompareCents,
+  mattressSaleCents,
+  mattressSaveCents,
   SINGLE_MATTRESS_SIZES,
 } from "@/lib/product-original-sizes";
 import { trackConfiguratorFinished } from "@/lib/tracking/client/configurator";
@@ -66,7 +71,8 @@ type ConfiguratorSectionProps = {
 
 export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   const t = useTranslations("configuratorPage");
-  const productName = useTranslations("productOriginal.hero")("subtitle");
+  const tHero = useTranslations("productOriginal.hero");
+  const productName = tHero("subtitle");
   const router = useRouter();
   const reduceMotion = useReducedMotion() ?? false;
   const addItem = useCartStore((state) => state.addItem);
@@ -532,7 +538,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     const product = {
       id: `matt-original-${cartSizeId}-c${you}${together ? `p${partner}` : ""}`,
       name: productName,
-      price: size.originalCents / 100,
+      price: size.plusCents / 100,
       image: "/images/product-original-hero-lifestyle.webp",
       variant: configuratorCartVariant({
         sizeId: cartSizeId,
@@ -554,6 +560,12 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   const youAdvice = advice[you - 1];
   const partnerAdvice = advice[partner - 1];
   const sizeLabel = getMattressSize(sizeId).label;
+  const resultSplitId = mindTheGap ? suggestedSingleSizeId(sizeId) : null;
+  const resultSize = getMattressSize(resultSplitId ?? sizeId);
+  const resultQuantity = resultSplitId ? 2 : 1;
+  const resultSaleCents = mattressSaleCents(resultSize) * resultQuantity;
+  const resultCompareCents = mattressCompareCents(resultSize) * resultQuantity;
+  const resultSaveCents = mattressSaveCents(resultSize) * resultQuantity;
   const backLabel =
     step === 1 || step === 5 ? t("goBack") : t("previousQuestion");
 
@@ -748,6 +760,42 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
                       : t("resultMatch")
                     : t("resultSolo")}
                 </p>
+
+                <div className="mt-6 rounded-xl border border-brand-dark/10 p-4">
+                  <p className="mb-3 font-bold text-brand-dark text-sm">
+                    {t("yourMattress")}
+                  </p>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <p className="font-bold text-brand-dark text-sm">
+                        {t("resultProduct")}
+                      </p>
+                      <p className="pt-0.5 text-brand-dark/55 text-sm">
+                        {resultSize.label}
+                        {resultQuantity > 1 ? ` × ${resultQuantity}` : ""}
+                      </p>
+                      <p className="pt-1 text-brand-dark/55 text-sm leading-snug">
+                        {tHero("variants.original.description")}
+                      </p>
+                    </div>
+                    <div className="shrink-0 text-right">
+                      <SalePrice
+                        className="flex-col items-end gap-0.5"
+                        compareCents={resultCompareCents}
+                        saleCents={resultSaleCents}
+                      />
+                      {resultSaveCents > 0 ? (
+                        <p className="mt-2">
+                          <SaleBadge>
+                            {t("saveAmount", {
+                              amount: formatMattPrice(resultSaveCents),
+                            })}
+                          </SaleBadge>
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
 
                 <ResultBlock
                   advice={youAdvice}

@@ -1,0 +1,15 @@
+---
+description: Image/media naming and folder conventions under public/images
+alwaysApply: true
+---
+
+# Images & media
+
+Full catalog: `IMAGES.md`.
+
+- Put assets under the matching `public/images/…` folder (see `IMAGES.md`).
+- Names are descriptive kebab-case: `{surface}-{subject}[-{variant}].{ext}`.
+- **Never** commit or copy files named like `Codex Image…`, timestamps, or opaque dumps (`laag1.webp`, `IMG_0234`).
+- Prefer webp for stills; keep webm + HEVC mp4 pairs for transparent video.
+- When replacing an in-use file, bump `STATIC_IMAGE_CACHE_VERSION` if consumers use `staticImageUrl`, or rename the file to bust `next/image` cache.
+- After adding or renaming media, update the matching row in `IMAGES.md`.

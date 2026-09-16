@@ -1,9 +1,10 @@
-import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { ConfiguratorLink } from "@/components/configurator/configurator-link";
 import { ProductsParallax } from "@/components/effects/products-parallax";
+import { ProductUnpackVideo } from "@/components/product/product-unpack-video";
 import { CheckItem } from "@/components/ui/check-item";
 import { Link } from "@/i18n/navigation";
+import { staticImageUrl } from "@/lib/static-image-url";
 import { cn } from "@/lib/utils";
 
 type ProductItem = {
@@ -35,7 +36,7 @@ export async function ProductsSection() {
         </div>
 
         <div className="mt-16 md:mt-28">
-          <div className="flex flex-col items-center md:gap-11 lg:flex-row">
+          <div className="flex flex-col items-center md:gap-11 lg:flex-row lg:items-start">
             {items.map((product) => {
               const isOriginal = product.variant === "dark";
 
@@ -48,13 +49,13 @@ export async function ProductsSection() {
                   <div className="flex w-full grow flex-col gap-y-11">
                     <article
                       className={cn(
-                        "relative mb-8 flex h-full w-full grow items-center rounded-[40px] p-12 pt-0! text-left md:min-h-[700px] md:p-16 md:pt-0!",
+                        "relative mb-8 flex h-full w-full grow flex-col rounded-[40px] p-12 pt-0! text-left md:p-16 md:pt-0!",
                         isOriginal
-                          ? "bg-highlight-light text-white"
-                          : "flex-row-reverse justify-end bg-highlight-default text-brand-dark md:min-h-[744px] md:justify-between md:pr-0!",
+                          ? "overflow-hidden bg-highlight-light pb-10 text-white md:min-h-[620px] md:pb-12"
+                          : "overflow-hidden bg-highlight-default text-brand-dark md:min-h-[660px] md:pr-0!",
                       )}
                     >
-                      <div className="w-full">
+                      <div className="flex w-full flex-1 flex-col">
                         <div
                           className={cn(
                             "flex justify-between gap-2",
@@ -66,7 +67,12 @@ export async function ProductsSection() {
                           </h3>
                         </div>
 
-                        <div className="mt-4 flex flex-col gap-y-6 text-base leading-snug">
+                        <div
+                          className={cn(
+                            "mt-4 flex flex-col text-base leading-snug",
+                            isOriginal ? "gap-y-5" : "gap-y-6",
+                          )}
+                        >
                           {product.features.map((feature) => (
                             <CheckItem
                               className={
@@ -84,31 +90,50 @@ export async function ProductsSection() {
 
                         <div
                           className={cn(
-                            "relative mb-10 max-w-[80%]",
+                            "relative",
                             isOriginal
-                              ? "left-[-48px] md:left-[-64px]"
-                              : "right-[-48px] ml-auto flex justify-end md:right-0",
+                              ? "-ml-12 mt-8 mb-6 w-[calc(85%+3rem)] max-w-[460px] md:-ml-16 md:mt-8 md:mb-8 md:w-[calc(80%+4rem)] md:max-w-[500px]"
+                              : "-mr-12 mb-10 ml-auto mt-10 w-[calc(95%+3rem)] max-w-[520px] md:-mr-16 md:mt-12 md:mb-14 md:w-[calc(90%+4rem)] md:max-w-[580px]",
                           )}
                         >
-                          <Image
-                            alt={product.imageAlt}
-                            className="h-auto w-full"
-                            height={525}
-                            sizes="(max-width: 1024px) 80vw, 40vw"
-                            src={product.image}
-                            width={800}
-                          />
+                          {isOriginal ? (
+                            <div className="relative">
+                              <div
+                                aria-hidden
+                                className="pointer-events-none absolute inset-x-0 bottom-[-2%] h-[28%] rounded-[100%] bg-[radial-gradient(ellipse_at_center,rgba(10,24,56,0.45)_0%,rgba(10,24,56,0.18)_42%,transparent_70%)] blur-md"
+                              />
+                              <div className="relative z-10 [filter:drop-shadow(0_16px_18px_rgba(10,24,56,0.35))_drop-shadow(0_5px_8px_rgba(10,24,56,0.22))]">
+                                <ProductUnpackVideo alt={product.imageAlt} />
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="relative">
+                              <div
+                                aria-hidden
+                                className="pointer-events-none absolute inset-x-0 bottom-[0%] h-[26%] rounded-[100%] bg-[radial-gradient(ellipse_at_center,rgba(26,40,60,0.28)_0%,rgba(26,40,60,0.1)_45%,transparent_72%)] blur-md"
+                              />
+                              {/* biome-ignore lint/performance/noImgElement: next/image flattens WebP alpha onto black */}
+                              <img
+                                alt={product.imageAlt}
+                                className="relative z-10 h-auto w-full object-contain object-right [filter:drop-shadow(0_14px_16px_rgba(26,40,60,0.16))_drop-shadow(0_4px_6px_rgba(26,40,60,0.1))]"
+                                decoding="async"
+                                height={449}
+                                src={staticImageUrl(product.image)}
+                                width={1217}
+                              />
+                            </div>
+                          )}
                         </div>
 
                         {isOriginal ? (
                           <Link
-                            className="relative z-10 inline-flex h-10 shrink-0 items-center justify-center rounded-full bg-white px-6 font-sans text-[#1A478A] text-[0.875rem] leading-[1.8] tracking-normal transition-colors duration-300 hover:bg-brand-muted"
+                            className="relative z-10 mt-auto inline-flex h-10 w-fit shrink-0 items-center justify-center self-start rounded-full bg-white px-6 font-sans text-[#1A478A] text-[0.875rem] leading-[1.8] tracking-normal transition-colors duration-300 hover:bg-brand-muted"
                             href="/products/original"
                           >
                             {product.cta}
                           </Link>
                         ) : (
-                          <ConfiguratorLink className="relative z-10 inline-flex h-10 shrink-0 items-center justify-center rounded-full bg-white px-6 font-sans text-[#1A478A] text-[0.875rem] leading-[1.8] tracking-normal transition-colors duration-300 hover:bg-brand-muted">
+                          <ConfiguratorLink className="relative z-10 mt-auto inline-flex h-10 w-fit shrink-0 items-center justify-center self-start rounded-full bg-white px-6 font-sans text-[#1A478A] text-[0.875rem] leading-[1.8] tracking-normal transition-colors duration-300 hover:bg-brand-muted">
                             {product.cta}
                           </ConfiguratorLink>
                         )}

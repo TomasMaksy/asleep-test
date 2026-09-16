@@ -8,6 +8,8 @@ Working on headlines, CTAs, FAQs, or reviews? You only need the JSON files under
 
 **Read [COPY.md](./COPY.md) first.** It maps every file to a page, lists the rules (same keys in LT and EN, placeholders, what not to touch), and the leftover lorem / “Matt” checklist.
 
+Working on photos, packshots, or layer media? **Read [IMAGES.md](./IMAGES.md)** — folder map, naming rules, and which file feeds which UI.
+
 ```bash
 bun run i18n:check
 ```

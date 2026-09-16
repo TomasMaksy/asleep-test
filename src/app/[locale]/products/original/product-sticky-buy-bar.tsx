@@ -1,10 +1,11 @@
 "use client";
 
+import { ChevronRight } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { formatMattPrice } from "@/lib/product-original-sizes";
+import { SalePrice } from "@/components/product/sale-price";
 import { staticImageUrl } from "@/lib/static-image-url";
 import { cn } from "@/lib/utils";
 
@@ -20,28 +21,11 @@ type ProductStickyBuyBarProps = {
   sizeLabel: string;
   packshotSrc: string;
   activeCents: number;
+  compareCents: number;
+  saveBadge: string;
   onOpenSize: () => void;
   onAddToCart: () => void;
 };
-
-function ChevronRightIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      className="size-5 text-brand-dark"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <path
-        d="M9 6L15 12L9 18"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  );
-}
 
 export function ProductStickyBuyBar({
   observeId,
@@ -49,6 +33,8 @@ export function ProductStickyBuyBar({
   sizeLabel,
   packshotSrc,
   activeCents,
+  compareCents,
+  saveBadge,
   onOpenSize,
   onAddToCart,
 }: ProductStickyBuyBarProps) {
@@ -68,7 +54,9 @@ export function ProductStickyBuyBar({
       frame = 0;
       const header = document.getElementById("site-header");
       const headerBottom = header?.getBoundingClientRect().bottom ?? 80;
-      setVisible(target.getBoundingClientRect().top <= headerBottom + 1);
+      // Show once the buy box has scrolled under the header — not after the
+      // next full-viewport sticky section has already taken over the screen.
+      setVisible(target.getBoundingClientRect().bottom <= headerBottom + 1);
     };
 
     const schedule = () => {
@@ -113,6 +101,7 @@ export function ProductStickyBuyBar({
                     alt=""
                     className="object-cover"
                     fill
+                    quality={90}
                     sizes="48px"
                     src={staticImageUrl(packshotSrc)}
                   />
@@ -128,19 +117,19 @@ export function ProductStickyBuyBar({
                 type="button"
               >
                 <span className="whitespace-nowrap">{sizeLabel}</span>
-                <ChevronRightIcon />
+                <ChevronRight
+                  className="size-5 text-brand-dark"
+                  strokeWidth={1.5}
+                />
               </button>
 
               <div className="ml-auto flex min-w-0 items-center gap-3 md:gap-5">
-                <div className="hidden items-center gap-2 sm:flex">
-                  <span className="font-bold text-base text-brand-dark md:text-lg">
-                    {formatMattPrice(activeCents)}
-                  </span>
-                </div>
-
-                <span className="font-bold text-brand-dark text-sm sm:hidden">
-                  {formatMattPrice(activeCents)}
-                </span>
+                <SalePrice
+                  badge={saveBadge}
+                  compareCents={compareCents}
+                  saleCents={activeCents}
+                  saleClassName="text-sm md:text-lg"
+                />
 
                 <button
                   className="inline-flex h-11 shrink-0 cursor-pointer items-center justify-center rounded-full bg-brand px-5 font-normal text-sm text-white transition-colors hover:bg-brand-dark md:h-12 md:px-7 md:text-base"

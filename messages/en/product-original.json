@@ -38,7 +38,7 @@
       }
     },
     "saveLabel": "You save: {amount}",
-    "saveBadge": "−45%",
+    "saveBadge": "save 45%",
     "deliveryNote": "In stock, delivery: 5–8 business days",
     "installment": "Pay in 3 instalments of {price}",
     "addToCart": "Add",
@@ -47,7 +47,7 @@
       "originalName": "asleep Original Mattress",
       "addToBasket": "Add to basket"
     },
-    "configurator": "Configurator",
+    "configurator": "Create your mattress",
     "zoomLabel": "Zoom image",
     "gallery": {
       "heroAlt": "asleep Original mattress in a bedroom",
@@ -57,7 +57,10 @@
       "layersAlt": "asleep mattress layers animation",
       "pauseAnimation": "Pause layers animation",
       "playAnimation": "Play layers animation",
-      "zoomLabel": "Zoom image"
+      "zoomLabel": "Zoom image",
+      "closeZoom": "Close",
+      "previousImage": "Previous image",
+      "nextImage": "Next image"
     },
     "addons": {
       "heading": "Popular add-ons",
@@ -189,7 +192,7 @@
   "configurator": {
     "overline": "CUSTOMISE YOUR MATTRESS",
     "title": "Find your mattress",
-    "cta": "Configurator",
+    "cta": "Create your mattress",
     "imageAlt": "Exploded view of asleep mattress layers",
     "bedTypeLabel": "Bed type",
     "single": "Single",

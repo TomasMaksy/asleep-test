@@ -1,17 +1,14 @@
 "use client";
 
+import { X } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { Link } from "@/i18n/navigation";
-import {
-  formatEuro,
-  selectCartCount,
-  selectCartSubtotal,
-  useCartStore,
-} from "@/lib/cart-store";
+import { formatEuro, selectCartCount, useCartStore } from "@/lib/cart-store";
 import { useConfiguratorOverlayStore } from "@/lib/configurator-overlay-store";
+import { cartLinePricing, quoteCart } from "@/lib/product-catalog";
 import { cn } from "@/lib/utils";
 
 const sheetTransition = {
@@ -19,19 +16,6 @@ const sheetTransition = {
   duration: 0.28,
   ease: [0.22, 1, 0.36, 1] as const,
 };
-
-function CloseIcon() {
-  return (
-    <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 20 20">
-      <path
-        d="M5 5l10 10M15 5 5 15"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  );
-}
 
 function CartLineItem({
   id,
@@ -51,6 +35,9 @@ function CartLineItem({
   const t = useTranslations("cart");
   const setQuantity = useCartStore((s) => s.setQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
+  const pricing = cartLinePricing(id, quantity);
+  const saleTotal = pricing?.sale ?? price * quantity;
+  const compareTotal = pricing?.compare ?? saleTotal;
 
   return (
     <li className="flex gap-4 border-brand-dark/10 border-b py-5">
@@ -59,6 +46,7 @@ function CartLineItem({
           alt=""
           className="object-cover object-center"
           fill
+          quality={90}
           sizes="88px"
           src={image}
         />
@@ -74,9 +62,25 @@ function CartLineItem({
               <p className="pt-0.5 text-brand-dark/55 text-rg">{variant}</p>
             ) : null}
           </div>
-          <p className="shrink-0 font-medium text-brand-dark text-rg">
-            {formatEuro(price * quantity)}
-          </p>
+          <div className="shrink-0 text-right">
+            {pricing?.onSale ? (
+              <>
+                <p
+                  aria-hidden="true"
+                  className="text-[#7c7c7c] text-sm line-through"
+                >
+                  {formatEuro(compareTotal)}
+                </p>
+                <p className="font-medium text-brand-dark text-rg">
+                  {formatEuro(saleTotal)}
+                </p>
+              </>
+            ) : (
+              <p className="font-medium text-brand-dark text-rg">
+                {formatEuro(saleTotal)}
+              </p>
+            )}
+          </div>
         </div>
 
         <div className="mt-auto flex items-center justify-between gap-3">
@@ -122,7 +126,12 @@ export function CartSheet() {
   const closeCart = useCartStore((s) => s.closeCart);
   const items = useCartStore((s) => s.items);
   const count = selectCartCount(items);
-  const subtotal = selectCartSubtotal(items);
+  const quoted = quoteCart(
+    items.map((item) => ({ id: item.id, quantity: item.quantity })),
+  );
+  const compareTotal = quoted?.compareValue ?? 0;
+  const payableTotal = quoted?.value ?? 0;
+  const discountTotal = quoted?.discountValue ?? 0;
   const empty = items.length === 0;
   const duration = reduceMotion ? 0 : sheetTransition.duration;
 
@@ -193,7 +202,7 @@ export function CartSheet() {
                 onClick={closeCart}
                 type="button"
               >
-                <CloseIcon />
+                <X className="size-5" strokeWidth={1.5} />
               </button>
             </header>
 
@@ -223,13 +232,39 @@ export function CartSheet() {
 
             <footer className="shrink-0 border-brand-dark/10 border-t bg-white px-5 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] md:px-8">
               {!empty ? (
-                <div className="mb-4 flex items-center justify-between gap-4">
-                  <span className="font-medium text-brand-dark/55 text-rg">
-                    {t("subtotal")}
-                  </span>
-                  <span className="font-bold text-base tabular-nums">
-                    {formatEuro(subtotal)}
-                  </span>
+                <div className="mb-4 flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-medium text-brand-dark/55 text-rg">
+                      {t("subtotal")}
+                    </span>
+                    <span className="text-rg tabular-nums">
+                      {formatEuro(compareTotal)}
+                    </span>
+                  </div>
+                  {discountTotal > 0 ? (
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="font-medium text-brand-dark/55 text-rg">
+                        {t("discount")}
+                      </span>
+                      <span className="text-rg tabular-nums">
+                        −{formatEuro(discountTotal)}
+                      </span>
+                    </div>
+                  ) : null}
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-medium text-brand-dark/55 text-rg">
+                      {t("delivery")}
+                    </span>
+                    <span className="text-rg tabular-nums">
+                      {t("deliveryFree")}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4 pt-1">
+                    <span className="font-bold text-base">{t("total")}</span>
+                    <span className="font-bold text-base tabular-nums">
+                      {formatEuro(payableTotal)}
+                    </span>
+                  </div>
                 </div>
               ) : null}
 

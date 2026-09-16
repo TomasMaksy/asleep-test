@@ -1,6 +1,6 @@
 "use client";
 
-import { Pause, Play } from "lucide-react";
+import { Pause, Play, ZoomIn } from "lucide-react";
 import {
   AnimatePresence,
   LayoutGroup,
@@ -10,7 +10,10 @@ import {
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
-import { useAsleepNavyFilterStyle } from "@/components/asleep-navy-filter-style";
+import {
+  galleryChromeButtonClassName,
+  ProductGalleryLightbox,
+} from "@/components/product/product-gallery-lightbox";
 import type { Locale } from "@/i18n/routing";
 import { useOriginalSizeStore } from "@/lib/product-original-size-store";
 import {
@@ -64,7 +67,7 @@ type Slide = {
   objectPosition?: string;
 };
 
-const GALLERY_QUALITY = 80;
+const GALLERY_QUALITY = 90;
 
 function gallerySlides(
   packshot: string,
@@ -157,12 +160,14 @@ function slideDirection(fromId: SlideId, toId: SlideId) {
 }
 
 function LayersVideo({
+  contain,
   pauseLabel,
   playLabel,
   poster,
   src,
   className,
 }: {
+  contain?: boolean;
   pauseLabel: string;
   playLabel: string;
   poster: string;
@@ -170,7 +175,6 @@ function LayersVideo({
   className?: string;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const navyFilterStyle = useAsleepNavyFilterStyle();
   const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
@@ -211,9 +215,19 @@ function LayersVideo({
   }
 
   return (
-    <div className={cn("relative overflow-hidden bg-[#f0f0f0]", className)}>
+    <div
+      className={cn(
+        "relative overflow-hidden bg-surface",
+        contain && "flex items-center justify-center",
+        className,
+      )}
+    >
       <video
-        className="absolute inset-0 size-full object-cover object-[center_68%]"
+        className={
+          contain
+            ? "h-auto w-auto max-h-[min(100%,1080px)] max-w-[min(100%,908px)] object-contain"
+            : "absolute inset-0 size-full object-cover object-[center_68%]"
+        }
         loop
         muted
         playsInline
@@ -221,13 +235,13 @@ function LayersVideo({
         preload="metadata"
         ref={videoRef}
         src={staticImageUrl(src)}
-        style={navyFilterStyle}
       />
 
       <button
         aria-label={playing ? pauseLabel : playLabel}
         className="absolute top-4 right-4 z-10 flex size-10 cursor-pointer items-center justify-center rounded-full bg-brand text-white transition-colors hover:bg-brand-dark"
         onClick={togglePlayback}
+        onPointerDown={(event) => event.stopPropagation()}
         type="button"
       >
         {playing ? (
@@ -243,13 +257,17 @@ function LayersVideo({
 function GalleryTile({
   src,
   alt,
+  zoomLabel,
   priority,
   objectPosition = "object-center",
+  onOpen,
 }: {
   src: string;
   alt: string;
+  zoomLabel: string;
   priority?: boolean;
   objectPosition?: string;
+  onOpen: () => void;
 }) {
   return (
     <div className="relative aspect-390/488 overflow-hidden bg-surface">
@@ -263,43 +281,39 @@ function GalleryTile({
         sizes="(min-width: 1024px) 28vw, 50vw"
         src={staticImageUrl(src)}
       />
+      <button
+        aria-haspopup="dialog"
+        aria-label={zoomLabel}
+        className="absolute inset-0 z-1 cursor-zoom-in"
+        onClick={onOpen}
+        type="button"
+      />
+      <ZoomButton label={zoomLabel} onClick={onOpen} />
     </div>
   );
 }
 
-function ZoomButton({ label }: { label: string }) {
+function ZoomButton({
+  label,
+  onClick,
+}: {
+  label: string;
+  onClick: () => void;
+}) {
   return (
     <button
       aria-label={label}
-      className="absolute right-4 bottom-4 z-10 flex size-10 items-center justify-center rounded-full border border-grey bg-white sm:right-5 sm:bottom-5"
+      className={cn(
+        galleryChromeButtonClassName,
+        "absolute right-4 bottom-4 z-20 size-11 sm:right-5 sm:bottom-5",
+      )}
+      onClick={(event) => {
+        event.stopPropagation();
+        onClick();
+      }}
       type="button"
     >
-      <svg
-        aria-hidden="true"
-        className="size-4 text-brand-dark"
-        fill="none"
-        viewBox="0 0 18 18"
-      >
-        <circle
-          cx="7.5"
-          cy="7.5"
-          r="5.25"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-        <path
-          d="M11.5 11.5L16 16"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeWidth="1.5"
-        />
-        <path
-          d="M7.5 5.25V9.75M5.25 7.5H9.75"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeWidth="1.5"
-        />
-      </svg>
+      <ZoomIn className="size-4" strokeWidth={1.75} />
     </button>
   );
 }
@@ -321,6 +335,7 @@ function MobileGallery({
   const reduceMotion = useReducedMotion();
   const [activeId, setActiveId] = useState<SlideId>("hero");
   const [direction, setDirection] = useState(1);
+  const [zoomIndex, setZoomIndex] = useState<number | null>(null);
   const pauseAutoplayRef = useRef<() => void>(() => {});
   const previousSizeId = useRef(sizeId);
   const slides = gallerySlides(
@@ -334,6 +349,14 @@ function MobileGallery({
   );
   const active = slides.find((slide) => slide.id === activeId) ?? slides[0];
   const duration = reduceMotion ? 0 : slideTransition.duration;
+
+  function openZoom(id: SlideId = activeId) {
+    const nextIndex = slides.findIndex((slide) => slide.id === id);
+    if (nextIndex >= 0) {
+      setZoomIndex(nextIndex);
+    }
+    pauseAutoplayRef.current();
+  }
 
   function goTo(nextId: SlideId) {
     if (nextId !== activeId) {
@@ -354,7 +377,7 @@ function MobileGallery({
   }, [sizeId]);
 
   useEffect(() => {
-    if (reduceMotion) {
+    if (reduceMotion || zoomIndex !== null) {
       pauseAutoplayRef.current = () => {};
       return;
     }
@@ -387,7 +410,7 @@ function MobileGallery({
       clear();
       pauseAutoplayRef.current = () => {};
     };
-  }, [reduceMotion]);
+  }, [reduceMotion, zoomIndex]);
 
   return (
     <div className="flex w-full flex-col gap-3">
@@ -443,7 +466,17 @@ function MobileGallery({
           </motion.div>
         </AnimatePresence>
 
-        {active.type === "image" ? <ZoomButton label={t("zoomLabel")} /> : null}
+        {active.type === "image" ? (
+          <button
+            aria-haspopup="dialog"
+            aria-label={t("zoomLabel")}
+            className="absolute inset-0 z-1 cursor-zoom-in"
+            onClick={() => openZoom(activeId)}
+            type="button"
+          />
+        ) : null}
+
+        <ZoomButton label={t("zoomLabel")} onClick={() => openZoom(activeId)} />
       </div>
 
       <div className="relative px-5 pb-1">
@@ -490,6 +523,37 @@ function MobileGallery({
           </div>
         </LayoutGroup>
       </div>
+
+      {zoomIndex !== null ? (
+        <ProductGalleryLightbox
+          closeLabel={t("closeZoom")}
+          images={slides.map((slide) => ({
+            id: slide.id,
+            type: slide.type,
+            src: slide.src,
+            alt: t(slide.altKey),
+            poster: slide.poster ?? slide.thumb,
+            objectPosition: slide.objectPosition,
+          }))}
+          index={zoomIndex}
+          nextLabel={t("nextImage")}
+          onClose={() => setZoomIndex(null)}
+          onIndexChange={setZoomIndex}
+          previousLabel={t("previousImage")}
+          renderVideo={(item) => (
+            <LayersVideo
+              className="absolute inset-0 size-full"
+              contain
+              key={item.src}
+              pauseLabel={t("pauseAnimation")}
+              playLabel={t("playAnimation")}
+              poster={item.poster ?? item.src}
+              src={item.src}
+            />
+          )}
+          title={t("zoomLabel")}
+        />
+      ) : null}
     </div>
   );
 }
@@ -507,6 +571,7 @@ function DesktopGallery({
   const locale = useLocale();
   const previousSizeId = useRef(sizeId);
   const [sizeActive, setSizeActive] = useState(false);
+  const [zoomIndex, setZoomIndex] = useState<number | null>(null);
   const benefits = benefitsSrc(locale);
 
   useEffect(() => {
@@ -523,6 +588,30 @@ function DesktopGallery({
   const tileAlt = sizeActive ? t("heroAlt") : t("packshotAlt");
   const layersVideo = layersAnimationSrc(sizeId);
   const layersThumb = layersThumbSrc(sizeId);
+  const lightboxImages = [
+    { id: "main", type: "image" as const, src: mainSrc, alt: mainAlt },
+    { id: "tile", type: "image" as const, src: tileSrc, alt: tileAlt },
+    {
+      id: "lifestyle",
+      type: "image" as const,
+      src: GALLERY.lifestyle,
+      alt: t("lifestyleAlt"),
+    },
+    {
+      id: "layers",
+      type: "video" as const,
+      src: layersVideo,
+      alt: t("layersAlt"),
+      poster: layersThumb,
+    },
+    {
+      id: "benefits",
+      type: "image" as const,
+      src: benefits,
+      alt: t("benefitsAlt"),
+      objectPosition: "object-top",
+    },
+  ];
 
   return (
     <div className="flex w-full flex-col gap-3">
@@ -538,6 +627,13 @@ function DesktopGallery({
           sizes="(min-width: 1024px) 55vw, 100vw"
           src={staticImageUrl(mainSrc)}
         />
+        <button
+          aria-haspopup="dialog"
+          aria-label={t("zoomLabel")}
+          className="absolute inset-0 z-1 cursor-zoom-in"
+          onClick={() => setZoomIndex(0)}
+          type="button"
+        />
 
         <div className="pointer-events-none absolute top-0 left-5 z-10 w-28 lg:left-10">
           <Image
@@ -551,26 +647,66 @@ function DesktopGallery({
           />
         </div>
 
-        <ZoomButton label={t("zoomLabel")} />
+        <ZoomButton label={t("zoomLabel")} onClick={() => setZoomIndex(0)} />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <GalleryTile alt={tileAlt} priority src={tileSrc} />
-        <GalleryTile alt={t("lifestyleAlt")} src={GALLERY.lifestyle} />
-        <LayersVideo
-          className="aspect-390/488"
-          key={layersVideo}
-          pauseLabel={t("pauseAnimation")}
-          playLabel={t("playAnimation")}
-          poster={layersThumb}
-          src={layersVideo}
+        <GalleryTile
+          alt={tileAlt}
+          onOpen={() => setZoomIndex(1)}
+          priority
+          src={tileSrc}
+          zoomLabel={t("zoomLabel")}
         />
+        <GalleryTile
+          alt={t("lifestyleAlt")}
+          onOpen={() => setZoomIndex(2)}
+          src={GALLERY.lifestyle}
+          zoomLabel={t("zoomLabel")}
+        />
+        <div className="relative">
+          <LayersVideo
+            className="aspect-390/488"
+            key={layersVideo}
+            pauseLabel={t("pauseAnimation")}
+            playLabel={t("playAnimation")}
+            poster={layersThumb}
+            src={layersVideo}
+          />
+          <ZoomButton label={t("zoomLabel")} onClick={() => setZoomIndex(3)} />
+        </div>
         <GalleryTile
           alt={t("benefitsAlt")}
           objectPosition="object-top"
+          onOpen={() => setZoomIndex(4)}
           src={benefits}
+          zoomLabel={t("zoomLabel")}
         />
       </div>
+
+      {zoomIndex !== null ? (
+        <ProductGalleryLightbox
+          closeLabel={t("closeZoom")}
+          images={lightboxImages}
+          index={zoomIndex}
+          nextLabel={t("nextImage")}
+          onClose={() => setZoomIndex(null)}
+          onIndexChange={setZoomIndex}
+          previousLabel={t("previousImage")}
+          renderVideo={(item) => (
+            <LayersVideo
+              className="absolute inset-0 size-full"
+              contain
+              key={item.src}
+              pauseLabel={t("pauseAnimation")}
+              playLabel={t("playAnimation")}
+              poster={item.poster ?? layersThumb}
+              src={item.src}
+            />
+          )}
+          title={t("zoomLabel")}
+        />
+      ) : null}
     </div>
   );
 }

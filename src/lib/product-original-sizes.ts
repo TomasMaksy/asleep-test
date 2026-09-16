@@ -227,3 +227,38 @@ export function formatMattPrice(cents: number) {
 export function formatInstallmentPrice(cents: number) {
   return formatMattPrice(Math.round(cents / 3));
 }
+
+export function mattressSaleCents(size: {
+  plusCents: number;
+  originalCents: number;
+}) {
+  return size.plusCents;
+}
+
+export function mattressCompareCents(size: { originalCents: number }) {
+  return size.originalCents;
+}
+
+export function mattressSaveCents(size: {
+  plusCents: number;
+  originalCents: number;
+}) {
+  return Math.max(0, size.originalCents - size.plusCents);
+}
+
+export function mattressSalePercent(size: {
+  plusCents: number;
+  originalCents: number;
+}) {
+  if (size.originalCents <= 0) {
+    return 0;
+  }
+  return Math.round((1 - size.plusCents / size.originalCents) * 100);
+}
+
+export function isMattressOnSale(size: {
+  plusCents: number;
+  originalCents: number;
+}) {
+  return size.plusCents < size.originalCents;
+}

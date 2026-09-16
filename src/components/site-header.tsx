@@ -1,10 +1,7 @@
-import { getTranslations } from "next-intl/server";
 import { CartBagButton } from "@/components/cart/cart-bag-button";
-import { ConfiguratorLink } from "@/components/configurator/configurator-link";
 import { HeaderScroll } from "@/components/header-scroll";
-import { ChevronIcon, Logo } from "@/components/icons";
+import { Logo } from "@/components/icons";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { MobileNav } from "@/components/mobile-nav";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
@@ -19,39 +16,6 @@ export async function SiteHeader({
 }: SiteHeaderProps) {
   const isMinimal = variant === "minimal";
   const isSolid = theme === "solid" || isMinimal;
-
-  if (isMinimal) {
-    return (
-      <>
-        <header
-          className="fixed inset-x-0 top-0 z-50 bg-white text-brand-dark shadow-[0px_4px_20px_0px_#00000008] transition-[color,translate] duration-300 ease-out data-[hidden=true]:pointer-events-none data-[hidden=true]:-translate-y-full"
-          data-hidden="false"
-          data-scrolled="true"
-          id="site-header"
-        >
-          <div className="relative mx-auto flex h-16 w-full items-center px-4 lg:h-20 lg:px-5 xl:max-w-[1440px] xl:px-10 2xl:max-w-[2000px]">
-            <Link aria-label="Home" className="shrink-0" href="/">
-              <Logo className="duration-150" variant="dark" />
-            </Link>
-            <div className="ml-auto flex items-center gap-2 xl:gap-5">
-              <LanguageSwitcher compactOnMobile solid />
-              <CartBagButton compactOnMobile solid />
-            </div>
-          </div>
-        </header>
-        <HeaderScroll />
-      </>
-    );
-  }
-
-  const t = await getTranslations("nav");
-
-  const navLinks = t.raw("links") as Array<{
-    label: string;
-    href: string;
-    accent?: boolean;
-    hasMenu?: boolean;
-  }>;
 
   return (
     <>
@@ -73,64 +37,14 @@ export async function SiteHeader({
         id="site-header"
       >
         <div className="relative mx-auto flex h-16 w-full items-center px-4 lg:h-20 lg:px-5 xl:max-w-[1440px] xl:px-10 2xl:max-w-[2000px]">
-          <div className="flex shrink-0 items-center lg:flex-1">
-            <MobileNav
-              links={navLinks}
-              menuLabel={t("menu")}
-              reviewsLabel={t("reviews")}
-              solid={isSolid}
+          <Link aria-label="Home" className="shrink-0" href="/">
+            <Logo
+              className="duration-150"
+              variant={isSolid ? "dark" : "auto"}
             />
-            <Link
-              aria-label="Home"
-              className="absolute top-1/2 left-1/2 shrink-0 -translate-x-1/2 -translate-y-1/2 lg:static lg:translate-x-0 lg:translate-y-0"
-              href="/"
-            >
-              <Logo
-                className="duration-150"
-                variant={isSolid ? "dark" : "auto"}
-              />
-            </Link>
-          </div>
-
-          <nav className="mx-5 hidden h-full flex-wrap items-center justify-center gap-x-5 gap-y-2 lg:flex xl:mx-10 xl:gap-x-7">
-            {navLinks.map((link) => {
-              const className = cn(
-                "flex items-center gap-2.5 font-medium leading-normal duration-150",
-                link.accent ? "text-red-600" : "",
-              );
-
-              if (link.href === "/configurator") {
-                return (
-                  <ConfiguratorLink className={className} key={link.label}>
-                    {link.label}
-                    {link.hasMenu ? <ChevronIcon /> : null}
-                  </ConfiguratorLink>
-                );
-              }
-
-              return (
-                <Link
-                  className={className}
-                  href={link.href}
-                  key={link.label}
-                >
-                  {link.label}
-                  {link.hasMenu ? <ChevronIcon /> : null}
-                </Link>
-              );
-            })}
-          </nav>
-
-          <div className="ml-auto flex shrink-0 items-center justify-end gap-2 lg:ml-0 lg:flex-1 xl:gap-5">
+          </Link>
+          <div className="ml-auto flex items-center gap-2 xl:gap-5">
             <LanguageSwitcher compactOnMobile solid={isSolid} />
-
-            <Link
-              className="hidden font-medium duration-150 lg:block"
-              href="/reviews"
-            >
-              {t("reviews")}
-            </Link>
-
             <CartBagButton compactOnMobile solid={isSolid} />
           </div>
         </div>

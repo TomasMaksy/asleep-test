@@ -1,5 +1,6 @@
 "use client";
 
+import { X } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useEffect, useId, useState } from "react";
@@ -15,19 +16,6 @@ type ReviewShareSheetProps = {
   isOpen: boolean;
   onClose: () => void;
 };
-
-function CloseIcon() {
-  return (
-    <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 20 20">
-      <path
-        d="M5 5l10 10M15 5 5 15"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  );
-}
 
 function RatingPicker({
   value,
@@ -48,6 +36,7 @@ function RatingPicker({
   return (
     <div>
       <p className="mb-2 font-medium text-brand-dark text-sm">{heading}</p>
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: hover preview for star rating */}
       <div
         className="flex items-center gap-0.5"
         onMouseLeave={() => setHovered(null)}
@@ -207,7 +196,7 @@ export function ReviewShareSheet({ isOpen, onClose }: ReviewShareSheetProps) {
                 onClick={onClose}
                 type="button"
               >
-                <CloseIcon />
+                <X className="size-5" strokeWidth={1.5} />
               </button>
             </header>
 

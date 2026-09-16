@@ -1,5 +1,6 @@
 "use client";
 
+import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { type FormEvent, useId, useState } from "react";
 import { captureNewsletterSignup } from "@/lib/tracking/client/posthog";
@@ -19,25 +20,6 @@ function Spinner() {
       aria-hidden="true"
       className="size-[14px] animate-spin rounded-full border-2 border-[#1A478A]/25 border-t-[#1A478A]"
     />
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      className="size-3.5"
-      fill="none"
-      viewBox="0 0 14 14"
-    >
-      <path
-        d="M2.5 7.2 5.6 10.2 11.5 3.8"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.75"
-      />
-    </svg>
   );
 }
 
@@ -214,7 +196,9 @@ export function NewsletterForm() {
           >
             <span className="inline-flex items-center gap-2">
               {status === "loading" ? <Spinner /> : null}
-              {status === "ok" ? <CheckIcon /> : null}
+              {status === "ok" ? (
+                <Check className="size-3.5" strokeWidth={2} />
+              ) : null}
               {buttonLabel ? <span>{buttonLabel}</span> : null}
             </span>
           </button>

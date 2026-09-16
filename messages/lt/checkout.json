@@ -90,7 +90,8 @@
     "total": "Suma",
     "taxIncluded": "Įskaitant {amount} PVM",
     "currency": "EUR",
-    "inStock": "Yra sandėlyje, pristatymas per 5–8 darbo dienas"
+    "inStock": "Yra sandėlyje, pristatymas per 5–8 darbo dienas",
+    "saveAmount": "−{amount}"
   },
   "closed": {
     "title": "Šiuo metu nepriimame naujų užsakymų",

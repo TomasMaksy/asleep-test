@@ -38,7 +38,7 @@
       }
     },
     "saveLabel": "Sutaupote: {amount}",
-    "saveBadge": "−45 %",
+    "saveBadge": "−45%",
     "deliveryNote": "Yra sandėlyje, pristatymas: 5–8 darbo dienos",
     "installment": "Mokėkite 3 dalimis po {price}",
     "addToCart": "Pridėti",
@@ -47,7 +47,7 @@
       "originalName": "asleep Original čiužinys",
       "addToBasket": "Į krepšelį"
     },
-    "configurator": "Konfiguratorius",
+    "configurator": "Sukurti savo čiužinį",
     "zoomLabel": "Padidinti nuotrauką",
     "gallery": {
       "heroAlt": "asleep Original čiužinys miegamajame",
@@ -57,7 +57,10 @@
       "layersAlt": "asleep čiužinio sluoksnių animacija",
       "pauseAnimation": "Sustabdyti sluoksnių animaciją",
       "playAnimation": "Paleisti sluoksnių animaciją",
-      "zoomLabel": "Padidinti nuotrauką"
+      "zoomLabel": "Padidinti nuotrauką",
+      "closeZoom": "Uždaryti",
+      "previousImage": "Ankstesnė nuotrauka",
+      "nextImage": "Kita nuotrauka"
     },
     "addons": {
       "heading": "Populiarūs priedai",
@@ -189,7 +192,7 @@
   "configurator": {
     "overline": "PRITAIKYKITE SAVO ČIUŽINĮ",
     "title": "Atraskite savo čiužinį",
-    "cta": "Konfiguratorius",
+    "cta": "Sukurti savo čiužinį",
     "imageAlt": "Išskleistas asleep čiužinio sluoksnių vaizdas",
     "bedTypeLabel": "Lovos tipas",
     "single": "Vienvietė",

@@ -1,5 +1,6 @@
 "use client";
 
+import { X } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -26,19 +27,6 @@ type ProductSizeSheetProps = {
   onClose: () => void;
   onSelect: (id: MattressSizeId) => void;
 };
-
-function CloseIcon() {
-  return (
-    <svg aria-hidden="true" className="size-5" fill="none" viewBox="0 0 20 20">
-      <path
-        d="M5 5l10 10M15 5 5 15"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  );
-}
 
 export function ProductSizeSheet({
   isOpen,
@@ -124,7 +112,7 @@ export function ProductSizeSheet({
                 onClick={onClose}
                 type="button"
               >
-                <CloseIcon />
+                <X className="size-5" strokeWidth={1.5} />
               </button>
             </header>
 

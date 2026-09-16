@@ -24,6 +24,10 @@
     "continue": "Continue shopping",
     "checkout": "Checkout",
     "subtotal": "Subtotal",
+    "discount": "Discount",
+    "delivery": "Delivery",
+    "deliveryFree": "Free",
+    "total": "Total",
     "remove": "Remove",
     "quantity": "Quantity",
     "open": "Open cart",
@@ -57,7 +61,7 @@
         "title": "Products",
         "links": [
           { "label": "Original mattress", "href": "/products/original" },
-          { "label": "Configurator", "href": "/configurator" }
+          { "label": "Create your mattress", "href": "/configurator" }
         ]
       }
     ]

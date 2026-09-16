@@ -1,18 +1,27 @@
 "use client";
 
-import { Minus, Plus, SquarePen } from "lucide-react";
+import {
+  Check,
+  ChevronRight,
+  Info,
+  Minus,
+  Plus,
+  SquarePen,
+} from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { ProductStickyBuyBar } from "@/app/[locale]/products/original/product-sticky-buy-bar";
 import { ConfiguratorLink } from "@/components/configurator/configurator-link";
 import { ProductSizeSheet } from "@/components/product/product-size-sheet";
+import { SalePrice } from "@/components/product/sale-price";
 import { useCartStore } from "@/lib/cart-store";
 import { useOriginalSizeStore } from "@/lib/product-original-size-store";
 import {
   formatInstallmentPrice,
-  formatMattPrice,
   getMattressSize,
+  mattressCompareCents,
+  mattressSaleCents,
   packshotSrc,
 } from "@/lib/product-original-sizes";
 import { trackAddedCartItems } from "@/lib/tracking/client/ecommerce";
@@ -28,7 +37,8 @@ export function ProductBuyBox() {
   const closeCart = useCartStore((s) => s.closeCart);
 
   const size = getMattressSize(sizeId);
-  const activeCents = size.originalCents;
+  const activeCents = mattressSaleCents(size);
+  const compareCents = mattressCompareCents(size);
   const installmentPrice = formatInstallmentPrice(activeCents);
 
   function openSizeSheet() {
@@ -51,7 +61,7 @@ export function ProductBuyBox() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" id="product-buy-box">
       <div className="product-detail-content">
         <p>{t("description")}</p>
         <ul>
@@ -77,7 +87,10 @@ export function ProductBuyBox() {
           type="button"
         >
           {size.label}
-          <ChevronRightIcon />
+          <ChevronRight
+            className="ml-auto size-6 text-brand-dark"
+            strokeWidth={1.5}
+          />
         </button>
       </div>
 
@@ -90,9 +103,12 @@ export function ProductBuyBox() {
 
       <div className="mb-4 rounded-2xl border border-grey bg-surface p-4">
         <div className="mb-0 min-h-8">
-          <span className="font-bold text-brand-dark text-sm md:text-base md:leading-none">
-            {formatMattPrice(activeCents)}
-          </span>
+          <SalePrice
+            badge={t("saveBadge")}
+            compareCents={compareCents}
+            saleCents={activeCents}
+            saleClassName="text-sm md:text-xl md:leading-none"
+          />
         </div>
 
         <p className="mt-4 flex items-center gap-2 text-brand-dark text-sm">
@@ -103,7 +119,7 @@ export function ProductBuyBox() {
         <p className="mt-2 flex items-center gap-2 text-brand-dark text-sm">
           <InbankMark />
           <span>{t("installment", { price: installmentPrice })}</span>
-          <InfoIcon />
+          <Info className="size-3.5 text-brand-dark/45" strokeWidth={1.75} />
         </p>
 
         <div className="mt-4 flex items-center gap-2">
@@ -129,7 +145,9 @@ export function ProductBuyBox() {
 
       <ProductStickyBuyBar
         activeCents={activeCents}
-        observeId="product-info-slider"
+        compareCents={compareCents}
+        observeId="product-buy-box"
+        saveBadge={t("saveBadge")}
         onAddToCart={() => handleAddToCart("pdp_sticky_bar")}
         onOpenSize={openSizeSheet}
         packshotSrc={packshotSrc(sizeId)}
@@ -174,42 +192,10 @@ function QuantityStepper({
   );
 }
 
-function ChevronRightIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      className="ml-auto size-6 text-brand-dark"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <path
-        d="M9 6L15 12L9 18"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  );
-}
-
 function StockIcon() {
   return (
     <span className="inline-flex size-4 shrink-0 items-center justify-center rounded-full bg-[#3db56b] text-white">
-      <svg
-        aria-hidden="true"
-        className="size-2.5"
-        fill="none"
-        viewBox="0 0 12 10"
-      >
-        <path
-          d="M1 5.5L4.5 9L11 1"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.75"
-        />
-      </svg>
+      <Check className="size-2.5" strokeWidth={2.5} />
     </span>
   );
 }
@@ -223,25 +209,5 @@ function InbankMark() {
       src="/images/payments/inbank.webp"
       width={300}
     />
-  );
-}
-
-function InfoIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      className="size-3.5 text-brand-dark/45"
-      fill="none"
-      viewBox="0 0 14 14"
-    >
-      <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.25" />
-      <path
-        d="M7 6.25V10"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="1.25"
-      />
-      <circle cx="7" cy="4.25" fill="currentColor" r="0.75" />
-    </svg>
   );
 }

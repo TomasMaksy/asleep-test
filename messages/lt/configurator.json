@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "title": "Konfiguratorius",
+    "title": "Sukurkite savo čiužinį",
     "description": "Konfigūruokite asleep Original čiužinį: pasirinkite dydį, nurodykite svorį ir miego pageidavimus ir pamatykite rekomenduojamą kietumą."
   },
   "sizeTitle": "Kokio dydžio turi būti asleep?",
@@ -34,6 +34,9 @@
   "readMore": "Skaityti daugiau",
   "readLess": "Skaityti mažiau",
   "addToBasket": "Į krepšelį",
+  "yourMattress": "Jūsų čiužinys",
+  "resultProduct": "Original čiužinys",
+  "saveAmount": "−{amount}",
   "videoAria": "Čiužinio kietumo animacija",
   "updatingMattress": "Atnaujiname čiužinį",
   "mindTheGapTitle": "Dėmesio tarpui",
