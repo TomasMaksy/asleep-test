@@ -143,33 +143,96 @@ function videoHasPath(video: HTMLVideoElement, path: string) {
 }
 
 function seekToStart(video: HTMLVideoElement, done: () => void) {
-  let frameA = 0;
-  let frameB = 0;
-  const paint = () => {
-    frameA = requestAnimationFrame(() => {
-      frameB = requestAnimationFrame(done);
-    });
-  };
   if (
     video.currentTime <= 0.02 &&
     video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA
   ) {
-    paint();
-    return () => {
-      cancelAnimationFrame(frameA);
-      cancelAnimationFrame(frameB);
-    };
+    done();
+    return () => {};
   }
   const onSeeked = () => {
     video.removeEventListener("seeked", onSeeked);
-    paint();
+    done();
   };
   video.addEventListener("seeked", onSeeked);
-  video.currentTime = 0;
+  try {
+    video.currentTime = 0;
+  } catch {
+    video.removeEventListener("seeked", onSeeked);
+    done();
+  }
   return () => {
     video.removeEventListener("seeked", onSeeked);
-    cancelAnimationFrame(frameA);
-    cancelAnimationFrame(frameB);
+  };
+}
+
+/**
+ * Opacity 0 layers are often skipped by the compositor, so rVFC alone is not
+ * enough. Keep the outgoing clip as `front` and prime the incoming as `back`
+ * (opacity 1, lower z-index) so frames actually paint; then promote.
+ */
+type VideoLayer = "front" | "back" | "idle";
+
+function setVideoLayer(video: HTMLVideoElement, layer: VideoLayer) {
+  video.dataset.layer = layer;
+  video.setAttribute("aria-hidden", layer === "front" ? "false" : "true");
+}
+
+/** Resolve after `count` frames have been sent to the compositor. */
+function whenVideoFramesPainted(
+  video: HTMLVideoElement,
+  count: number,
+  done: () => void,
+): () => void {
+  let cancelled = false;
+  let painted = 0;
+  let rafA = 0;
+  let rafB = 0;
+  let rvfcHandle = 0;
+
+  const finish = () => {
+    if (cancelled) {
+      return;
+    }
+    cancelled = true;
+    done();
+  };
+
+  const onFrame = () => {
+    if (cancelled) {
+      return;
+    }
+    painted += 1;
+    if (painted >= count) {
+      finish();
+      return;
+    }
+    if (typeof video.requestVideoFrameCallback === "function") {
+      rvfcHandle = video.requestVideoFrameCallback(onFrame);
+    }
+  };
+
+  if (typeof video.requestVideoFrameCallback === "function") {
+    rvfcHandle = video.requestVideoFrameCallback(onFrame);
+  } else {
+    rafA = requestAnimationFrame(() => {
+      rafB = requestAnimationFrame(finish);
+    });
+  }
+
+  const timeout = window.setTimeout(finish, 2000);
+
+  return () => {
+    cancelled = true;
+    window.clearTimeout(timeout);
+    cancelAnimationFrame(rafA);
+    cancelAnimationFrame(rafB);
+    if (
+      rvfcHandle &&
+      typeof video.cancelVideoFrameCallback === "function"
+    ) {
+      video.cancelVideoFrameCallback(rvfcHandle);
+    }
   };
 }
 
@@ -215,12 +278,17 @@ export function ConfiguratorVideos({
       return;
     }
     const video = videoARef.current;
+    const other = videoBRef.current;
     if (!video) {
       return;
     }
     video.src = introVideoSrc(bed);
     video.load();
     activeRef.current = 0;
+    setVideoLayer(video, "front");
+    if (other) {
+      setVideoLayer(other, "idle");
+    }
     setClipKind((current) => ["intro", current[1]]);
     const showFirstFrame = () => {
       video.currentTime = 0;
@@ -237,6 +305,7 @@ export function ConfiguratorVideos({
     lastClipIdRef.current = clip.id;
 
     const current = activeRef.current;
+    const outgoing = current === 0 ? videoARef.current : videoBRef.current;
     const incoming = current === 0 ? videoBRef.current : videoARef.current;
     const nextIndex: 0 | 1 = current === 0 ? 1 : 0;
     if (!incoming) {
@@ -257,47 +326,83 @@ export function ConfiguratorVideos({
       return next;
     });
 
-    let cancelled = false;
+    let disposed = false;
     let started = false;
+    let revealed = false;
+    let ended = false;
     let stopSeek = () => {};
+    let stopPaint = () => {};
+    let hideOutgoingRaf = 0;
 
     const reveal = () => {
-      if (cancelled) {
+      if (disposed || revealed) {
         return;
+      }
+      revealed = true;
+      // Promote incoming on top while outgoing still covers any transparent gaps.
+      setVideoLayer(incoming, "front");
+      if (outgoing) {
+        setVideoLayer(outgoing, "back");
       }
       activeRef.current = nextIndex;
       setVisible(nextIndex);
       onReadyRef.current?.(clip);
-      const hidden = current === 0 ? videoARef.current : videoBRef.current;
-      if (clip.kind === "intro" && hidden) {
-        const preloadSrc = clip.reverse
-          ? packagingVideoSrc(clip.bed)
-          : introVideoSrc(clip.bed, true);
-        if (!videoHasPath(hidden, preloadSrc)) {
-          window.setTimeout(() => {
-            if (cancelled) {
-              return;
+
+      hideOutgoingRaf = requestAnimationFrame(() => {
+        hideOutgoingRaf = requestAnimationFrame(() => {
+          if (disposed) {
+            return;
+          }
+          if (outgoing) {
+            setVideoLayer(outgoing, "idle");
+          }
+          if (clip.kind === "intro" && outgoing) {
+            const preloadSrc = clip.reverse
+              ? packagingVideoSrc(clip.bed)
+              : introVideoSrc(clip.bed, true);
+            if (!videoHasPath(outgoing, preloadSrc)) {
+              outgoing.src = preloadSrc;
+              outgoing.preload = "auto";
+              outgoing.load();
             }
-            hidden.src = preloadSrc;
-            hidden.preload = "metadata";
-            hidden.load();
-          }, 0);
-        }
-      }
+          }
+        });
+      });
     };
 
     const finish = () => {
-      if (cancelled) {
+      if (disposed || ended) {
         return;
       }
-      cancelled = true;
+      ended = true;
       incoming.pause();
       onEndedRef.current(clip);
     };
 
+    /** Play as `back` under the current front so frames actually composite. */
+    const playThenReveal = () => {
+      if (disposed) {
+        return;
+      }
+      if (outgoing) {
+        setVideoLayer(outgoing, "front");
+      }
+      setVideoLayer(incoming, "back");
+      applyPlaybackRate(incoming, playbackRateRef.current);
+      const playResult = incoming.play();
+      // Two frames: first decode can still be empty on HEVC/alpha.
+      stopPaint = whenVideoFramesPainted(incoming, 2, reveal);
+      if (playResult) {
+        playResult.catch(() => {
+          reveal();
+          finish();
+        });
+      }
+    };
+
     const start = () => {
       incoming.removeEventListener("canplay", start);
-      if (cancelled || started) {
+      if (disposed || started) {
         return;
       }
       started = true;
@@ -310,21 +415,40 @@ export function ConfiguratorVideos({
         } catch {
           incoming.currentTime = 0;
         }
-        reveal();
-        finish();
+        const settleHold = () => {
+          if (disposed) {
+            return;
+          }
+          if (outgoing) {
+            setVideoLayer(outgoing, "front");
+          }
+          setVideoLayer(incoming, "back");
+          stopPaint = whenVideoFramesPainted(incoming, 2, () => {
+            reveal();
+            finish();
+          });
+          void incoming
+            .play()
+            .then(() => {
+              incoming.pause();
+            })
+            .catch(() => {
+              reveal();
+              finish();
+            });
+        };
+        if (incoming.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+          settleHold();
+        } else {
+          const onSeeked = () => {
+            incoming.removeEventListener("seeked", onSeeked);
+            settleHold();
+          };
+          incoming.addEventListener("seeked", onSeeked);
+        }
         return;
       }
-      stopSeek = seekToStart(incoming, () => {
-        if (cancelled) {
-          return;
-        }
-        reveal();
-        applyPlaybackRate(incoming, playbackRateRef.current);
-        const playResult = incoming.play();
-        if (playResult) {
-          playResult.catch(() => finish());
-        }
-      });
+      stopSeek = seekToStart(incoming, playThenReveal);
     };
 
     incoming.addEventListener("canplay", start);
@@ -335,8 +459,10 @@ export function ConfiguratorVideos({
     }
 
     return () => {
-      cancelled = true;
+      disposed = true;
       stopSeek();
+      stopPaint();
+      cancelAnimationFrame(hideOutgoingRaf);
       incoming.removeEventListener("canplay", start);
       incoming.removeEventListener("ended", finish);
       incoming.removeEventListener("error", finish);
@@ -404,28 +530,24 @@ export function ConfiguratorVideos({
               </svg>
             ) : null}
             <video
-              aria-hidden={visible !== 0}
               className={cn(
                 "configurator-stage-video",
                 videoFitClass(bed, clipKind[0]),
-                visible === 0 ? "opacity-100" : "opacity-0",
               )}
               muted
               playsInline
-              preload="metadata"
+              preload="auto"
               ref={videoARef}
               style={videoNavyStyle(clipKind[0], navyFilterStyle)}
             />
             <video
-              aria-hidden={visible !== 1}
               className={cn(
                 "configurator-stage-video",
                 videoFitClass(bed, clipKind[1]),
-                visible === 1 ? "opacity-100" : "opacity-0",
               )}
               muted
               playsInline
-              preload="metadata"
+              preload="auto"
               ref={videoBRef}
               style={videoNavyStyle(clipKind[1], navyFilterStyle)}
             />
