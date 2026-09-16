@@ -26,6 +26,16 @@ export const VIDEO_PLAYBACK_RATE_FLUSH = 3.2;
 export const VIDEO_PLAYBACK_RATE_CATCHUP = 12;
 export const MAX_TRANSITION_QUEUE = 2;
 
+/** Bunny CDN pull zone for configurator HEVC/VP9 clips (`single/` + `double/`). */
+const CONFIGURATOR_VIDEO_CDN = (
+  process.env.NEXT_PUBLIC_CONFIGURATOR_VIDEO_CDN ??
+  "https://unive-v2.b-cdn.net"
+).replace(/\/$/, "");
+
+function configuratorClipSrc(bed: BedKind, fileName: string): string {
+  return transparentVideoSrc(`${CONFIGURATOR_VIDEO_CDN}/${bed}/${fileName}`);
+}
+
 const FIRMNESS_TABLE: Firmness[][] = [
   [1, 1, 2, 2],
   [2, 2, 3, 3],
@@ -106,25 +116,18 @@ export function recommendFirmness(input: {
 }
 
 export function introVideoSrc(bed: BedKind, reverse = false): string {
-  if (bed === "single") {
-    return transparentVideoSrc(
-      reverse
-        ? "/configurator/single/MAT_Anim_Single_Opening_Reverse.webm"
-        : "/configurator/single/MAT_Anim_Single_Opening.webm",
-    );
-  }
-  return transparentVideoSrc(
-    reverse
-      ? "/configurator/double/MAT_Anim_Double_Opening_Reverse.webm"
-      : "/configurator/double/MAT_Anim_Double_Opening.webm",
+  const stem =
+    bed === "single" ? "MAT_Anim_Single_Opening" : "MAT_Anim_Double_Opening";
+  return configuratorClipSrc(
+    bed,
+    reverse ? `${stem}_Reverse.webm` : `${stem}.webm`,
   );
 }
 
 export function packagingVideoSrc(bed: BedKind): string {
-  return transparentVideoSrc(
-    bed === "single"
-      ? "/configurator/single/SCN_Single_Packaging.webm"
-      : "/configurator/double/SCN_Double_Packaging.webm",
+  return configuratorClipSrc(
+    bed,
+    bed === "single" ? "SCN_Single_Packaging.webm" : "SCN_Double_Packaging.webm",
   );
 }
 
@@ -142,11 +145,8 @@ export function transitionVideoSrc(
   from: number,
   to: number,
 ): string {
-  return transparentVideoSrc(
-    bed === "single"
-      ? `/configurator/single/SCN_Single_${from}_${to}.webm`
-      : `/configurator/double/SCN_Double_${from}_${to}.webm`,
-  );
+  const prefix = bed === "single" ? "SCN_Single" : "SCN_Double";
+  return configuratorClipSrc(bed, `${prefix}_${from}_${to}.webm`);
 }
 
 export function suggestedSingleSizeId(
