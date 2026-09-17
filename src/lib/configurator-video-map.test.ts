@@ -17,24 +17,68 @@ describe("configurator-video-map", () => {
     expect(weightClass(86)).toBe("heavy");
   });
 
-  test("alone preference buckets on soft/hard halves", () => {
-    expect(aloneFirmnessFromPreference(1)).toBe("supersoft");
-    expect(aloneFirmnessFromPreference(10)).toBe("supersoft");
-    expect(aloneFirmnessFromPreference(20)).toBe("soft");
-    expect(aloneFirmnessFromPreference(35)).toBe("medium");
-    expect(aloneFirmnessFromPreference(36)).toBe("medium");
-    expect(aloneFirmnessFromPreference(40)).toBe("mediumHard");
-    expect(aloneFirmnessFromPreference(50)).toBe("hard");
-    expect(aloneFirmnessFromPreference(70)).toBe("superhard");
+  test("double-alone preference: medium = grey bar; soft/hard linija outside", () => {
+    // Medium zone is the centered grey bar (preferenceMediumBounds).
+    expect(aloneFirmnessFromPreference(1, "doubleAlone")).toBe("supersoft");
+    expect(aloneFirmnessFromPreference(12, "doubleAlone")).toBe("supersoft");
+    expect(aloneFirmnessFromPreference(13, "doubleAlone")).toBe("soft");
+    expect(aloneFirmnessFromPreference(23, "doubleAlone")).toBe("soft");
+    expect(aloneFirmnessFromPreference(24, "doubleAlone")).toBe("medium");
+    expect(aloneFirmnessFromPreference(35, "doubleAlone")).toBe("medium");
+    expect(aloneFirmnessFromPreference(47, "doubleAlone")).toBe("medium");
+    expect(aloneFirmnessFromPreference(48, "doubleAlone")).toBe("mediumHard");
+    expect(aloneFirmnessFromPreference(52, "doubleAlone")).toBe("mediumHard");
+    expect(aloneFirmnessFromPreference(53, "doubleAlone")).toBe("hard");
+    expect(aloneFirmnessFromPreference(61, "doubleAlone")).toBe("hard");
+    expect(aloneFirmnessFromPreference(62, "doubleAlone")).toBe("superhard");
+    expect(aloneFirmnessFromPreference(70, "doubleAlone")).toBe("superhard");
   });
 
-  test("together preference collapses soft-half / center / hard-half", () => {
+  test("single preference: no mediumHard; heavy soft-side is all soft", () => {
+    expect(aloneFirmnessFromPreference(1, "single", "light")).toBe("supersoft");
+    expect(aloneFirmnessFromPreference(12, "single", "light")).toBe("supersoft");
+    expect(aloneFirmnessFromPreference(13, "single", "light")).toBe("soft");
+    expect(aloneFirmnessFromPreference(35, "single", "light")).toBe("medium");
+    // Hard linija is 50/50 hard|superhard — never mediumHard
+    expect(aloneFirmnessFromPreference(48, "single", "light")).toBe("hard");
+    expect(aloneFirmnessFromPreference(58, "single", "light")).toBe("hard");
+    expect(aloneFirmnessFromPreference(59, "single", "light")).toBe("superhard");
+    expect(aloneFirmnessFromPreference(70, "single", "light")).toBe("superhard");
+
+    // ≥86: entire left of medium bar is soft
+    expect(aloneFirmnessFromPreference(1, "single", "heavy")).toBe("soft");
+    expect(aloneFirmnessFromPreference(12, "single", "heavy")).toBe("soft");
+    expect(aloneFirmnessFromPreference(23, "single", "heavy")).toBe("soft");
+    expect(aloneFirmnessFromPreference(35, "single", "heavy")).toBe("medium");
+    expect(aloneFirmnessFromPreference(48, "single", "heavy")).toBe("hard");
+  });
+
+  test("single never highlights medium/firm (level 4) on the scale", () => {
+    for (const preference of [1, 12, 20, 35, 48, 55, 65, 70]) {
+      for (const weight of [75, 90]) {
+        const resolved = resolveVisual({
+          bed: "single",
+          sleeping: "alone",
+          profile: {
+            yourWeight: weight,
+            yourPreference: preference,
+            partnerWeight: weight,
+            partnerPreference: preference,
+          },
+        });
+        expect(resolved.youLevel).not.toBe(4);
+      }
+    }
+  });
+
+  test("together preference: soft / medium-bar / hard", () => {
     expect(togetherFirmnessFromPreference(1)).toBe("soft");
     expect(togetherFirmnessFromPreference(10)).toBe("soft");
-    expect(togetherFirmnessFromPreference(34)).toBe("soft");
+    expect(togetherFirmnessFromPreference(23)).toBe("soft");
+    expect(togetherFirmnessFromPreference(24)).toBe("medium");
     expect(togetherFirmnessFromPreference(35)).toBe("medium");
-    expect(togetherFirmnessFromPreference(36)).toBe("medium");
-    expect(togetherFirmnessFromPreference(37)).toBe("hard");
+    expect(togetherFirmnessFromPreference(47)).toBe("medium");
+    expect(togetherFirmnessFromPreference(48)).toBe("hard");
     expect(togetherFirmnessFromPreference(60)).toBe("hard");
     expect(togetherFirmnessFromPreference(70)).toBe("hard");
   });

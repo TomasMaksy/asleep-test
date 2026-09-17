@@ -5,7 +5,7 @@ import {
 } from "@/lib/configurator-layer-stack";
 
 describe("cutoutFirmnessForSleeper", () => {
-  test("together medium light uses factory stack (3)", () => {
+  test("together medium stays Medium on the scale for light and heavy", () => {
     expect(
       cutoutFirmnessForSleeper({
         bed: "double",
@@ -14,9 +14,6 @@ describe("cutoutFirmnessForSleeper", () => {
         preference: 35,
       }),
     ).toBe(3);
-  });
-
-  test("together medium heavy bumps one step (4)", () => {
     expect(
       cutoutFirmnessForSleeper({
         bed: "double",
@@ -24,44 +21,54 @@ describe("cutoutFirmnessForSleeper", () => {
         weightKg: 93,
         preference: 35,
       }),
-    ).toBe(4);
+    ).toBe(3);
   });
 
-  test("together soft vs hard land on different bases", () => {
-    expect(
-      cutoutFirmnessForSleeper({
-        bed: "double",
-        sleeping: "together",
-        weightKg: 70,
-        preference: 10,
-      }),
-    ).toBe(2);
-    expect(
-      cutoutFirmnessForSleeper({
-        bed: "double",
-        sleeping: "together",
-        weightKg: 70,
-        preference: 60,
-      }),
-    ).toBe(5);
+  test("together soft / medium / firm only — never Extra soft, Medium/firm, Extra firm", () => {
+    for (const weightKg of [70, 90]) {
+      expect(
+        cutoutFirmnessForSleeper({
+          bed: "double",
+          sleeping: "together",
+          weightKg,
+          preference: 10,
+        }),
+      ).toBe(2);
+      expect(
+        cutoutFirmnessForSleeper({
+          bed: "double",
+          sleeping: "together",
+          weightKg,
+          preference: 35,
+        }),
+      ).toBe(3);
+      expect(
+        cutoutFirmnessForSleeper({
+          bed: "double",
+          sleeping: "together",
+          weightKg,
+          preference: 60,
+        }),
+      ).toBe(5);
+    }
   });
 
   test("alone medium light vs heavy: resolve maps mediumHard→medium for heavy", () => {
     expect(
       cutoutFirmnessForSleeper({
-        bed: "single",
+        bed: "double",
         sleeping: "alone",
         weightKg: 75,
         preference: 35,
       }),
     ).toBe(3);
-    // preference 40 → mediumHard (4); heavy resolves to medium (3), not bump back to 4
+    // preference 52 → mediumHard (4); heavy resolves to medium (3), not bump back to 4
     expect(
       cutoutFirmnessForSleeper({
-        bed: "single",
+        bed: "double",
         sleeping: "alone",
         weightKg: 90,
-        preference: 40,
+        preference: 52,
       }),
     ).toBe(3);
   });
@@ -69,12 +76,23 @@ describe("cutoutFirmnessForSleeper", () => {
   test("alone supersoft heavy steps once to soft (2), not double-bump", () => {
     expect(
       cutoutFirmnessForSleeper({
-        bed: "single",
+        bed: "double",
         sleeping: "alone",
         weightKg: 70,
         preference: 5,
       }),
     ).toBe(1);
+    expect(
+      cutoutFirmnessForSleeper({
+        bed: "double",
+        sleeping: "alone",
+        weightKg: 90,
+        preference: 5,
+      }),
+    ).toBe(2);
+  });
+
+  test("single: heavy soft-side stays soft; never medium/firm", () => {
     expect(
       cutoutFirmnessForSleeper({
         bed: "single",
@@ -83,6 +101,22 @@ describe("cutoutFirmnessForSleeper", () => {
         preference: 5,
       }),
     ).toBe(2);
+    expect(
+      cutoutFirmnessForSleeper({
+        bed: "single",
+        sleeping: "alone",
+        weightKg: 75,
+        preference: 48,
+      }),
+    ).toBe(5); // hard, not medium/firm (4)
+    expect(
+      cutoutFirmnessForSleeper({
+        bed: "single",
+        sleeping: "alone",
+        weightKg: 90,
+        preference: 35,
+      }),
+    ).toBe(3);
   });
 });
 

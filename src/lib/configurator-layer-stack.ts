@@ -3,6 +3,7 @@ import {
   aloneFirmnessFromPreference,
   aloneFirmnessToLevel,
   resolveAloneFirmness,
+  resolveSingleFirmness,
   togetherFirmnessFromPreference,
   videoMode,
   weightClass,
@@ -77,24 +78,17 @@ const FOAM_ORDER: Record<Firmness, ConfiguratorLayerId[]> = {
   6: ["coldFoamFirm", "coldFoamSoft", "memoryFoam", "hypersupport"],
 };
 
-/** Together soft/medium/hard → positions on the shared 6-step cutout scale. */
-const TOGETHER_CUTOUT_BASE: Record<"soft" | "medium" | "hard", Firmness> = {
+/** Together soft/medium/hard → fixed Soft / Medium / Firm ticks on the 6-step scale. */
+const TOGETHER_CUTOUT: Record<"soft" | "medium" | "hard", Firmness> = {
   soft: 2,
   medium: 3,
   hard: 5,
 };
 
-function bumpIfHeavy(level: Firmness, heavy: boolean): Firmness {
-  if (!heavy || level >= 6) {
-    return level;
-  }
-  return (level + 1) as Firmness;
-}
-
 /**
  * Physical layer stack for one sleeper — preference band + weight.
- * Heavier sleepers get a firmer stack for the same preference (matches doc
- * visual shifts, e.g. together medium/medium light=5 vs you-heavy=6).
+ * Together: side pointers stay Soft/Medium/Firm regardless of weight
+ * (video states still shift with weight via the together maps).
  */
 export function cutoutFirmnessForSleeper(input: {
   bed: BedKind;
@@ -107,14 +101,26 @@ export function cutoutFirmnessForSleeper(input: {
 
   if (mode === "doubleTogether") {
     const band = togetherFirmnessFromPreference(input.preference);
-    return bumpIfHeavy(TOGETHER_CUTOUT_BASE[band], heavy);
+    return TOGETHER_CUTOUT[band];
   }
 
-  const alone = aloneFirmnessFromPreference(input.preference);
-  // Alone/single: heavy adjustments live only in resolveAloneFirmness
+  const weight = heavy ? "heavy" : "light";
+
+  if (mode === "single") {
+    const alone = aloneFirmnessFromPreference(input.preference, "single", weight);
+    const resolved = resolveSingleFirmness(alone, weight);
+    return aloneFirmnessToLevel(resolved);
+  }
+
+  // Double alone: heavy adjustments live only in resolveAloneFirmness
   // (supersoft→soft, mediumHard→medium). Do not also bump — that cancels
   // mediumHard heavy back to 4 and double-steps supersoft.
-  const resolved = resolveAloneFirmness(alone, heavy ? "heavy" : "light");
+  const alone = aloneFirmnessFromPreference(
+    input.preference,
+    "doubleAlone",
+    weight,
+  );
+  const resolved = resolveAloneFirmness(alone, weight);
   return aloneFirmnessToLevel(resolved);
 }
 

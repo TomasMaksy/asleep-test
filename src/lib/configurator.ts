@@ -19,6 +19,26 @@ export const MIN_WEIGHT_KG = 1;
 export const MAX_WEIGHT_KG = 150;
 export const MIN_PREFERENCE = 1;
 export const MAX_PREFERENCE = 70;
+/**
+ * Centered medium band on the Soft→Firm slider — sized to the thick grey
+ * range bar (`w-[175px]`). Soft/Hard linija percentages apply only outside.
+ * ~35% ≈ 175px on the desktop form track; softens the old 2-tick medium.
+ */
+export const MEDIUM_ZONE_RATIO = 0.35;
+
+/** Inclusive preference ticks covered by the medium zone. */
+export function preferenceMediumBounds(
+  min: number = MIN_PREFERENCE,
+  max: number = MAX_PREFERENCE,
+  ratio: number = MEDIUM_ZONE_RATIO,
+): { mediumLow: number; mediumHigh: number } {
+  const mid = (min + max) / 2;
+  const half = ((max - min) * ratio) / 2;
+  return {
+    mediumLow: Math.ceil(mid - half),
+    mediumHigh: Math.floor(mid + half),
+  };
+}
 export const CONFIGURATOR_DEFAULT_SIZE_ID: MattressSizeId = "80x200";
 export const VIDEO_PLAYBACK_RATE = 1.5;
 export const VIDEO_PLAYBACK_RATE_QUEUED = 2.4;

@@ -16,7 +16,11 @@
  */
 
 import type { BedKind, Firmness, Sleeping } from "@/lib/configurator";
-import { MAX_PREFERENCE, MIN_PREFERENCE } from "@/lib/configurator";
+import {
+  MAX_PREFERENCE,
+  MIN_PREFERENCE,
+  preferenceMediumBounds,
+} from "@/lib/configurator";
 
 export type WeightClass = "light" | "heavy";
 export type AloneFirmness =
@@ -42,39 +46,60 @@ export function weightClass(kg: number): WeightClass {
 }
 
 /**
- * Soft linija = left half (Soft→Medium). Hard linija = right half (Medium→Firm).
- * Percentages are of that half. Exact center = medium.
+ * Soft linija = thin track left of the medium grey bar (Soft→Medium).
+ * Hard linija = thin track right of the bar (Medium→Firm).
+ * Percentages are of that remaining half — not the whole Soft→Firm track.
+ * The thick grey bar is entirely medium.
+ *
+ * Single (doc top block): soft 50/50 supersoft|soft; hard 50/50 hard|superhard.
+ *   No mediumHard. At ≥86 kg the whole soft linija collapses to soft.
+ * Double Alone: soft 50/50; hard 25% mediumHard / 25–65% hard / 65%+ superhard.
  */
-export function aloneFirmnessFromPreference(preference: number): AloneFirmness {
+export function aloneFirmnessFromPreference(
+  preference: number,
+  mode: "single" | "doubleAlone" = "doubleAlone",
+  weight: WeightClass = "light",
+): AloneFirmness {
   const min = MIN_PREFERENCE;
   const max = MAX_PREFERENCE;
-  const mid = (min + max) / 2;
+  const { mediumLow, mediumHigh } = preferenceMediumBounds(min, max);
 
-  // Integer slider never hits exact mid (35.5); 35 and 36 are the center ticks.
-  if (preference === Math.floor(mid) || preference === Math.ceil(mid)) {
+  if (preference >= mediumLow && preference <= mediumHigh) {
     return "medium";
   }
 
-  if (preference < mid) {
-    const softHalf = (preference - min) / (mid - min);
+  if (preference < mediumLow) {
+    // Single ≥86: entire soft linija is soft — no supersoft.
+    if (mode === "single" && weight === "heavy") {
+      return "soft";
+    }
+    const softSpan = mediumLow - min;
+    const softHalf = softSpan <= 0 ? 0 : (preference - min) / softSpan;
     return softHalf < 0.5 ? "supersoft" : "soft";
   }
 
-  const hardHalf = (preference - mid) / (max - mid);
+  const hardSpan = max - mediumHigh;
+  const hardHalf = hardSpan <= 0 ? 1 : (preference - mediumHigh) / hardSpan;
+
+  // Single has no medium/hard band — hard linija is 50/50 hard|superhard.
+  if (mode === "single") {
+    return hardHalf < 0.5 ? "hard" : "superhard";
+  }
+
   if (hardHalf <= 0.25) return "mediumHard";
   if (hardHalf < 0.65) return "hard";
   return "superhard";
 }
 
-/** Together: soft half → soft, center ticks → medium, hard half → hard. */
+/** Together: soft linija → soft, medium bar → medium, hard linija → hard. */
 export function togetherFirmnessFromPreference(
   preference: number,
 ): TogetherFirmness {
-  const mid = (MIN_PREFERENCE + MAX_PREFERENCE) / 2;
-  if (preference === Math.floor(mid) || preference === Math.ceil(mid)) {
+  const { mediumLow, mediumHigh } = preferenceMediumBounds();
+  if (preference >= mediumLow && preference <= mediumHigh) {
     return "medium";
   }
-  if (preference < mid) return "soft";
+  if (preference < mediumLow) return "soft";
   return "hard";
 }
 
@@ -119,21 +144,21 @@ const SINGLE_LIGHT: Record<AloneFirmness, number> = {
   supersoft: 1,
   soft: 2,
   medium: 3,
-  mediumHard: 4, // not in top block; treat as hard
+  mediumHard: 4, // Single has no medium/hard; treat as hard if it slips through
   hard: 4,
   superhard: 6,
 };
 
 const SINGLE_HEAVY: Record<AloneFirmness, number> = {
-  supersoft: 2, // falls toward soft band in old map
+  supersoft: 3, // collapsed to soft band
   soft: 3,
   medium: 4,
-  mediumHard: 5,
+  mediumHard: 5, // treat as hard
   hard: 5,
   superhard: 6,
 };
 
-function resolveSingleFirmness(
+export function resolveSingleFirmness(
   firmness: AloneFirmness,
   weight: WeightClass,
 ): AloneFirmness {
@@ -326,7 +351,11 @@ export function resolveVisual(input: {
   const partnerW = weightClass(input.profile.partnerWeight);
 
   if (mode === "single") {
-    const firmness = aloneFirmnessFromPreference(input.profile.yourPreference);
+    const firmness = aloneFirmnessFromPreference(
+      input.profile.yourPreference,
+      "single",
+      youW,
+    );
     const resolved = resolveSingleFirmness(firmness, youW);
     const state = singleVisualState(firmness, youW);
     const level = aloneFirmnessToLevel(resolved);
@@ -341,7 +370,11 @@ export function resolveVisual(input: {
   }
 
   if (mode === "doubleAlone") {
-    const firmness = aloneFirmnessFromPreference(input.profile.yourPreference);
+    const firmness = aloneFirmnessFromPreference(
+      input.profile.yourPreference,
+      "doubleAlone",
+      youW,
+    );
     const resolved = resolveAloneFirmness(firmness, youW);
     const state = aloneVisualState(firmness, youW);
     const level = aloneFirmnessToLevel(resolved);
