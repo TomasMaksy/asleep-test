@@ -1,20 +1,38 @@
+import {
+  buildMerchantReturnPolicy,
+  buildOrganizationShippingService,
+} from "@/lib/merchant-policies";
 import { getSiteUrl } from "@/lib/site-url";
 
-/** Sitewide Organization + WebSite JSON-LD for rich results. */
+/** Sitewide OnlineStore + WebSite JSON-LD for rich results / merchant panel. */
 export function OrganizationJsonLd() {
   const site = getSiteUrl();
+  const returnPolicy = buildMerchantReturnPolicy(site);
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "Organization",
+        "@type": "OnlineStore",
         "@id": `${site}/#organization`,
         name: "asleep",
         url: site,
         logo: `${site}/web-app-manifest-512x512.png`,
         email: "info@asleep.lt",
         telephone: "+37061467580",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Vilnius",
+          addressCountry: "LT",
+        },
+        contactPoint: {
+          "@type": "ContactPoint",
+          contactType: "customer service",
+          email: "info@asleep.lt",
+          telephone: "+37061467580",
+        },
+        hasShippingService: buildOrganizationShippingService(),
+        hasMerchantReturnPolicy: returnPolicy,
       },
       {
         "@type": "WebSite",

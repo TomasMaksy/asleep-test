@@ -115,6 +115,8 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   const clipBedRef = useRef<BedKind>("single");
   const playingClipRef = useRef<ConfiguratorClip | null>(null);
   const pendingPackagingRef = useRef(false);
+  /** Step to land on after open/close intro finishes — keep current UI until then. */
+  const pendingStepRef = useRef<Step | null>(null);
   const profileRef = useRef({
     yourWeight,
     yourPreference,
@@ -132,6 +134,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   const together = bed === "double" && sleeping === "together";
   const showPartnerScale = together && (step === 3 || step === 4);
   const showOverlay = step === 3 || step === 4;
+  const confirmLoading = controlsLocked && (step === 1 || step === 2);
 
   const sizes =
     bed === "double" ? DOUBLE_MATTRESS_SIZES : SINGLE_MATTRESS_SIZES;
@@ -227,25 +230,25 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     const mode = videoMode(bed, sleeping);
     shownStateRef.current = defaultVisualState(mode);
     clipBedRef.current = bed;
+    pendingStepRef.current = afterStep;
     startClip({
       id: clipIdRef.current,
       kind: "intro",
       bed,
     });
     applyRecommendation();
-    setStep(afterStep);
   }
 
   function playIntroReverse(afterStep: Step) {
     clipIdRef.current += 1;
     setStageReady(false);
+    pendingStepRef.current = afterStep;
     startClip({
       id: clipIdRef.current,
       kind: "intro",
       bed,
       reverse: true,
     });
-    setStep(afterStep);
   }
 
   function playTransition(from: number, to: number, clipBed: BedKind) {
@@ -345,6 +348,11 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
           startPackaging();
           return;
         }
+        const afterStep = pendingStepRef.current;
+        pendingStepRef.current = null;
+        if (afterStep != null) {
+          setStep(afterStep);
+        }
         unlockControls();
         setStageReady(false);
         return;
@@ -359,6 +367,11 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
           ? isMindTheGapTogether(next.youLevel, next.partnerLevel)
           : false,
       );
+      const afterStep = pendingStepRef.current;
+      pendingStepRef.current = null;
+      if (afterStep != null) {
+        setStep(afterStep);
+      }
       if (pendingPackagingRef.current) {
         startClosingThenPackaging();
         return;
@@ -390,6 +403,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
       setSizeId(SINGLE_MATTRESS_SIZES[0]?.id ?? CONFIGURATOR_DEFAULT_SIZE_ID);
       setSleeping("alone");
       pendingPackagingRef.current = false;
+      pendingStepRef.current = null;
       playingClipRef.current = null;
       setClip(null);
       setStageReady(false);
@@ -398,6 +412,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     if (category === "double" && bed !== "double") {
       setSizeId(DOUBLE_MATTRESS_SIZES[0]?.id ?? "140x200");
       pendingPackagingRef.current = false;
+      pendingStepRef.current = null;
       playingClipRef.current = null;
       setClip(null);
       setStageReady(false);
@@ -801,12 +816,22 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
                 <span className="truncate">{backLabel}</span>
               </button>
               <button
+                aria-busy={confirmLoading}
                 className="inline-flex h-11 min-w-[140px] shrink-0 items-center justify-center rounded-full bg-brand px-6 text-base text-white transition-colors hover:bg-brand-dark disabled:opacity-40 sm:min-w-[167px] lg:h-12"
                 disabled={controlsLocked}
                 onClick={step === 5 ? handleAddToCart : handleConfirm}
                 type="button"
               >
-                {step === 5 ? t("addToBasket") : t("confirm")}
+                {confirmLoading ? (
+                  <span
+                    aria-hidden
+                    className="size-5 animate-spin rounded-full border-2 border-white/30 border-t-white"
+                  />
+                ) : step === 5 ? (
+                  t("addToBasket")
+                ) : (
+                  t("confirm")
+                )}
               </button>
             </div>
           </div>

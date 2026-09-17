@@ -69,16 +69,11 @@
   border-radius: 9999px;
   background: var(--color-brand);
   pointer-events: none;
+  /* No transition: --active-index is scroll-linked each frame. A CSS ease
+     would always chase the swipe and read as lag. */
   transform: translate3d(
     calc(var(--active-index, 0) * (var(--thumb-size) + var(--thumb-gap))),
     0,
     0
   );
-  transition: transform 0.22s cubic-bezier(0.32, 0.72, 0, 1);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .product-gallery-thumb-bar {
-    transition: none;
-  }
 }

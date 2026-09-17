@@ -4,7 +4,7 @@ import { Pause, Play, ZoomIn } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { swiffyslider } from "swiffy-slider";
 import { galleryChromeButtonClassName } from "@/components/product/product-gallery-chrome";
 import type { Locale } from "@/i18n/routing";
@@ -225,7 +225,7 @@ function LayersVideo({
   return (
     <div
       className={cn(
-        "relative overflow-hidden bg-surface",
+        "pointer-events-none relative overflow-hidden bg-surface",
         contain && "flex items-center justify-center",
         className,
       )}
@@ -248,8 +248,11 @@ function LayersVideo({
       {interactive && pauseLabel && playLabel ? (
         <button
           aria-label={playing ? pauseLabel : playLabel}
-          className="absolute top-4 right-4 z-10 flex size-10 cursor-pointer items-center justify-center rounded-full bg-brand text-white transition-colors hover:bg-brand-dark"
-          onClick={togglePlayback}
+          className="pointer-events-auto absolute top-4 right-4 z-10 flex size-10 cursor-pointer items-center justify-center rounded-full bg-brand text-white transition-colors hover:bg-brand-dark"
+          onClick={(event) => {
+            event.stopPropagation();
+            togglePlayback();
+          }}
           onPointerDown={(event) => event.stopPropagation()}
           type="button"
         >
@@ -436,7 +439,6 @@ function GalleryTile({
         onClick={onOpen}
         type="button"
       />
-      <ZoomButton label={zoomLabel} onClick={onOpen} />
     </div>
   );
 }
@@ -470,9 +472,9 @@ const AUTOPLAY_MS = 5000;
 const AUTOPLAY_START_DELAY_MS = 8000;
 const PACKSHOT_SLIDE_INDEX = 1;
 
-function activeSlideIndex(sliderElement: Element, slideCount: number) {
-  const container = sliderElement.querySelector(".slider-container");
-  if (!(container instanceof HTMLElement) || slideCount <= 1) {
+/** Fractional slide position from native scroll-snap (0 … slideCount-1). */
+function slideProgress(container: HTMLElement, slideCount: number) {
+  if (slideCount <= 1) {
     return 0;
   }
 
@@ -481,9 +483,7 @@ function activeSlideIndex(sliderElement: Element, slideCount: number) {
     return 0;
   }
 
-  return Math.abs(
-    Math.round((Math.abs(container.scrollLeft) / maxScroll) * (slideCount - 1)),
-  );
+  return (Math.abs(container.scrollLeft) / maxScroll) * (slideCount - 1);
 }
 
 function MobileGallery({
@@ -501,6 +501,7 @@ function MobileGallery({
   const locale = useLocale();
   const reduceMotion = usePrefersReducedMotion();
   const sliderRef = useRef<HTMLDivElement>(null);
+  const thumbsRootRef = useRef<HTMLDivElement>(null);
   const thumbsRailRef = useRef<HTMLDivElement>(null);
   const previousSizeId = useRef(sizeId);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -523,16 +524,44 @@ function MobileGallery({
 
   useEffect(() => {
     const root = sliderRef.current;
+    const thumbsRoot = thumbsRootRef.current;
     if (!root) {
       return;
     }
 
     // Official API: https://www.swiffyslider.com/docs/ + npm `swiffy-slider`
     swiffyslider.initSlider(root);
-    swiffyslider.onSlideEnd(root, () => {
-      const slideCount = root.querySelectorAll(".slider-container > *").length;
-      setActiveIndex(activeSlideIndex(root, slideCount));
-    });
+
+    const container = root.querySelector(".slider-container");
+    if (!(container instanceof HTMLElement)) {
+      return;
+    }
+
+    // Drive the underline from scroll itself (rAF). Waiting for onSlideEnd + a
+    // CSS transition is what made the bar lag behind finger swipes.
+    let raf = 0;
+    const syncFromScroll = () => {
+      raf = 0;
+      const progress = slideProgress(container, container.children.length);
+      thumbsRoot?.style.setProperty("--active-index", String(progress));
+      const index = Math.round(progress);
+      setActiveIndex((prev) => (prev === index ? prev : index));
+    };
+    const onScroll = () => {
+      if (raf === 0) {
+        raf = requestAnimationFrame(syncFromScroll);
+      }
+    };
+
+    container.addEventListener("scroll", onScroll, { passive: true });
+    syncFromScroll();
+
+    return () => {
+      container.removeEventListener("scroll", onScroll);
+      if (raf !== 0) {
+        cancelAnimationFrame(raf);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -611,25 +640,25 @@ function MobileGallery({
         className="swiffy-slider product-gallery-swiffy slider-item-nogap slider-item-snapstart slider-nav-nodelay slider-indicators-outside slider-indicators-sm"
         ref={sliderRef}
       >
-        <ul className="slider-container">
-          {slides.map((slide, index) => {
-            const isActive = index === activeIndex;
-            return (
-              <li
-                className="relative overflow-hidden bg-surface"
-                key={slide.id}
-              >
-                {slide.type === "video" ? (
-                  <LayersVideo
-                    className="absolute inset-0 size-full"
-                    interactive={isActive}
-                    pauseLabel={t("pauseAnimation")}
-                    playLabel={t("playAnimation")}
-                    poster={slide.poster ?? slide.thumb}
-                    src={slide.src}
-                  />
-                ) : (
-                  <>
+        <div className="relative">
+          <ul className="slider-container">
+            {slides.map((slide, index) => {
+              const isActive = index === activeIndex;
+              return (
+                <li
+                  className="relative overflow-hidden bg-surface"
+                  key={slide.id}
+                >
+                  {slide.type === "video" ? (
+                    <LayersVideo
+                      className="absolute inset-0 size-full"
+                      interactive={isActive}
+                      pauseLabel={t("pauseAnimation")}
+                      playLabel={t("playAnimation")}
+                      poster={slide.poster ?? slide.thumb}
+                      src={slide.src}
+                    />
+                  ) : (
                     <Image
                       alt={t(slide.altKey)}
                       className={cn(
@@ -643,41 +672,28 @@ function MobileGallery({
                       sizes="(min-width: 1024px) 55vw, 100vw"
                       src={staticImageUrl(slide.src)}
                     />
-                    <button
-                      aria-haspopup="dialog"
-                      aria-label={t("zoomLabel")}
-                      className="absolute inset-0 z-1 cursor-zoom-in"
-                      onClick={() => openZoom(index)}
-                      type="button"
-                    />
-                  </>
-                )}
+                  )}
 
-                {slide.id === "hero" ? (
-                  <div className="pointer-events-none absolute top-0 left-4 z-10 w-24">
-                    <Image
-                      alt={awardAlt}
-                      className="h-auto w-full"
-                      height={429}
-                      src={staticImageUrl(awardSrc)}
-                      width={256}
-                    />
-                  </div>
-                ) : null}
+                  {slide.id === "hero" ? (
+                    <div className="pointer-events-none absolute top-0 left-4 z-10 w-24">
+                      <Image
+                        alt={awardAlt}
+                        className="h-auto w-full"
+                        height={429}
+                        src={staticImageUrl(awardSrc)}
+                        width={256}
+                      />
+                    </div>
+                  ) : null}
+                </li>
+              );
+            })}
+          </ul>
 
-                <ZoomButton
-                  label={t("zoomLabel")}
-                  onClick={() => openZoom(index)}
-                />
-              </li>
-            );
-          })}
-        </ul>
+          <ZoomButton label={t("zoomLabel")} onClick={() => openZoom()} />
+        </div>
 
-        <div
-          className="product-gallery-thumbs"
-          style={{ "--active-index": activeIndex } as CSSProperties}
-        >
+        <div className="product-gallery-thumbs" ref={thumbsRootRef}>
           <div className="product-gallery-thumbs-rail" ref={thumbsRailRef}>
             <div className="product-gallery-thumbs-track">
               <div className="slider-indicators">
@@ -687,7 +703,6 @@ function MobileGallery({
                     aria-label={t(slide.altKey)}
                     className={index === activeIndex ? "active" : undefined}
                     key={slide.id}
-                    onClick={() => setActiveIndex(index)}
                     type="button"
                   >
                     <span className="relative block aspect-square overflow-hidden rounded-xl bg-surface">
@@ -865,15 +880,21 @@ function DesktopGallery({
           zoomLabel={t("zoomLabel")}
         />
         <div className="relative">
+          <button
+            aria-haspopup="dialog"
+            aria-label={t("zoomLabel")}
+            className="absolute inset-0 z-0 cursor-zoom-in"
+            onClick={() => setZoomIndex(3)}
+            type="button"
+          />
           <LayersVideo
-            className="aspect-390/488"
+            className="relative aspect-390/488"
             key={layersVideo}
             pauseLabel={t("pauseAnimation")}
             playLabel={t("playAnimation")}
             poster={layersThumb}
             src={layersVideo}
           />
-          <ZoomButton label={t("zoomLabel")} onClick={() => setZoomIndex(3)} />
         </div>
         <GalleryTile
           alt={t("benefitsAlt")}

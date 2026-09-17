@@ -50,6 +50,26 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // Collapse www + legacy /lt into one hop (avoids
+      // www…/lt/… → apex…/lt/… → apex…/…).
+      {
+        source: "/lt",
+        has: [{ type: "host", value: "www.asleep.lt" }],
+        destination: "https://asleep.lt/",
+        permanent: true,
+      },
+      {
+        source: "/lt/:path((?!ingest(?:/|$)).*)",
+        has: [{ type: "host", value: "www.asleep.lt" }],
+        destination: "https://asleep.lt/:path",
+        permanent: true,
+      },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.asleep.lt" }],
+        destination: "https://asleep.lt/:path*",
+        permanent: true,
+      },
       {
         source: "/lt",
         destination: "/",
