@@ -571,8 +571,8 @@ function CheckoutForm({
   const footer = (
     <footer className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 border-grey border-t pt-4 text-[13px] text-brand">
       <Link href="/contact">{t("footer.refund")}</Link>
-      <Link href="/contact">{t("footer.privacy")}</Link>
-      <Link href="/contact">{t("footer.terms")}</Link>
+      <Link href="/privacy">{t("footer.privacy")}</Link>
+      <Link href="/terms">{t("footer.terms")}</Link>
     </footer>
   );
 

@@ -14,9 +14,19 @@ function isInternalHref(href: string) {
   return href.startsWith("/") || href.startsWith("#");
 }
 
+function getSupportItems(messages: Awaited<ReturnType<typeof getMessages>>) {
+  const items = messages.support;
+  if (!Array.isArray(items)) {
+    throw new Error(
+      'Missing messages.support — register this route in loadMessagesForPath (home key "support").',
+    );
+  }
+  return items as SupportItem[];
+}
+
 export async function SupportSection() {
   const messages = await getMessages();
-  const items = messages.support as SupportItem[];
+  const items = getSupportItems(messages);
 
   return (
     <section className="bg-brand-muted">

@@ -28,8 +28,8 @@
   "overlayLabel": "Čiužinio konfigūratorius",
   "previousQuestion": "Ankstesnis klausimas",
   "resultTitle": "Peržiūrėkite rezultatą",
-  "yourResult": "Jūsų rezultatas",
-  "partnerResult": "Partnerio rezultatas",
+  "yourResult": "Jūsų rinkinys",
+  "partnerResult": "Partnerio rinkinys",
   "configuration": "konfigūracija {number}",
   "readMore": "Skaityti daugiau",
   "readLess": "Skaityti mažiau",
@@ -41,9 +41,17 @@
   "updatingMattress": "Atnaujiname čiužinį",
   "mindTheGapTitle": "Dėmesio tarpui",
   "mindTheGapBody": "Šiam deriniui rekomenduojame du vienviečius čiužinius. Dviviečio asleep viršutinis sluoksnis nėra perskirtas, todėl didelis kietumo skirtumas per vidurį gali jaustis kaip briauna.",
-  "resultSolo": "Tai konfigūracija, kurią rekomenduojame jums.",
-  "resultMatch": "Puikus derinys — vienas dvivietis čiužinys, kiekviena pusė nustatyta taip, kaip jums abiem patogiausia.",
-  "resultNoMatch": "Jūsų kietumo nustatymai per toli vienam dviviečiam čiužiniui. Rekomenduojame du vienviečius, kad kiekvienas miegotų ant savo konfigūracijos.",
+  "resultSolo": "Pagal jūsų svorį ir miego pageidavimus rekomenduojame šį sluoksnių rinkinį. Bet kada galite atidaryti asleep ir perrikiuoti putas, jei norite minkščiau arba kietiau.",
+  "resultMatch": "Tikriausiai jau žinojote — esate svajonių pora. Užsisakykite dvivietį asleep, nustatykite kiekvieną pusę pagal save ir miegokite kartu be plyšio per vidurį.",
+  "resultNoMatch": "Jūsų kietumo nustatymai per toli vienam dviviečiam čiužiniui. Rekomenduojame du vienviečius, kad kiekvienas miegotų ant savo sluoksnių rinkinio.",
+  "layers": {
+    "tencel": "Tencel",
+    "hypersupport": "HyperSupport",
+    "memoryFoam": "Memory putos",
+    "coldFoamSoft": "HR putos minkštos",
+    "coldFoamFirm": "HR putos kietos",
+    "cover": "Užvalkalas"
+  },
   "scale": [
     "Ypač minkštas",
     "Minkštas",
@@ -55,27 +63,27 @@
   "advice": [
     {
       "text": "Tai minkščiausia konfigūracija. Ant šono miegantiems ir lengvesnio kūno žmonėms čia paprastai jaučiamas didžiausias spaudimo sumažinimas — pečiai ir klubai gali įsmigti.",
-      "more": "Jei pabundate ant šono ir mėgstate debesies pojūtį, pradėkite čia. Vėliau visada galite atidaryti asleep ir pakelti kietumą per vieną lygį."
+      "more": "HyperSupport ir memory putos yra giliau rinkinyje, todėl pirmiausia jus pasitinka minkštos HR putos — įsmingate į čiužinį, o ne gulite ant jo. Komforto zonos vis tiek remia pečius ir klubus, todėl pojūtis minkštas, bet ne chaotiškas. asleep paruoštas miegoti vos išvyniojus; vėliau galite atidaryti ir pakelti kietumą, jei norėsite tvirčiau."
     },
     {
       "text": "Minkštas pojūtis su šiek tiek daugiau struktūros apačioje. Tinka, jei norite minkštumo neprarasdami laikysenos.",
-      "more": "Dažnas pasirinkimas mišrioms miego pozoms. Jei ypač minkšta atrodo per daug įsmigimo, tai kitas žingsnis aukštyn."
+      "more": "Memory putos prisitaiko prie kūno ir mažina spaudimą jautriose vietose, o HyperSupport išlaiko paviršių gyvą, kai apsiverčiate. Minkštos HR putos lieka aukščiau, todėl šiek tiek įsmingate, o kietos HR putos apačioje duoda ramų pagrindą. Geras pasirinkimas, jei ypač minkšta atrodė per minkšta. Iš dėžės — paruošta tai pačiai nakčiai."
     },
     {
-      "text": "asleep atkeliauja šia konfigūracija. Ji subalansuoja minkštumą ir atramą daugumai miegančiųjų ir miego pozų.",
-      "more": "Jei abejojate, pirmiausia miegokite taip. Po kelių naktų galite atidaryti užvalkalą ir apversti sluoksnį, jei norite minkščiau arba kietiau."
+      "text": "asleep atkeliauja šia konfigūracija — subalansuotas minkštumas ir atrama daugumai miegančiųjų ir miego pozų.",
+      "more": "HyperSupport sumažina spaudimą ten, kur kūnui reikia, o memory putos seka kontūrus, kad pečiai ir klubai neliktų „kabėti“. Žemiau minkštos HR putos atsuktos į viršų, kad šiek tiek įsmigtumėte, o kietos HR putos laiko stuburą tiesiai. Universalus pasirinkimas miegantiems ant šono, nugaros ar mišriai. Išvyniokite asleep ir miegokite — sluoksnius visada galite perrikiuoti vėliau."
     },
     {
-      "text": "Kietesnis už numatytąjį. Viršuje vis dar yra šiek tiek pasidavimo, o klubams ir juosmeniui — tvirtesnis pagrindas.",
-      "more": "Ant nugaros miegantiems ir tiems, kurie mėgsta gulėti ant čiužinio, o ne jame, dažnai tinka čia. Taip pat geras kompromisas, kai du miegančiųjų pageidavimai panašūs, bet ne identiški."
+      "text": "Kietesnis už numatytąjį. Viršuje vis dar yra pasidavimo, o klubams ir juosmeniui — tvirtesnis pagrindas.",
+      "more": "HyperSupport ir memory putos lieka arčiau paviršiaus kontūravimui ir spaudimo mažinimui, o kietos HR putos kyla virš minkštų — šerdis labiau „ant čiužinio“. Išlaikote pečių komforto zonas ir aiškesnę atramą klubams bei juosmeniui — tinka ant nugaros miegantiems arba tiems, kuriems vidutinis atrodė vos per minkštas. Paruošta naudoti iš karto iš dėžės."
     },
     {
       "text": "Atramesnė konfigūracija su mažesniu įsmigimu. Ant nugaros ir pilvo miegantiems bei sunkesnio kūno žmonėms ji dažnai tinka geriau.",
-      "more": "Jei greitai įšylate arba nemėgstate, kad putos apglėbtų, kietesni sluoksniai laiko jus aukščiau, o komforto zonos vis tiek seka stuburą."
+      "more": "Memory putos aukščiau duoda kūno apgaubimą be gilaus įsmigimo, o HyperSupport laiko paviršių elastingą judant. Kietos HR putos veda šerdį, todėl liekate aukščiau, o minkštos HR putos apačioje šiek tiek sušvelnina. Mažiau „apkabinimo“, daugiau stabilios laikysenos — naudinga, jei greitai įšylate ar nemėgstate grimzti. Miegokite tą pačią naktį; sluoksnius keiskite tik jei reikės."
     },
     {
       "text": "Atramiškiausias derinys. Rinkitės jį, jei norite gulėti ant čiužinio, o ne jame.",
-      "more": "Ši konfigūracija skirta tiems, kurie mėgsta labai stabilų, viešbučio kietumo pojūtį. Vėliau vis tiek galite pajudinti sluoksnį, jei paaiškės, kad atramos per daug."
+      "more": "Kietos HR putos yra aukščiausiai putų rinkinyje, todėl paviršius lieka viešbučio kietumo ir stabilus. Minkštos, memory ir HyperSupport putos apačioje nuima aštrų spaudimą, bet neleidžia pradingti į lovą. Skirta tiems, kurie nori aiškios atramos ir minimalaus įsmigimo. asleep naudoti galima iškart po išpakavimo — atidarykite ir perrikiuokite tik jei atramos pasirodys per daug."
     }
   ]
 }

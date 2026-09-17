@@ -2,7 +2,9 @@ import { notFound } from "next/navigation";
 import * as rootParams from "next/root-params";
 import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
+import { loadMessagesForPath } from "@/i18n/load-messages";
 import { routing } from "@/i18n/routing";
+import { getRequestPathname } from "@/lib/request-pathname";
 
 export default getRequestConfig(async ({ locale, requestLocale }) => {
   if (!hasLocale(routing.locales, locale)) {
@@ -25,34 +27,11 @@ export default getRequestConfig(async ({ locale, requestLocale }) => {
     }
   }
 
-  const [
-    shared,
-    home,
-    productOriginal,
-    reviewsPage,
-    contactPage,
-    configuratorPage,
-    checkoutPage,
-  ] = await Promise.all([
-    import(`../../messages/${locale}.json`),
-    import(`../../messages/${locale}/home.json`),
-    import(`../../messages/${locale}/product-original.json`),
-    import(`../../messages/${locale}/reviews-page.json`),
-    import(`../../messages/${locale}/contact.json`),
-    import(`../../messages/${locale}/configurator.json`),
-    import(`../../messages/${locale}/checkout.json`),
-  ]);
+  const pathname = await getRequestPathname();
+  const messages = await loadMessagesForPath(locale, pathname);
 
   return {
     locale,
-    messages: {
-      ...shared.default,
-      ...home.default,
-      productOriginal: productOriginal.default,
-      reviewsPage: reviewsPage.default,
-      contactPage: contactPage.default,
-      configuratorPage: configuratorPage.default,
-      checkoutPage: checkoutPage.default,
-    },
+    messages,
   };
 });

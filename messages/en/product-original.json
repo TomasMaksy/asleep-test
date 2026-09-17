@@ -112,7 +112,7 @@
         "materials": [
           "Premium cover with TENCEL™ — soft, pleasant to the touch and highly breathable",
           "Memory Foam — adapts to the contours of your body and provides a comfortable enveloping feel",
-          "asleep Support Foam — a responsive layer that quickly reacts to body movement",
+          "HyperSupport — a responsive layer that quickly reacts to body movement",
           "High-quality HR foam — for resilient comfort and even body support",
           "Firm foam base — for mattress stability and durability",
           "Non-slip bottom layer — helps keep the mattress securely in place"
@@ -230,9 +230,9 @@
         ]
       },
       "hypersupport": {
-        "title": "asleep Support Foam",
-        "body": "asleep Support Foam does more than support your body. The responsive foam reacts quickly to movement and helps create a comfortable, stable sleep surface.",
-        "mediaAlt": "Close-up of asleep Support Foam",
+        "title": "HyperSupport",
+        "body": "HyperSupport does more than support your body. The responsive foam reacts quickly to movement and helps create a comfortable, stable sleep surface.",
+        "mediaAlt": "Close-up of HyperSupport foam",
         "advantages": [
           "Excellent point elasticity for body support",
           "Open-cell structure for air circulation",
@@ -321,7 +321,7 @@
     "items": [
       {
         "question": "Construction and materials",
-        "answer": "Mattress height: 25 cm\n\nasleep consists of:\n- Top cover (1 cm)\n- Memory Foam (3 cm)\n- asleep Support Foam (2 cm)\n- HR Comfort Foam (10 cm)\n- asleep Base Foam (10 cm)\n- Non-slip bottom cover layer\n\nDensities\nasleep Support Foam: D60\nMemory Foam: D45\nHR Comfort Foam: D30\n\nCover composition\nTop/white side: 19% lyocell (Tencel) / 19% viscose / 62% polyester\nNon-slip underside: 100% polyester"
+        "answer": "Mattress height: 25 cm\n\nasleep consists of:\n- Top cover (1 cm)\n- Memory Foam (3 cm)\n- HyperSupport (2 cm)\n- HR Comfort Foam (10 cm)\n- asleep Base Foam (10 cm)\n- Non-slip bottom cover layer\n\nDensities\nHyperSupport: D60\nMemory Foam: D45\nHR Comfort Foam: D30\n\nCover composition\nTop/white side: 19% lyocell (Tencel) / 19% viscose / 62% polyester\nNon-slip underside: 100% polyester"
       },
       {
         "question": "Sizes and weights",
@@ -472,7 +472,7 @@
       {
         "id": "topper",
         "title": "Original Topper",
-        "description": "2 firmness levels — you choose the comfort\nasleep Support Foam and Memory Foam\n30-night sleep trial"
+        "description": "2 firmness levels — you choose the comfort\nHyperSupport and Memory Foam\n30-night sleep trial"
       }
     ]
   }

@@ -5,6 +5,7 @@ import { asleepNavyPackagingFilterStyle } from "@/components/asleep-navy-filter"
 import { useAsleepNavyFilterStyle } from "@/components/asleep-navy-filter-style";
 import {
   type BedKind,
+  CLOSE_SNAP_SEEK_RATIO,
   introPosterSrc,
   introVideoSrc,
   packagingVideoSrc,
@@ -19,7 +20,14 @@ import { cn } from "@/lib/utils";
 export type ClipKind = "intro" | "transition" | "packaging";
 
 export type ConfiguratorClip =
-  | { id: number; kind: "intro"; bed: BedKind; reverse?: boolean }
+  | {
+      id: number;
+      kind: "intro";
+      bed: BedKind;
+      reverse?: boolean;
+      /** Packaging handoff: skip open pose + play fast. */
+      snapClose?: boolean;
+    }
   | {
       id: number;
       kind: "transition";
@@ -93,15 +101,19 @@ function usesScnFraming(bed: BedKind, kind: ClipKind) {
 /** Closed sits low; open lifts the stack (not the shadow) and stays there. */
 function mediaLift(
   clip: ConfiguratorClip | null,
-): "closed" | "open" | "packaging" {
+): "closed" | "closed-snap" | "open" | "open-snap" | "packaging" {
   if (!clip) {
     return "closed";
   }
   if (clip.kind === "packaging") {
     return "packaging";
   }
+  if (clip.kind === "hold") {
+    // Instant restore from packaging — no lift tween.
+    return "open-snap";
+  }
   if (clip.kind === "intro" && clip.reverse) {
-    return "closed";
+    return clip.snapClose ? "closed-snap" : "closed";
   }
   return "open";
 }
@@ -110,30 +122,37 @@ function mediaLift(
  * Lift timings in opening-clip content seconds (file timeline).
  * Tuned so at 1.5× wall = delay 0.42s / dur 1.05s open, delay 0.7s close.
  * Divided by playbackRate so speed-ups stay locked to the video.
+ * `closed-snap` is short — reverse already starts mid-fold.
  */
 const LIFT_CONTENT = {
   open: { delay: 0.63, duration: 1.575 },
+  "open-snap": { delay: 0, duration: 0 },
   closed: { delay: 1.05, duration: 1.575 },
+  "closed-snap": { delay: 0.12, duration: 0.55 },
   packaging: { delay: 0, duration: 0.35 },
 } as const;
 
 const LIFT_EASING = {
   // Sharp S-curve: holds, then moves, then settles (no bounce).
   open: "cubic-bezier(0.85, 0, 0.15, 1)",
+  "open-snap": "linear",
   closed: "cubic-bezier(0.85, 0, 0.15, 1)",
+  "closed-snap": "cubic-bezier(0.85, 0, 0.15, 1)",
   packaging: "cubic-bezier(0.32, 0.72, 0, 1)",
 } as const;
 
 function mediaLiftStyle(
-  lift: "closed" | "open" | "packaging",
+  lift: "closed" | "closed-snap" | "open" | "open-snap" | "packaging",
   playbackRate: number,
   reducedMotion: boolean,
 ): { transition: string } {
   // Catchup seeks the clip to the end — snap the stack with it.
+  // closed-snap keeps a short settle even at high rates.
   if (
     reducedMotion ||
+    lift === "open-snap" ||
     playbackRate >= VIDEO_PLAYBACK_RATE_CATCHUP ||
-    playbackRate >= 4
+    (playbackRate >= 4 && lift !== "closed-snap")
   ) {
     return { transition: "none" };
   }
@@ -204,9 +223,10 @@ function videoHasPath(video: HTMLVideoElement, path: string) {
   return src.includes(stem);
 }
 
-function seekToStart(video: HTMLVideoElement, done: () => void) {
+function seekToTime(video: HTMLVideoElement, time: number, done: () => void) {
+  const target = Math.max(0, time);
   if (
-    video.currentTime <= 0.02 &&
+    Math.abs(video.currentTime - target) <= 0.05 &&
     video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA
   ) {
     done();
@@ -218,7 +238,7 @@ function seekToStart(video: HTMLVideoElement, done: () => void) {
   };
   video.addEventListener("seeked", onSeeked);
   try {
-    video.currentTime = 0;
+    video.currentTime = target;
   } catch {
     video.removeEventListener("seeked", onSeeked);
     done();
@@ -226,6 +246,79 @@ function seekToStart(video: HTMLVideoElement, done: () => void) {
   return () => {
     video.removeEventListener("seeked", onSeeked);
   };
+}
+
+function seekToStart(video: HTMLVideoElement, done: () => void) {
+  return seekToTime(video, 0, done);
+}
+
+/**
+ * Last presentable frame. Exact `duration` often seeks to 0 on VP9/WebM —
+ * sit slightly before EOF and retry if we landed in the first half.
+ */
+function seekToEnd(video: HTMLVideoElement, done: () => void): () => void {
+  let cancelled = false;
+  let stopInner = () => {};
+
+  const cleanup = () => {
+    cancelled = true;
+    stopInner();
+  };
+
+  const run = (retriesLeft: number) => {
+    if (cancelled) {
+      return;
+    }
+    const duration = video.duration;
+    if (!Number.isFinite(duration) || duration <= 0) {
+      if (retriesLeft <= 0) {
+        done();
+        return;
+      }
+      const onReady = () => {
+        video.removeEventListener("loadedmetadata", onReady);
+        video.removeEventListener("durationchange", onReady);
+        run(retriesLeft - 1);
+      };
+      video.addEventListener("loadedmetadata", onReady);
+      video.addEventListener("durationchange", onReady);
+      stopInner = () => {
+        video.removeEventListener("loadedmetadata", onReady);
+        video.removeEventListener("durationchange", onReady);
+      };
+      return;
+    }
+
+    const target = Math.max(0, duration - 0.05);
+    stopInner = seekToTime(video, target, () => {
+      if (cancelled) {
+        return;
+      }
+      // Seek-to-EOF quirk: engine reports seeked but stays near frame 0.
+      if (duration > 0.3 && video.currentTime < duration * 0.7) {
+        if (retriesLeft > 0) {
+          stopInner = seekToTime(video, target, () => {
+            if (!cancelled) {
+              done();
+            }
+          });
+          return;
+        }
+      }
+      done();
+    });
+  };
+
+  run(3);
+  return cleanup;
+}
+
+/** Mid-fold start for packaging close — clamp so the closed end still plays. */
+function snapCloseSeekTime(duration: number): number {
+  if (!Number.isFinite(duration) || duration <= 0) {
+    return 0;
+  }
+  return Math.min(duration * CLOSE_SNAP_SEEK_RATIO, duration * 0.55);
 }
 
 /**
@@ -392,7 +485,11 @@ export function ConfiguratorVideos({
     const outgoingIsPackaging = clipKindRef.current[current] === "packaging";
 
     const src = clipSrc(clip);
-    applyPlaybackRate(incoming, playbackRateRef.current);
+    // Hold snaps to an end frame at rate 1 — catch-up applyPlaybackRate would
+    // seek the wrong (previous) source to EOF before the new clip loads.
+    if (clip.kind !== "hold") {
+      applyPlaybackRate(incoming, playbackRateRef.current);
+    }
     if (!videoHasPath(incoming, src)) {
       incoming.src = src;
       incoming.load();
@@ -501,15 +598,17 @@ export function ConfiguratorVideos({
         return;
       }
       started = true;
-      applyPlaybackRate(incoming, playbackRateRef.current);
       if (reducedMotion || clip.kind === "hold") {
+        // Hold must show the END frame. Catch-up rate + seek-to-duration often
+        // lands on frame 0 for VP9/WebM — keep rate 1 and seek just before EOF.
         try {
-          incoming.currentTime = Number.isFinite(incoming.duration)
-            ? incoming.duration
-            : 0;
+          incoming.playbackRate = 1;
         } catch {
-          incoming.currentTime = 0;
+          // ignore
         }
+        incoming.pause();
+        // Playing near EOF fires `ended` and can unlock before the frame paints.
+        incoming.removeEventListener("ended", finish);
         const settleHold = () => {
           if (disposed) {
             return;
@@ -518,29 +617,52 @@ export function ConfiguratorVideos({
             setVideoLayer(outgoing, "front");
           }
           setVideoLayer(incoming, "back");
-          stopPaint = whenVideoFramesPainted(incoming, 2, () => {
-            reveal();
-            finish();
-          });
+
+          const paintHold = () => {
+            if (disposed) {
+              return;
+            }
+            stopPaint = whenVideoFramesPainted(incoming, 2, () => {
+              reveal();
+              finish();
+            });
+          };
+
+          // Nudge a decode, then re-pin to EOF in case play advanced/reset.
           void incoming
             .play()
             .then(() => {
               incoming.pause();
+              const duration = incoming.duration;
+              const target =
+                Number.isFinite(duration) && duration > 0
+                  ? Math.max(0, duration - 0.05)
+                  : 0;
+              if (
+                Number.isFinite(duration) &&
+                duration > 0.3 &&
+                incoming.currentTime < duration * 0.7
+              ) {
+                stopSeek = seekToTime(incoming, target, paintHold);
+                return;
+              }
+              paintHold();
             })
             .catch(() => {
               reveal();
               finish();
             });
         };
-        if (incoming.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
-          settleHold();
-        } else {
-          const onSeeked = () => {
-            incoming.removeEventListener("seeked", onSeeked);
-            settleHold();
-          };
-          incoming.addEventListener("seeked", onSeeked);
-        }
+        stopSeek = seekToEnd(incoming, settleHold);
+        return;
+      }
+      applyPlaybackRate(incoming, playbackRateRef.current);
+      if (clip.kind === "intro" && clip.reverse && clip.snapClose) {
+        stopSeek = seekToTime(
+          incoming,
+          snapCloseSeekTime(incoming.duration),
+          playThenReveal,
+        );
         return;
       }
       stopSeek = seekToStart(incoming, playThenReveal);
@@ -606,33 +728,33 @@ export function ConfiguratorVideos({
                 <title>Mattress shadow</title>
                 <defs>
                   <filter
-                    height="180%"
+                    height="220%"
                     id={`${filterId}-soft`}
                     primitiveUnits="userSpaceOnUse"
-                    width="180%"
-                    x="-40%"
-                    y="-40%"
+                    width="220%"
+                    x="-60%"
+                    y="-60%"
                   >
-                    <feGaussianBlur in="SourceGraphic" stdDeviation="1.05" />
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="2.4" />
                   </filter>
                   <filter
-                    height="160%"
+                    height="200%"
                     id={`${filterId}-contact`}
                     primitiveUnits="userSpaceOnUse"
-                    width="160%"
-                    x="-30%"
-                    y="-30%"
+                    width="200%"
+                    x="-50%"
+                    y="-50%"
                   >
-                    <feGaussianBlur in="SourceGraphic" stdDeviation="0.45" />
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="1.35" />
                   </filter>
                 </defs>
                 <polygon
-                  fill="rgba(6,16,40,0.12)"
+                  fill="rgba(6,16,40,0.09)"
                   filter={`url(#${filterId}-soft)`}
                   points={MATTRESS_SHADOW[displayBed].soft}
                 />
                 <polygon
-                  fill="rgba(6,16,40,0.20)"
+                  fill="rgba(6,16,40,0.12)"
                   filter={`url(#${filterId}-contact)`}
                   points={MATTRESS_SHADOW[displayBed].contact}
                 />

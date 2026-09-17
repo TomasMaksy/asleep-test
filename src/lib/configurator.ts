@@ -23,6 +23,13 @@ export const CONFIGURATOR_DEFAULT_SIZE_ID: MattressSizeId = "80x200";
 export const VIDEO_PLAYBACK_RATE = 1.5;
 export const VIDEO_PLAYBACK_RATE_QUEUED = 2.4;
 export const VIDEO_PLAYBACK_RATE_FLUSH = 3.2;
+/** Result-step reverse close before packaging — hide firmness mismatch mid-fold. */
+export const VIDEO_PLAYBACK_RATE_CLOSE_SNAP = 3.5;
+/**
+ * Fraction of the reverse-opening clip to skip before play. Starts mid-fold so
+ * the default open pose never flashes over the configured mattress.
+ */
+export const CLOSE_SNAP_SEEK_RATIO = 0.38;
 export const VIDEO_PLAYBACK_RATE_CATCHUP = 12;
 export const MAX_TRANSITION_QUEUE = 2;
 

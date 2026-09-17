@@ -1,8 +1,18 @@
 /**
- * Visual mattress-state video map from Mattresses_asleep.md.
- * Implemented as written — see CONFIGURATOR_VIDEO_REVIEW.md for contradictions.
+ * Visual mattress-state video map.
  *
- * hard in the doc = Firm in the UI.
+ * Final state maps below are authoritative. Older individual clip lines in
+ * Mattresses_asleep.md (e.g. both-<86 hard/soft as SCN_Double_4_*) are stale
+ * and must not be preserved — always resolve oldState/newState from these maps,
+ * then play SCN_{Single|Double}_{old}_{new}.
+ *
+ * Three separate systems (do not mix state IDs):
+ *   A) Single size     → SCN_Single_* + Single state map
+ *   B) Double Alone    → SCN_Double_* + Alone state map
+ *   C) Double Together → SCN_Double_* + Together 3×3 maps (soft/medium/hard)
+ *
+ * hard in the doc = Firm in the UI. Weight: ≤85 light, ≥86 heavy.
+ * One UI action changes one parameter only — no diagonal transitions.
  */
 
 import type { BedKind, Firmness, Sleeping } from "@/lib/configurator";
@@ -190,7 +200,7 @@ function pairKey(you: TogetherFirmness, partner: TogetherFirmness): Pair {
   return `${you}/${partner}`;
 }
 
-/** both <86 */
+/** A) you <86 / partner <86 — hard/soft = 11 (not stale early-doc state 4). */
 const TOGETHER_BOTH_LIGHT: Record<Pair, number> = {
   "soft/soft": 1,
   "medium/soft": 2,
@@ -203,7 +213,7 @@ const TOGETHER_BOTH_LIGHT: Record<Pair, number> = {
   "hard/hard": 8,
 };
 
-/** you >85 / partner <86 */
+/** B) you >85 / partner <86 */
 const TOGETHER_YOU_HEAVY: Record<Pair, number> = {
   "soft/soft": 1,
   "medium/soft": 2,
@@ -216,7 +226,7 @@ const TOGETHER_YOU_HEAVY: Record<Pair, number> = {
   "hard/hard": 9,
 };
 
-/** you <86 / partner >85 */
+/** C) you <86 / partner >85 */
 const TOGETHER_PARTNER_HEAVY: Record<Pair, number> = {
   "soft/soft": 1,
   "medium/soft": 2,
@@ -229,7 +239,11 @@ const TOGETHER_PARTNER_HEAVY: Record<Pair, number> = {
   "hard/hard": 9,
 };
 
-/** both >85 — NOT REAL: hard/soft, soft/hard */
+/**
+ * D) you >85 / partner >85.
+ * hard/soft and soft/hard are NOT REAL — resolved in resolveTogetherPair
+ * (same fallback whether reached by weight or firmness change).
+ */
 const TOGETHER_BOTH_HEAVY: Partial<Record<Pair, number>> = {
   "soft/soft": 4,
   "medium/soft": 6,
@@ -250,7 +264,7 @@ export function resolveTogetherPair(
   let nextPartner = partner;
 
   if (youWeight === "heavy" && partnerWeight === "heavy") {
-    // NOT REAL fallbacks (doc §§11–12 + same for firmness-only)
+    // hard/soft → hard/medium (11); soft/hard → medium/hard (12)
     if (nextYou === "hard" && nextPartner === "soft") {
       nextPartner = "medium";
     } else if (nextYou === "soft" && nextPartner === "hard") {

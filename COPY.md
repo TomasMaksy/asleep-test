@@ -18,16 +18,17 @@ Then say which page and locale you want to work on.
 | File | What it is | Preview |
 |------|------------|---------|
 | `messages/en.json` / `messages/lt.json` | Shared chrome: nav, language names, cart, footer, default SEO title/description | Every page |
-| `messages/{locale}/home.json` | Homepage sections: hero, products, bundles, floating review quotes, bedroom, promise, press, support | `/` and `/en` |
-| `messages/{locale}/product-original.json` | Original mattress PDP: buy box, FAQs, layers, specs, compare, related | `/products/original`, `/en/products/original` |
-| `messages/{locale}/reviews-page.json` | Reviews page: hero, share form, carousel | `/reviews`, `/en/reviews` |
+| `messages/{locale}/home.json` | Homepage sections: hero, products, bundles, floating review quotes, bedroom, promise, press, support | `/` and `/en` (also: `support` on PDP, `reviews` cards on `/reviews`) |
+| `messages/{locale}/product-original.json` | Original mattress PDP: buy box, FAQs, layers, specs, compare, related | `/products/original`, `/en/products/original` (also: layers on home, specs FAQ on contact, hero bits in configurator) |
+| `messages/{locale}/reviews-page.json` | Reviews page: hero, share form, carousel | `/reviews`, `/en/reviews` (also: carousel on PDP) |
 | `messages/{locale}/contact.json` | Contact page | `/contact`, `/en/contact` |
 | `messages/{locale}/configurator.json` | Mattress configurator | `/configurator`, `/en/configurator` |
 | `messages/{locale}/checkout.json` | Fake-door checkout copy | `/checkout`, `/en/checkout` |
+| `content/legal/{locale}/*.md` | Privacy, terms, warranty (long-form; **not** shipped in the global i18n bundle) | `/privacy`, `/terms`, `/warranty` |
 
 `{locale}` is `lt` or `en`. Edit **both** when you change meaning — not only the language you are writing.
 
-How it is wired: `src/i18n/request.ts` merges these files. Namespaces used in code (`hero`, `nav`, `productOriginal.hero`, `reviewsPage.carousel`, …) stay the same, so you can rename a file’s *values* but not its *keys*.
+How UI chrome is wired: `src/i18n/request.ts` loads message JSON **per route** (homepage copy is not sent to checkout, etc.). Legal body copy is separate Markdown under `content/legal/` — see `content/legal/README.md`. Namespaces used in code (`hero`, `nav`, `productOriginal.hero`, …) stay the same, so you can rename a file’s *values* but not its *keys*.
 
 ## How to preview
 
@@ -44,6 +45,9 @@ The first `bun run dev` needs an internet connection so Next can download the Ou
 - Reviews: `/reviews` and `/en/reviews`
 - Checkout: `/checkout` and `/en/checkout`
 - Thank you: `/checkout/thank-you` and `/en/checkout/thank-you`
+- Privacy: `/privacy` and `/en/privacy`
+- Terms: `/terms` and `/en/terms`
+- Warranty: `/warranty` and `/en/warranty`
 
 The language switcher in the header jumps to the same path in the other locale.
 
@@ -87,7 +91,8 @@ These are known leftovers, not bugs in the setup:
 1. Add it to **both** locales, same key path.
 2. If it is a one-off button on an existing page, put it in that page’s JSON.
 3. If it is chrome (nav / cart / footer), put it in `messages/{locale}.json`.
-4. If you are starting a **new page** with a lot of copy, add `messages/{locale}/your-page.json` and ask a developer to merge it in `src/i18n/request.ts` (same pattern as `reviewsPage`).
+4. If you are starting a **new marketing page** with a lot of short UI copy, add `messages/{locale}/your-page.json` and ask a developer to wire it in `src/i18n/load-messages.ts`.
+5. If you are writing a **long legal / policy page**, edit Markdown under `content/legal/{locale}/` instead — do not put that body text in `messages/`.
 
 Do not put user-facing sentences in `.tsx` files.
 

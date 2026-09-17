@@ -112,7 +112,7 @@
         "materials": [
           "Premium užvalkalas su TENCEL™ – švelnus, malonus liesti ir puikiai kvėpuojantis",
           "Memory Foam – prisitaiko prie kūno kontūrų ir suteikia malonų apgaubimo pojūtį",
-          "asleep Support Foam – elastingas sluoksnis, greitai reaguojantis į kūno judesius",
+          "HyperSupport – elastingas sluoksnis, greitai reaguojantis į kūno judesius",
           "Aukštos kokybės HR putos – elastingam komfortui ir tolygiam kūno prilaikymui",
           "Tvirtas putų pagrindas – čiužinio stabilumui ir ilgaamžiškumui",
           "Neslystantis apatinis sluoksnis – kad čiužinys stabiliai išliktų savo vietoje"
@@ -230,9 +230,9 @@
         ]
       },
       "hypersupport": {
-        "title": "asleep Support Foam",
-        "body": "asleep Support Foam ne tik prilaiko kūną. Elastingos putos greitai reaguoja į kūno judesius ir padeda sukurti komfortišką, stabilų miego pagrindą.",
-        "mediaAlt": "Hypersupport putos iš arti",
+        "title": "HyperSupport",
+        "body": "HyperSupport ne tik prilaiko kūną. Elastingos putos greitai reaguoja į kūno judesius ir padeda sukurti komfortišką, stabilų miego pagrindą.",
+        "mediaAlt": "HyperSupport putos iš arti",
         "advantages": [
           "Puikus taškinis elastingumas kūno prilaikymui",
           "Atvira ląstelių struktūra oro cirkuliacijai",
@@ -321,7 +321,7 @@
     "items": [
       {
         "question": "Konstrukcija ir medžiagos",
-        "answer": "Čiužinio aukštis: 25 cm\n\nasleep sudarytas iš:\n- Viršutinis užvalkalas (1 cm)\n- Memory Foam (3 cm)\n- asleep Support Foam (2 cm)\n- HR Comfort Foam (10 cm)\n- asleep Base Foam (10 cm)\n- Neslystantis apatinis užvalkalo sluoksnis\n\nTankiai\nasleep Support Foam: D60\nMemory Foam: D45\nHR Comfort Foam: D30\n\nUžvalkalo sudėtis\nViršus/baltoji pusė: 19 % liocelis (tencel) / 19 % viskozė / 62 % poliesteris\nApačia su neslystančiu sluoksniu: 100 % poliesteris"
+        "answer": "Čiužinio aukštis: 25 cm\n\nasleep sudarytas iš:\n- Viršutinis užvalkalas (1 cm)\n- Memory Foam (3 cm)\n- HyperSupport (2 cm)\n- HR Comfort Foam (10 cm)\n- asleep Base Foam (10 cm)\n- Neslystantis apatinis užvalkalo sluoksnis\n\nTankiai\nHyperSupport: D60\nMemory Foam: D45\nHR Comfort Foam: D30\n\nUžvalkalo sudėtis\nViršus/baltoji pusė: 19 % liocelis (tencel) / 19 % viskozė / 62 % poliesteris\nApačia su neslystančiu sluoksniu: 100 % poliesteris"
       },
       {
         "question": "Dydžiai ir svoriai",
@@ -477,7 +477,7 @@
       {
         "id": "topper",
         "title": "Original Topper",
-        "description": "2 kietumo lygiai – komfortą pasirenkate jūs\nHypersupport ir atminties putos\n30 naktų miego išbandymas"
+        "description": "2 kietumo lygiai – komfortą pasirenkate jūs\nHyperSupport ir atminties putos\n30 naktų miego išbandymas"
       }
     ]
   }

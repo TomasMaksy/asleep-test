@@ -15,6 +15,7 @@ import {
   type ConfiguratorClip,
   ConfiguratorVideos,
 } from "@/app/[locale]/configurator/configurator-videos";
+import { ResultLayerStack } from "@/app/[locale]/configurator/result-layer-stack";
 import { SaleBadge, SalePrice } from "@/components/product/sale-price";
 import { useRouter } from "@/i18n/navigation";
 import { useCartStore } from "@/lib/cart-store";
@@ -32,9 +33,11 @@ import {
   preloadConfiguratorPosters,
   type Sleeping,
   suggestedSingleSizeId,
-  TOGETHER_FIRMNESS_LEVELS,
   VIDEO_PLAYBACK_RATE,
+  VIDEO_PLAYBACK_RATE_CLOSE_SNAP,
 } from "@/lib/configurator";
+import type { ConfiguratorLayerId } from "@/lib/configurator-layer-stack";
+import { cutoutFirmnessForSleeper } from "@/lib/configurator-layer-stack";
 import {
   defaultVisualState,
   resolveVisual,
@@ -65,6 +68,25 @@ type Advice = {
 
 const DESKTOP_MQ = "(min-width: 1024px)";
 
+/** Deepest overflow-y scrollport inside `root` that currently has overflow. */
+function findScrollable(root: HTMLElement): HTMLElement | null {
+  const nodes: HTMLElement[] = [
+    root,
+    ...root.querySelectorAll<HTMLElement>("*"),
+  ];
+  let match: HTMLElement | null = null;
+  for (const el of nodes) {
+    const { overflowY } = getComputedStyle(el);
+    if (
+      (overflowY === "auto" || overflowY === "scroll") &&
+      el.scrollHeight > el.clientHeight + 1
+    ) {
+      match = el;
+    }
+  }
+  return match;
+}
+
 type ConfiguratorSectionProps = {
   onDismiss?: () => void;
 };
@@ -81,9 +103,8 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
 
   const scale = t.raw("scale") as string[];
   const advice = t.raw("advice") as Advice[];
+  const layerLabels = t.raw("layers") as Record<ConfiguratorLayerId, string>;
   const togetherScale = [t("soft"), t("medium"), t("firm")];
-  /** Map Together 1/2/3 → Soft / Medium / Firm advice from the 6-level copy. */
-  const togetherAdviceIndex = [1, 2, 4] as const;
 
   const [step, setStep] = useState<Step>(1);
   const [sizeId, setSizeId] = useState<MattressSizeId>(
@@ -109,6 +130,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   const [partnerMore, setPartnerMore] = useState(false);
   const [formHeight, setFormHeight] = useState<number>();
   const formInnerRef = useRef<HTMLDivElement>(null);
+  const visualPanelRef = useRef<HTMLDivElement>(null);
 
   const clipIdRef = useRef(0);
   const shownStateRef = useRef(defaultVisualState("single"));
@@ -184,6 +206,42 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     return () => observer.disconnect();
   }, [isDesktop, step]);
 
+  // Desktop: wheel over the mattress stage scrolls the form panel instead.
+  useEffect(() => {
+    const visual = visualPanelRef.current;
+    const form = formInnerRef.current;
+    if (!visual || !form) {
+      return;
+    }
+
+    const onWheel = (event: WheelEvent) => {
+      if (!window.matchMedia(DESKTOP_MQ).matches) {
+        return;
+      }
+      if (event.ctrlKey) {
+        return;
+      }
+
+      const scrollable = findScrollable(form);
+      if (!scrollable) {
+        return;
+      }
+
+      const top = scrollable.scrollTop;
+      const max = scrollable.scrollHeight - scrollable.clientHeight;
+      const next = Math.min(max, Math.max(0, top + event.deltaY));
+      if (next === top) {
+        return;
+      }
+
+      event.preventDefault();
+      scrollable.scrollTop = next;
+    };
+
+    visual.addEventListener("wheel", onWheel, { passive: false });
+    return () => visual.removeEventListener("wheel", onWheel);
+  }, []);
+
   function setProfileValue(
     key: keyof typeof profileRef.current,
     value: number,
@@ -216,7 +274,12 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   function startClip(nextClip: ConfiguratorClip) {
     playingClipRef.current = nextClip;
     setClip(nextClip);
-    setControlsLocked(true);
+    // Never trap controls on result handoffs or silent end-frame snaps.
+    const keepInteractive =
+      nextClip.kind === "packaging" ||
+      nextClip.kind === "hold" ||
+      (nextClip.kind === "intro" && nextClip.reverse && nextClip.snapClose);
+    setControlsLocked(!keepInteractive);
   }
 
   function unlockControls() {
@@ -276,12 +339,14 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
 
   function playClose() {
     clipIdRef.current += 1;
-    setPlaybackRate(VIDEO_PLAYBACK_RATE);
+    // Snap: seek mid-fold + high rate so default open pose never reads.
+    setPlaybackRate(VIDEO_PLAYBACK_RATE_CLOSE_SNAP);
     startClip({
       id: clipIdRef.current,
       kind: "intro",
       bed,
       reverse: true,
+      snapClose: true,
     });
   }
 
@@ -296,6 +361,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     });
   }
 
+  /** Instant end-frame of the firmness state — no open/transition playback. */
   function playHold(state: number, clipBed: BedKind) {
     pendingPackagingRef.current = false;
     clipIdRef.current += 1;
@@ -312,7 +378,16 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   }
 
   function enqueueState(target: number, clipBed: BedKind) {
-    if (!stageReady || playingClipRef.current != null) {
+    if (!stageReady) {
+      return;
+    }
+    // Silent snaps must not block the next firmness transition.
+    const playing = playingClipRef.current;
+    if (
+      playing != null &&
+      playing.kind !== "hold" &&
+      playing.kind !== "packaging"
+    ) {
       return;
     }
     if (shownStateRef.current === target) {
@@ -334,14 +409,26 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   function handleClipEnded(played: ConfiguratorClip) {
     playingClipRef.current = null;
 
-    if (played.kind === "packaging" || played.kind === "hold") {
+    if (played.kind === "packaging") {
+      unlockControls();
+      return;
+    }
+
+    if (played.kind === "hold") {
+      shownStateRef.current = played.state;
+      clipBedRef.current = played.clipBed;
+      setStageReady(true);
       unlockControls();
       return;
     }
 
     if (played.kind === "intro") {
       const mode = videoMode(bed, sleeping);
-      shownStateRef.current = defaultVisualState(mode);
+      // Keep the open firmness state through the packaging close — reverse is
+      // only a visual handoff, not a reset to the default stack.
+      if (!(played.reverse && pendingPackagingRef.current)) {
+        shownStateRef.current = defaultVisualState(mode);
+      }
       clipBedRef.current = bed;
       if (played.reverse) {
         if (pendingPackagingRef.current) {
@@ -484,11 +571,12 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     if (step === 5) {
       const next = together && !isDesktop ? 4 : 3;
       setActiveSleeper(next === 4 ? 2 : 1);
+      setStep(next);
       const resolution = currentResolution();
       shownStateRef.current = resolution.state;
       clipBedRef.current = resolution.clipBed;
+      setStageReady(true);
       playHold(resolution.state, resolution.clipBed);
-      setStep(next);
       return;
     }
     setStep((current) => (current - 1) as Step);
@@ -527,14 +615,20 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     openCart();
   }
 
-  const youAdvice = together
-    ? advice[togetherAdviceIndex[you - 1] ?? 2]
-    : advice[you - 1];
-  const partnerAdvice = together
-    ? advice[togetherAdviceIndex[partner - 1] ?? 2]
-    : advice[partner - 1];
-  const overlayScale = together ? togetherScale : scale;
-  const overlayLevels = together ? TOGETHER_FIRMNESS_LEVELS : undefined;
+  const youCutout = cutoutFirmnessForSleeper({
+    bed,
+    sleeping,
+    weightKg: yourWeight,
+    preference: yourPreference,
+  });
+  const partnerCutout = cutoutFirmnessForSleeper({
+    bed,
+    sleeping,
+    weightKg: partnerWeight,
+    preference: partnerPreference,
+  });
+  const youAdvice = advice[youCutout - 1];
+  const partnerAdvice = advice[partnerCutout - 1];
   const sizeLabel = getMattressSize(sizeId).label;
   const resultSplitId = mindTheGap ? suggestedSingleSizeId(sizeId) : null;
   const resultSize = getMattressSize(resultSplitId ?? sizeId);
@@ -575,9 +669,10 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
                 : "pb-4",
               step === 5 && "min-h-0 flex-1 overflow-y-auto overscroll-contain",
               step !== 1 && step !== 5 && "lg:overflow-y-auto",
-              controlsLocked && "pointer-events-none opacity-60",
+              // Result step stays interactive while packaging plays — only back locks.
+              controlsLocked && step !== 5 && "pointer-events-none opacity-60",
             )}
-            inert={controlsLocked ? true : undefined}
+            inert={controlsLocked && step !== 5 ? true : undefined}
           >
             {step === 1 ? (
               <>
@@ -728,10 +823,10 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
 
             {step === 5 ? (
               <div>
-                <h2 className="mb-4 font-bold font-heading text-brand-dark text-xl lg:text-[32px]">
+                <h2 className="mb-4 font-bold font-heading text-2xl text-brand-dark lg:text-[32px]">
                   {t("resultTitle")}
                 </h2>
-                <p className="text-brand-dark text-sm leading-relaxed">
+                <p className="text-base text-brand-dark leading-relaxed lg:text-lg">
                   {together
                     ? mindTheGap
                       ? t("resultNoMatch")
@@ -739,20 +834,51 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
                     : t("resultSolo")}
                 </p>
 
-                <div className="mt-6 rounded-xl border border-brand-dark/10 p-4">
-                  <p className="mb-3 font-bold text-brand-dark text-sm">
+                <ResultLayerStack
+                  firmness={youCutout}
+                  heading={together ? t("yourResult") : undefined}
+                  labels={layerLabels}
+                />
+
+                <ResultAdvice
+                  advice={youAdvice}
+                  expanded={youMore}
+                  onToggle={() => setYouMore((value) => !value)}
+                  readLess={t("readLess")}
+                  readMore={t("readMore")}
+                />
+
+                {together ? (
+                  <>
+                    <ResultLayerStack
+                      firmness={partnerCutout}
+                      heading={t("partnerResult")}
+                      labels={layerLabels}
+                    />
+                    <ResultAdvice
+                      advice={partnerAdvice}
+                      expanded={partnerMore}
+                      onToggle={() => setPartnerMore((value) => !value)}
+                      readLess={t("readLess")}
+                      readMore={t("readMore")}
+                    />
+                  </>
+                ) : null}
+
+                <div className="mt-8 rounded-xl border border-brand-dark/10 px-4 pt-4 pb-6">
+                  <p className="mb-3 font-bold text-base text-brand-dark">
                     {t("yourMattress")}
                   </p>
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
-                      <p className="font-bold text-brand-dark text-sm">
+                      <p className="font-bold text-base text-brand-dark">
                         {t("resultProduct")}
                       </p>
-                      <p className="pt-0.5 text-brand-dark/55 text-sm">
+                      <p className="pt-0.5 text-base text-brand-dark/55">
                         {resultSize.label}
                         {resultQuantity > 1 ? ` × ${resultQuantity}` : ""}
                       </p>
-                      <p className="pt-1 text-brand-dark/55 text-sm leading-snug">
+                      <p className="pt-1 text-base text-brand-dark/55 leading-snug">
                         {tHero("variants.original.description")}
                       </p>
                     </div>
@@ -774,28 +900,6 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
                     </div>
                   </div>
                 </div>
-
-                <ResultBlock
-                  advice={youAdvice}
-                  expanded={youMore}
-                  heading={`${t("yourResult")}:`}
-                  onToggle={() => setYouMore((value) => !value)}
-                  readLess={t("readLess")}
-                  readMore={t("readMore")}
-                  summary={t("configuration", { number: you })}
-                />
-
-                {together ? (
-                  <ResultBlock
-                    advice={partnerAdvice}
-                    expanded={partnerMore}
-                    heading={`${t("partnerResult")}:`}
-                    onToggle={() => setPartnerMore((value) => !value)}
-                    readLess={t("readLess")}
-                    readMore={t("readMore")}
-                    summary={t("configuration", { number: partner })}
-                  />
-                ) : null}
               </div>
             ) : null}
           </div>
@@ -818,7 +922,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
               <button
                 aria-busy={confirmLoading}
                 className="inline-flex h-11 min-w-[140px] shrink-0 items-center justify-center rounded-full bg-brand px-6 text-base text-white transition-colors hover:bg-brand-dark disabled:opacity-40 sm:min-w-[167px] lg:h-12"
-                disabled={controlsLocked}
+                disabled={step === 5 ? false : controlsLocked}
                 onClick={step === 5 ? handleAddToCart : handleConfirm}
                 type="button"
               >
@@ -845,6 +949,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
             ? "h-[42vh] min-h-[42vh] flex-none lg:h-auto lg:min-h-full lg:flex-1"
             : "flex-1 lg:flex-grow",
         )}
+        ref={visualPanelRef}
       >
         <ConfiguratorVideos
           bed={bed}
@@ -864,10 +969,9 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
           )}
         >
           <ConfiguratorFirmnessScale
-            active={you}
+            active={youCutout}
             dimmed={together && activeSleeper !== 1}
-            labels={overlayScale}
-            levels={overlayLevels}
+            labels={scale}
           />
         </div>
 
@@ -880,10 +984,9 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
           )}
         >
           <ConfiguratorFirmnessScale
-            active={partner}
+            active={partnerCutout}
             dimmed={activeSleeper !== 2}
-            labels={overlayScale}
-            levels={overlayLevels}
+            labels={scale}
             mirror
           />
         </div>
@@ -1036,43 +1139,35 @@ function ProfileFields({
   );
 }
 
-function ResultBlock({
+function ResultAdvice({
   advice,
   expanded,
-  heading,
   onToggle,
   readLess,
   readMore,
-  summary,
 }: {
   advice?: Advice;
   expanded: boolean;
-  heading: string;
   onToggle: () => void;
   readLess: string;
   readMore: string;
-  summary: string;
 }) {
   if (!advice) {
     return null;
   }
 
   return (
-    <div className="mt-6">
-      <p>
-        <span className="font-bold text-brand-dark">{heading} </span>
-        <span className="text-brand-dark">{summary}</span>
-      </p>
-      <p className="mt-3 text-brand-dark text-sm leading-relaxed">
+    <div className="mt-5">
+      <p className="text-base text-brand-dark leading-relaxed lg:text-lg">
         {advice.text}
       </p>
       {expanded ? (
-        <p className="mt-2 text-brand-dark text-sm leading-relaxed">
+        <p className="mt-2 text-base text-brand-dark leading-relaxed lg:text-lg">
           {advice.more}
         </p>
       ) : null}
       <button
-        className="mt-2 cursor-pointer font-medium text-brand text-sm"
+        className="mt-2 cursor-pointer font-medium text-base text-brand"
         onClick={onToggle}
         type="button"
       >

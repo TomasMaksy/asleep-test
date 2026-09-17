@@ -28,8 +28,8 @@
   "overlayLabel": "Mattress configurator",
   "previousQuestion": "Previous question",
   "resultTitle": "View the result",
-  "yourResult": "Your result",
-  "partnerResult": "Your partner's result",
+  "yourResult": "Your setup",
+  "partnerResult": "Partner's setup",
   "configuration": "configuration {number}",
   "readMore": "Read more",
   "readLess": "Read less",
@@ -41,9 +41,17 @@
   "updatingMattress": "Updating your mattress",
   "mindTheGapTitle": "Mind the gap",
   "mindTheGapBody": "For this combination we recommend two single mattresses. The top layer of a double asleep is not split, so a large firmness difference between sides can feel like a ridge in the middle.",
-  "resultSolo": "This is the setup we recommend for you.",
-  "resultMatch": "You make a great pair — one double mattress, with each side set to the comfort you each prefer.",
-  "resultNoMatch": "Your firmness settings are too far apart for one double mattress. We recommend two singles so each of you can sleep on your own setup.",
+  "resultSolo": "Based on your weight and how you like to sleep, this is the layer stack we recommend. Unzip asleep anytime and rearrange the foams if you want it softer or firmer.",
+  "resultMatch": "You probably knew this already — the two of you make a dream couple. Order a double asleep, set each side to your preference, and snuggle without a split down the middle of the bed.",
+  "resultNoMatch": "Your firmness settings are too far apart for one double mattress. We recommend two singles so each of you can sleep on your own layer stack.",
+  "layers": {
+    "tencel": "Tencel",
+    "hypersupport": "HyperSupport",
+    "memoryFoam": "Memory foam",
+    "coldFoamSoft": "HR foam soft",
+    "coldFoamFirm": "HR foam firm",
+    "cover": "Cover"
+  },
   "scale": [
     "Extra soft",
     "Soft",
@@ -54,28 +62,28 @@
   ],
   "advice": [
     {
-      "text": "This is the most yielding setup. Side sleepers and lighter bodies usually feel the most pressure relief here, with the shoulders and hips able to sink in.",
-      "more": "If you wake up on your side and like a plush, cloud-like feel, start here. You can always unzip asleep later and step up a level if you want more support."
+      "text": "This is the softest setup. Side sleepers and lighter bodies usually feel the most pressure relief here, with the shoulders and hips able to sink in.",
+      "more": "HyperSupport and memory foam sit deeper in the stack so the soft HR layer meets you first — you settle into the mattress rather than lying on top of it. Comfort zones still cradle the shoulders and hips, which is why this feels plush without feeling chaotic. asleep is ready to sleep on as soon as you unroll it; unzip later if you want a firmer night."
     },
     {
       "text": "A plush feel with a little more structure underneath. Good if you want softness without losing alignment.",
-      "more": "This is a common choice for mixed sleep positions. If extra soft feels like too much sink, this is the next step up."
+      "more": "Memory foam moulds to your shape and eases pressure points, while HyperSupport keeps the surface responsive when you turn. Soft HR foam stays higher in the stack so you still sink in a little, with firm foam underneath for a calm base. Ideal if extra soft felt like too much give. Out of the box, this setup is ready the same night."
     },
     {
-      "text": "asleep arrives in this configuration. It balances cushioning and support for most sleepers and sleeping positions.",
-      "more": "If you are unsure, sleep on this setup first. After a few nights you can unzip the cover and turn a layer if you want it softer or firmer."
+      "text": "asleep ships in this configuration — balanced cushioning and support for most sleepers and positions.",
+      "more": "HyperSupport gives pressure relief where your body needs it, and memory foam follows your contours so shoulders and hips are not left hanging. Below that, soft HR foam faces up so you can sink in slightly while firm HR foam holds your spine in line. It is the all-rounder for side, back, and mixed sleepers. Unroll asleep and sleep — you can always rearrange layers later if you want it softer or firmer."
     },
     {
-      "text": "A step firmer than the default. You still get some give on top, with a more stable base for the hips and lower back.",
-      "more": "Back sleepers and people who like a 'on the mattress' feel often land here. It is also a good middle ground when two sleepers are close but not identical."
+      "text": "A step firmer than the default. You still get give on top, with a more stable base for the hips and lower back.",
+      "more": "HyperSupport and memory foam stay near the surface for contouring and pressure relief, while firm HR foam moves above soft HR foam so the core feels more “on the mattress.” You keep comfort zones at the shoulders, with clearer support through the hips and lower back — a strong match for back sleepers or anyone who liked medium but wanted a touch more push-back. Ready to use straight from the box."
     },
     {
       "text": "A supportive setup with less sink. Back and stomach sleepers, and heavier bodies, often prefer this.",
-      "more": "If you tend to overheat or dislike a hug from the foam, firmer layers keep you higher on the surface while the comfort zones still follow your spine."
+      "more": "Memory foam sits higher so you still get body-hugging relief without a deep cradle, and HyperSupport keeps the surface springy when you move. Firm HR foam leads the core so you stay lifted, with soft HR foam underneath for a little forgiveness. Less “hug,” more stable alignment — useful if you overheat easily or dislike sinking. Sleep on it the night it arrives; tweak layers only if you need to."
     },
     {
       "text": "The most supportive combination. Choose this if you want to lie on top of the mattress rather than in it.",
-      "more": "This is the setup for people who like a very stable, hotel-firm feel. You can still move a layer later if it turns out to be more than you need."
+      "more": "Firm HR foam is highest in the foam stack so the surface stays hotel-firm and steady. Soft foam, memory foam, and HyperSupport work underneath to take the sharp edge off pressure points without letting you disappear into the bed. Built for people who want clear support and minimal sink. asleep is usable immediately after unpacking — unzip and reshuffle only if it feels like more support than you need."
     }
   ]
 }

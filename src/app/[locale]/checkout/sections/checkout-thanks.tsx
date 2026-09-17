@@ -244,8 +244,8 @@ export function CheckoutThanksSection() {
 
         <footer className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 pb-2 text-[13px] text-brand">
           <Link href="/contact">{tFooter("refund")}</Link>
-          <Link href="/contact">{tFooter("privacy")}</Link>
-          <Link href="/contact">{tFooter("terms")}</Link>
+          <Link href="/privacy">{tFooter("privacy")}</Link>
+          <Link href="/terms">{tFooter("terms")}</Link>
         </footer>
       </div>
     </div>

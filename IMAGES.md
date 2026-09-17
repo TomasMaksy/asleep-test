@@ -78,7 +78,7 @@ Root-level product packshots used on the homepage:
 | File | Shows | Wired as |
 |------|-------|----------|
 | `slice-tencel.webp` | Top TENCEL™ cover strip in the exploded stack | `SLICES` → `tencel` |
-| `slice-hypersupport.webp` | Hypersupport foam strip | `SLICES` → `hypersupport` |
+| `slice-hypersupport.webp` | HyperSupport foam strip | `SLICES` → `hypersupport` |
 | `slice-memory-foam.webp` | Memory foam strip | `SLICES` → `memoryFoam` |
 | `slice-cold-foam-soft.webp` | Soft cold-foam strip | `SLICES` → `coldFoamSoft` |
 | `slice-cold-foam-firm.webp` | Firm cold-foam strip | `SLICES` → `coldFoamFirm` |
@@ -88,7 +88,7 @@ Root-level product packshots used on the homepage:
 | `non-slip.webp` | Non-slip underside detail still | Layer detail → `nonSlip` |
 | `tencel.{mp4,webp}` | TENCEL detail video + poster | Layer detail → `tencel` |
 | `memory-foam.{mp4,webp}` | Memory foam detail video + poster | Layer detail → `memoryFoam` |
-| `hypersupport.{mp4,webp}` | Hypersupport detail video + poster | Layer detail → `hypersupport` |
+| `hypersupport.{mp4,webp}` | HyperSupport detail video + poster | Layer detail → `hypersupport` |
 | `cold-foam-soft.{mp4,webp}` | Soft cold-foam detail | Layer detail → `coldFoamSoft` |
 | `cold-foam-firm.{mp4,webp}` | Firm cold-foam detail | Layer detail → `coldFoamFirm` |
 

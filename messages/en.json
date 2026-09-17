@@ -46,8 +46,9 @@
         "links": [
           { "label": "FAQ", "href": "/contact#faq" },
           { "label": "Returns policy", "href": "/contact" },
-          { "label": "Guarantee", "href": "/products/original" },
-          { "label": "Privacy policy", "href": "/contact" }
+          { "label": "Warranty", "href": "/warranty" },
+          { "label": "Privacy policy", "href": "/privacy" },
+          { "label": "Terms & conditions", "href": "/terms" }
         ]
       },
       {

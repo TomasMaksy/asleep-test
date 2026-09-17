@@ -373,6 +373,38 @@ html:has(#site-header[data-hidden="true"]) .product-info-heading-row {
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='10' fill='%232b2d41'/%3E%3Cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.75' d='M6.2 10.2 8.7 12.7 13.8 7.5'/%3E%3C/svg%3E");
 }
 
+/* Legal policy markdown (privacy / terms / warranty) */
+.legal-md {
+  color: var(--color-brand-dark);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.legal-md > * + * {
+  margin-top: 1rem;
+}
+
+.legal-md strong {
+  font-weight: 700;
+}
+
+.legal-md ul,
+.legal-md ol {
+  padding-left: 1.25rem;
+}
+
+.legal-md ul {
+  list-style: disc;
+}
+
+.legal-md ol {
+  list-style: decimal;
+}
+
+.legal-md li + li {
+  margin-top: 0.5rem;
+}
+
 /* Product layers exploded stack — layout stays expanded-size; packed is a transform */
 .product-layers-stack {
   display: flex;
@@ -488,11 +520,13 @@ html:has(#site-header[data-hidden="true"]) .product-info-heading-row {
   transform: translateY(3%);
 }
 
-.configurator-stage-media[data-lift="open"] {
+.configurator-stage-media[data-lift="open"],
+.configurator-stage-media[data-lift="open-snap"] {
   transform: translateY(-5.5%);
 }
 
-.configurator-stage-media[data-lift="closed"] {
+.configurator-stage-media[data-lift="closed"],
+.configurator-stage-media[data-lift="closed-snap"] {
   transform: translateY(3%);
 }
 

@@ -1,6 +1,7 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "@/i18n/routing";
+import { stripLocalePrefix } from "@/lib/request-pathname";
 import { applyMetaFbcCookies } from "@/lib/tracking/meta-clicks";
 
 const handleI18nRouting = createMiddleware(routing);
@@ -27,6 +28,16 @@ function stripLegacyLtPrefix(pathname: string) {
     return pathname.slice(3) || "/";
   }
   return pathname;
+}
+
+/** Forward locale-stripped path so `i18n/request.ts` can load messages per route. */
+function withPathnameHeader(request: NextRequest) {
+  const headers = new Headers(request.headers);
+  headers.set(
+    "x-pathname",
+    stripLocalePrefix(stripLegacyLtPrefix(request.nextUrl.pathname)),
+  );
+  return new NextRequest(request, { headers });
 }
 
 /**
@@ -58,9 +69,14 @@ export default function proxy(request: NextRequest) {
     return wwwRedirect;
   }
 
+  const requestWithPath = withPathnameHeader(request);
+
   // Set `_fbc` / `asleep_fbc` on the i18n response (including locale
   // redirects) so Click ID survives before the Pixel or client JS runs.
-  return applyMetaFbcCookies(request, handleI18nRouting(request));
+  return applyMetaFbcCookies(
+    requestWithPath,
+    handleI18nRouting(requestWithPath),
+  );
 }
 
 export const config = {
