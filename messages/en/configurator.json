@@ -40,16 +40,16 @@
   "videoAria": "Mattress firmness animation",
   "updatingMattress": "Updating your mattress",
   "mindTheGapTitle": "Mind the gap",
-  "mindTheGapBody": "For this combination we recommend two single mattresses. The top layer of a double asleep is not split, so a large firmness difference between sides can feel like a ridge in the middle.",
+  "mindTheGapBody": "For this comfort combination, we recommend choosing two single mattresses, as such a difference in firmness cannot be optimally achieved within a single double ASLEEP mattress.",
   "resultSolo": "Based on your weight and how you like to sleep, this is the layer stack we recommend. Unzip asleep anytime and rearrange the foams if you want it softer or firmer.",
   "resultMatch": "You probably knew this already — the two of you make a dream couple. Order a double asleep, set each side to your preference, and snuggle without a split down the middle of the bed.",
-  "resultNoMatch": "Your firmness settings are too far apart for one double mattress. We recommend two singles so each of you can sleep on your own layer stack.",
+  "resultNoMatch": "For this comfort combination, we recommend choosing two single mattresses, as such a difference in firmness cannot be optimally achieved within a single double ASLEEP mattress.",
   "layers": {
     "tencel": "Tencel",
     "hypersupport": "HyperSupport",
     "memoryFoam": "Memory foam",
-    "coldFoamSoft": "HR foam soft",
-    "coldFoamFirm": "HR foam firm",
+    "coldFoamSoft": "HR Comfort Foam",
+    "coldFoamFirm": "Base Support Foam",
     "cover": "Cover"
   },
   "scale": [

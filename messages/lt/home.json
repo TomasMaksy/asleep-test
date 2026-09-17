@@ -233,7 +233,7 @@
     "cardsMobile": [
       {
         "quote": "Nuostabus čiužinys",
-        "source": "consumentenbond",
+        "source": "google",
         "left": "-2.44%",
         "top": "58.27%",
         "width": "66.67%"
@@ -267,7 +267,7 @@
         "width": "62.55%"
       },
       {
-        "quote": "Teisingai išrinktas geriausiu teste",
+        "quote": "Kokybė jaučiasi nuo pirmos nakties",
         "source": "asleep",
         "left": "13.40%",
         "top": "77.55%",
@@ -336,7 +336,7 @@
     "items": [
       {
         "icon": "/images/icons/price.svg",
-        "title": "Geresnis miegas, apgalvotas iki detalių",
+        "title": "Apgalvotas miegas",
         "body": "Kruopščiai rinkome, analizavome ir testavome medžiagas, kad sukurtume komfortą, kurį pajusite kiekvieną naktį."
       },
       {

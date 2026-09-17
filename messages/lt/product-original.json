@@ -192,7 +192,7 @@
   },
   "configurator": {
     "overline": "PRITAIKYKITE SAVO ČIUŽINĮ",
-    "title": "Atraskite savo čiužinį",
+    "title": "Atraskite savo komfortą",
     "cta": "Sukurti savo čiužinį",
     "imageAlt": "Išskleistas asleep čiužinio sluoksnių vaizdas",
     "bedTypeLabel": "Lovos tipas",
@@ -217,7 +217,7 @@
     "items": {
       "tencel": {
         "title": "Tencel",
-        "body": "Tencel pluoštas išgaunamas iš atsakingai gaunamos medienos ir pasižymi švelniu, maloniu prisilietimu.",
+        "body": "Tencel pluoštas išgaunamas iš medienos ir pasižymi švelniu, maloniu prisilietimu.",
         "bodyExtra": "asleep viršutiniame užvalkale Tencel derinamas su viskoze ir poliesteriu. Toks audinių derinys leidžia suderinti malonų paviršiaus pojūtį, praktiškumą ir ilgaamžiškumą. Nuimamą viršutinę užvalkalo dalį galima skalbti 40 °C temperatūroje.",
         "mediaAlt": "Tencel užvalkalo tekstūra iš arti",
         "advantages": [

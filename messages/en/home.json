@@ -233,7 +233,7 @@
     "cardsMobile": [
       {
         "quote": "An amazing mattress",
-        "source": "consumentenbond",
+        "source": "google",
         "left": "-2.44%",
         "top": "58.27%",
         "width": "66.67%"
@@ -267,7 +267,7 @@
         "width": "62.55%"
       },
       {
-        "quote": "Deservedly rated best in the test",
+        "quote": "Quality you feel from the first night",
         "source": "asleep",
         "left": "13.40%",
         "top": "77.55%",
