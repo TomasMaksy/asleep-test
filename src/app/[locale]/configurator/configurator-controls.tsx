@@ -274,7 +274,7 @@ export function ConfiguratorSizeList({
         const selected = entry.id === selectedId;
         return (
           <label
-            className="flex cursor-pointer items-center gap-4 border-brand-dark/10 border-b py-4"
+            className="flex cursor-pointer items-center gap-4 border-brand-dark/10 border-b py-4 last:border-b-0"
             key={entry.id}
           >
             <input

@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import type { ReviewsCarouselCopy } from "@/app/[locale]/reviews/sections/reviews-carousel";
 
 /**
  * Code-split the motion-heavy reviews carousel on PDP so it isn't in the
@@ -9,9 +10,9 @@ import dynamic from "next/dynamic";
  */
 const ReviewsCarouselDynamic = dynamic(
   () =>
-    import("@/app/[locale]/reviews/sections/reviews-carousel-section").then(
-      (mod) => ({ default: mod.ReviewsCarouselSection }),
-    ),
+    import("@/app/[locale]/reviews/sections/reviews-carousel").then((mod) => ({
+      default: mod.ReviewsCarousel,
+    })),
   {
     loading: () => (
       <section
@@ -23,6 +24,6 @@ const ReviewsCarouselDynamic = dynamic(
   },
 );
 
-export function ReviewsCarouselLazy() {
-  return <ReviewsCarouselDynamic />;
+export function ReviewsCarouselLazy({ copy }: { copy: ReviewsCarouselCopy }) {
+  return <ReviewsCarouselDynamic copy={copy} />;
 }

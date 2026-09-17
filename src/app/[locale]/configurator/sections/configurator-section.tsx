@@ -663,10 +663,10 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
         >
           <div
             className={cn(
-              "min-w-0 p-5 lg:min-h-0 lg:flex-1 lg:p-0 lg:px-10 lg:pt-12 lg:pb-4",
+              "min-w-0 p-5 lg:min-h-0 lg:flex-1 lg:p-0 lg:px-10 lg:pt-12 lg:pb-0",
               step === 1
-                ? "pb-8 lg:flex lg:flex-col lg:overflow-hidden"
-                : "pb-4",
+                ? "pb-4 lg:flex lg:flex-col lg:overflow-hidden"
+                : "pb-2 lg:pb-0",
               step === 5 && "min-h-0 flex-1 overflow-y-auto overscroll-contain",
               step !== 1 && step !== 5 && "lg:overflow-y-auto",
               // Result step stays interactive while packaging plays — only back locks.

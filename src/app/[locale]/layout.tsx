@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { type ReactNode, Suspense } from "react";
 import { AsleepNavyFilter } from "@/components/asleep-navy-filter";
 import { CartSheetHost } from "@/components/cart/cart-sheet-host";
@@ -80,6 +80,8 @@ export default async function LocaleLayout({
     notFound();
   }
 
+  const messages = await getMessages();
+
   return (
     <html
       className={cn(outfit.variable, outfit.className, "h-full antialiased")}
@@ -88,7 +90,7 @@ export default async function LocaleLayout({
     >
       <body className="relative min-h-full font-sans">
         <AsleepNavyFilter />
-        <NextIntlClientProvider>
+        <NextIntlClientProvider messages={messages}>
           <OrganizationJsonLd />
           <Suspense fallback={null}>
             <TrackingRouteObserver />

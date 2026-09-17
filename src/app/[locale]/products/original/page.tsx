@@ -7,7 +7,7 @@ import { ProductHeroSection } from "@/app/[locale]/products/original/sections/pr
 import { ProductInfoSliderSection } from "@/app/[locale]/products/original/sections/product-info-slider-section";
 import { ProductLayersSection } from "@/app/[locale]/products/original/sections/product-layers-section";
 import { ProductSpecsSection } from "@/app/[locale]/products/original/sections/product-specs-section";
-import { ReviewsCarouselLazy } from "@/app/[locale]/reviews/sections/reviews-carousel-lazy";
+import { ReviewsCarouselSection } from "@/app/[locale]/reviews/sections/reviews-carousel-section";
 import { ProductJsonLd } from "@/components/product/product-json-ld";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -44,7 +44,7 @@ export default function OriginalProductPage() {
         <ProductLayersSection />
         <ProductDifferenceSection />
         <ProductSpecsSection />
-        <ReviewsCarouselLazy />
+        <ReviewsCarouselSection />
         <SupportSection />
       </main>
       <SiteFooter />

@@ -13,44 +13,24 @@ describe("stripLocalePrefix", () => {
 });
 
 describe("loadMessagesForPath", () => {
-  test("legal routes skip heavy page namespaces", async () => {
-    const messages = await loadMessagesForPath("en", "/privacy");
-    expect(messages).toHaveProperty("nav");
-    expect(messages).toHaveProperty("footer");
-    expect(messages).toHaveProperty("configuratorPage");
-    expect(messages).not.toHaveProperty("hero");
-    expect(messages).not.toHaveProperty("productOriginal");
-    expect(messages).not.toHaveProperty("checkoutPage");
+  test("loads the full catalog for every path (soft-nav safe)", async () => {
+    for (const path of ["/", "/products/original", "/privacy", "/checkout"]) {
+      const messages = await loadMessagesForPath("en", path);
+      expect(messages).toHaveProperty("nav");
+      expect(messages).toHaveProperty("hero");
+      expect(messages).toHaveProperty("productOriginal");
+      expect(messages).toHaveProperty("reviewsPage");
+      expect(messages).toHaveProperty("contactPage");
+      expect(messages).toHaveProperty("configuratorPage");
+      expect(messages).toHaveProperty("checkoutPage");
+      expect(messages).toHaveProperty("support");
+    }
   });
 
-  test("home loads homepage keys and product layers copy", async () => {
-    const messages = await loadMessagesForPath("lt", "/");
+  test("null pathname still loads the full catalog", async () => {
+    const messages = await loadMessagesForPath("lt", null);
     expect(messages).toHaveProperty("hero");
-    expect(messages).toHaveProperty("productOriginal");
-    expect(messages).not.toHaveProperty("checkoutPage");
-  });
-
-  test("PDP loads support + reviews carousel namespaces", async () => {
-    const messages = await loadMessagesForPath("en", "/products/original");
-    expect(messages).toHaveProperty("productOriginal");
-    expect(messages).toHaveProperty("support");
-    expect(messages).toHaveProperty("reviewsPage");
-    expect(messages).not.toHaveProperty("hero");
-    expect(messages).not.toHaveProperty("checkoutPage");
-  });
-
-  test("reviews page loads carousel + shared home review cards", async () => {
-    const messages = await loadMessagesForPath("lt", "/reviews");
-    expect(messages).toHaveProperty("reviewsPage");
-    expect(messages).toHaveProperty("reviews");
-    expect(messages).not.toHaveProperty("hero");
-    expect(messages).not.toHaveProperty("productOriginal");
-  });
-
-  test("contact loads FAQ + product specs reuse", async () => {
-    const messages = await loadMessagesForPath("en", "/contact");
-    expect(messages).toHaveProperty("contactPage");
-    expect(messages).toHaveProperty("productOriginal");
+    expect(messages).toHaveProperty("checkoutPage");
   });
 });
 

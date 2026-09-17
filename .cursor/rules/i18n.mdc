@@ -25,9 +25,11 @@ Read `COPY.md` before editing copy. Supported locales: `lt` (default), `en`. Def
 | Checkout | `messages/{locale}/checkout.json` |
 | Legal / long-form policy pages | `content/legal/{locale}/*.md` |
 
-Page JSON is loaded **per route** via `src/i18n/load-messages.ts` (shared chrome + configurator always; home/PDP/etc. only on matching paths). When a section is reused across pages, register that dependency in `loadMessagesForPath` (pick keys when only part of a file is needed). Legal Markdown is imported only by `/privacy`, `/terms`, and `/warranty` — never through next-intl.
+Page JSON is loaded via `src/i18n/load-messages.ts` as a **full locale catalog** on every request (shared + all page files). Total copy is small (~50KB); splitting by route caused soft-navigation `MISSING_MESSAGE` crashes because the layout `NextIntlClientProvider` does not remount. Legal Markdown is imported only by `/privacy`, `/terms`, and `/warranty` — never through next-intl.
 
 Prefer **page-level JSON files** when a page's UI copy would bloat the shared locale file. Prefer **`content/legal/` Markdown** for accordion-style policy pages. Keep shared chrome in the root `messages/{locale}.json`.
+
+For interactive client sections reused across routes, prefer **server → props → client** (see `ProductLayersSection`, `ReviewsCarouselSection`) over `useTranslations` inside the motion tree.
 
 ## Rules
 

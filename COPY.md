@@ -18,7 +18,7 @@ Then say which page and locale you want to work on.
 | File | What it is | Preview |
 |------|------------|---------|
 | `messages/en.json` / `messages/lt.json` | Shared chrome: nav, language names, cart, footer, default SEO title/description | Every page |
-| `messages/{locale}/home.json` | Homepage sections: hero, products, bundles, floating review quotes, bedroom, promise, press, support | `/` and `/en` (also: `support` on PDP, `reviews` cards on `/reviews`) |
+| `messages/{locale}/home.json` | Homepage sections: hero, products, bundles, floating review quotes, bedroom, promise, press, support | `/` and `/en` (also reused keys on PDP / reviews) |
 | `messages/{locale}/product-original.json` | Original mattress PDP: buy box, FAQs, layers, specs, compare, related | `/products/original`, `/en/products/original` (also: layers on home, specs FAQ on contact, hero bits in configurator) |
 | `messages/{locale}/reviews-page.json` | Reviews page: hero, share form, carousel | `/reviews`, `/en/reviews` (also: carousel on PDP) |
 | `messages/{locale}/contact.json` | Contact page | `/contact`, `/en/contact` |
@@ -28,7 +28,7 @@ Then say which page and locale you want to work on.
 
 `{locale}` is `lt` or `en`. Edit **both** when you change meaning — not only the language you are writing.
 
-How UI chrome is wired: `src/i18n/request.ts` loads message JSON **per route** (homepage copy is not sent to checkout, etc.). Legal body copy is separate Markdown under `content/legal/` — see `content/legal/README.md`. Namespaces used in code (`hero`, `nav`, `productOriginal.hero`, …) stay the same, so you can rename a file’s *values* but not its *keys*.
+How UI chrome is wired: `src/i18n/request.ts` loads the **full** message catalog for the locale on every request (small JSON; avoids soft-nav missing-key crashes). Legal body copy is separate Markdown under `content/legal/` — see `content/legal/README.md`. Namespaces used in code (`hero`, `nav`, `productOriginal.hero`, …) stay the same, so you can rename a file’s *values* but not its *keys*.
 
 ## How to preview
 

@@ -111,10 +111,11 @@ export function cutoutFirmnessForSleeper(input: {
   }
 
   const alone = aloneFirmnessFromPreference(input.preference);
-  // Alone + single share the same preference→band resolution for cutouts;
-  // heavy fallbacks (supersoft→soft, etc.) come from resolveAloneFirmness.
+  // Alone/single: heavy adjustments live only in resolveAloneFirmness
+  // (supersoft→soft, mediumHard→medium). Do not also bump — that cancels
+  // mediumHard heavy back to 4 and double-steps supersoft.
   const resolved = resolveAloneFirmness(alone, heavy ? "heavy" : "light");
-  return bumpIfHeavy(aloneFirmnessToLevel(resolved), heavy);
+  return aloneFirmnessToLevel(resolved);
 }
 
 /** Full exploded stack for a firmness: Tencel → foams → cover. */

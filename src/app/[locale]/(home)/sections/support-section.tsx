@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getMessages } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 
 type SupportItem = {
@@ -14,19 +14,9 @@ function isInternalHref(href: string) {
   return href.startsWith("/") || href.startsWith("#");
 }
 
-function getSupportItems(messages: Awaited<ReturnType<typeof getMessages>>) {
-  const items = messages.support;
-  if (!Array.isArray(items)) {
-    throw new Error(
-      'Missing messages.support — register this route in loadMessagesForPath (home key "support").',
-    );
-  }
-  return items as SupportItem[];
-}
-
 export async function SupportSection() {
-  const messages = await getMessages();
-  const items = getSupportItems(messages);
+  const t = await getTranslations();
+  const items = t.raw("support") as SupportItem[];
 
   return (
     <section className="bg-brand-muted">

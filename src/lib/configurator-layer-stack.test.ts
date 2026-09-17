@@ -46,7 +46,7 @@ describe("cutoutFirmnessForSleeper", () => {
     ).toBe(5);
   });
 
-  test("alone medium light vs heavy differ", () => {
+  test("alone medium light vs heavy: resolve maps mediumHard→medium for heavy", () => {
     expect(
       cutoutFirmnessForSleeper({
         bed: "single",
@@ -55,14 +55,34 @@ describe("cutoutFirmnessForSleeper", () => {
         preference: 35,
       }),
     ).toBe(3);
+    // preference 40 → mediumHard (4); heavy resolves to medium (3), not bump back to 4
     expect(
       cutoutFirmnessForSleeper({
         bed: "single",
         sleeping: "alone",
         weightKg: 90,
-        preference: 35,
+        preference: 40,
       }),
-    ).toBe(4);
+    ).toBe(3);
+  });
+
+  test("alone supersoft heavy steps once to soft (2), not double-bump", () => {
+    expect(
+      cutoutFirmnessForSleeper({
+        bed: "single",
+        sleeping: "alone",
+        weightKg: 70,
+        preference: 5,
+      }),
+    ).toBe(1);
+    expect(
+      cutoutFirmnessForSleeper({
+        bed: "single",
+        sleeping: "alone",
+        weightKg: 90,
+        preference: 5,
+      }),
+    ).toBe(2);
   });
 });
 

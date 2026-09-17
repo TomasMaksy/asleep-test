@@ -5,9 +5,11 @@ All site copy lives here. **Start with [`COPY.md`](../COPY.md)** in the repo roo
 | File | Page |
 |------|------|
 | `en.json` / `lt.json` | Nav, cart, footer, default SEO |
-| `{locale}/home.json` | Homepage (+ `support` on PDP, `reviews` cards on `/reviews`) |
+| `{locale}/home.json` | Homepage (+ `support` / `reviews` reused on other pages) |
 | `{locale}/product-original.json` | `/products/original` (+ layers on home, specs on contact) |
 | `{locale}/reviews-page.json` | `/reviews` (+ carousel on PDP) |
+
+All of the above (plus shared root JSON, configurator, contact, checkout) load together per locale — do not assume a route only receives its own file.
 | `{locale}/contact.json` | `/contact` |
 | `{locale}/configurator.json` | `/configurator` |
 | `{locale}/checkout.json` | `/checkout`, `/checkout/thank-you` |
