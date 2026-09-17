@@ -129,6 +129,10 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   const [activeSleeper, setActiveSleeper] = useState<1 | 2>(1);
   const [youMore, setYouMore] = useState(false);
   const [partnerMore, setPartnerMore] = useState(false);
+  /** Last SCN_* visual state before close/packaging — drives result cutouts. */
+  const [resultVisualState, setResultVisualState] = useState(
+    defaultVisualState("single"),
+  );
   const [formHeight, setFormHeight] = useState<number>();
   const formInnerRef = useRef<HTMLDivElement>(null);
   const visualPanelRef = useRef<HTMLDivElement>(null);
@@ -538,6 +542,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
       return;
     }
 
+    setResultVisualState(shownStateRef.current);
     setStep(5);
     playPackaging();
     trackConfiguratorFinished({
@@ -839,9 +844,11 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
                 </p>
 
                 <ResultLayerStack
-                  firmness={youCutout}
                   heading={together ? t("yourResult") : undefined}
                   labels={layerLabels}
+                  mode={videoMode(bed, sleeping)}
+                  side="you"
+                  visualState={resultVisualState}
                 />
 
                 <ResultAdvice
@@ -855,9 +862,11 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
                 {together ? (
                   <>
                     <ResultLayerStack
-                      firmness={partnerCutout}
                       heading={t("partnerResult")}
                       labels={layerLabels}
+                      mode={videoMode(bed, sleeping)}
+                      side="partner"
+                      visualState={resultVisualState}
                     />
                     <ResultAdvice
                       advice={partnerAdvice}

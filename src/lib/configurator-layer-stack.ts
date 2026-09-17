@@ -5,6 +5,7 @@ import {
   resolveAloneFirmness,
   resolveSingleFirmness,
   togetherFirmnessFromPreference,
+  type VideoMode,
   videoMode,
   weightClass,
 } from "@/lib/configurator-video-map";
@@ -65,18 +66,59 @@ const LAYER_SLICES: Record<ConfiguratorLayerId, ConfiguratorLayerSlice> = {
 };
 
 /**
- * Foam order under the cover, top → bottom, for each firmness.
- * Factory default (3): HyperSupport → Memory → Soft → Firm.
- * Config 4: HyperSupport → Memory → Firm → Soft.
+ * Foam letter codes (top → bottom), matching the cutout mapping sheet.
+ * H HyperSupport · M Memory · W HR Comfort (white) · G Base Support (green)
  */
-const FOAM_ORDER: Record<Firmness, ConfiguratorLayerId[]> = {
-  1: ["coldFoamSoft", "coldFoamFirm", "memoryFoam", "hypersupport"],
-  2: ["coldFoamSoft", "coldFoamFirm", "hypersupport", "memoryFoam"],
-  3: ["hypersupport", "memoryFoam", "coldFoamSoft", "coldFoamFirm"],
-  4: ["hypersupport", "memoryFoam", "coldFoamFirm", "coldFoamSoft"],
-  5: ["memoryFoam", "hypersupport", "coldFoamFirm", "coldFoamSoft"],
-  6: ["coldFoamFirm", "coldFoamSoft", "memoryFoam", "hypersupport"],
+type FoamCode = "H" | "M" | "W" | "G";
+
+const FOAM_BY_CODE: Record<FoamCode, ConfiguratorLayerId> = {
+  H: "hypersupport",
+  M: "memoryFoam",
+  W: "coldFoamSoft",
+  G: "coldFoamFirm",
 };
+
+function foamsFromCode(code: string): ConfiguratorLayerId[] {
+  return [...code].map((letter) => {
+    const id = FOAM_BY_CODE[letter as FoamCode];
+    if (!id) {
+      throw new Error(`Unknown foam code letter: ${letter}`);
+    }
+    return id;
+  });
+}
+
+/** Single: last number in SCN_Single_* → foam order. */
+const SINGLE_FOAM_BY_STATE: Record<number, string> = {
+  1: "MHWG",
+  2: "MHGW",
+  3: "HMWG",
+  4: "HMGW",
+  5: "WGHM",
+  6: "GWHM",
+};
+
+/**
+ * Double (alone or together): last number in SCN_Double_* → you / partner.
+ * Alone only lands on states where both sides match (1, 4, 5, 8, 9, 10).
+ */
+const DOUBLE_FOAM_BY_STATE: Record<number, { you: string; partner: string }> = {
+  1: { you: "MHWG", partner: "MHWG" },
+  2: { you: "MHGW", partner: "MHWG" },
+  3: { you: "MHWG", partner: "MHGW" },
+  4: { you: "MHGW", partner: "MHGW" },
+  5: { you: "HMWG", partner: "HMWG" },
+  6: { you: "HMGW", partner: "HMWG" },
+  7: { you: "HMWG", partner: "HMGW" },
+  8: { you: "HMGW", partner: "HMGW" },
+  9: { you: "GWHM", partner: "GWHM" },
+  10: { you: "WGHM", partner: "WGHM" },
+  11: { you: "GWHM", partner: "WGHM" },
+  12: { you: "WGHM", partner: "GWHM" },
+};
+
+const DEFAULT_SINGLE_CODE = "HMWG";
+const DEFAULT_DOUBLE = { you: "HMWG", partner: "HMWG" } as const;
 
 /** Together soft/medium/hard → fixed Soft / Medium / Firm ticks on the 6-step scale. */
 const TOGETHER_CUTOUT: Record<"soft" | "medium" | "hard", Firmness> = {
@@ -86,9 +128,8 @@ const TOGETHER_CUTOUT: Record<"soft" | "medium" | "hard", Firmness> = {
 };
 
 /**
- * Physical layer stack for one sleeper — preference band + weight.
- * Together: side pointers stay Soft/Medium/Firm regardless of weight
- * (video states still shift with weight via the together maps).
+ * Side-scale pointer for one sleeper (Soft/Medium/Firm labels) — not foam order.
+ * Foam cutout order comes from {@link visualStateLayerStack}.
  */
 export function cutoutFirmnessForSleeper(input: {
   bed: BedKind;
@@ -107,14 +148,15 @@ export function cutoutFirmnessForSleeper(input: {
   const weight = heavy ? "heavy" : "light";
 
   if (mode === "single") {
-    const alone = aloneFirmnessFromPreference(input.preference, "single", weight);
+    const alone = aloneFirmnessFromPreference(
+      input.preference,
+      "single",
+      weight,
+    );
     const resolved = resolveSingleFirmness(alone, weight);
     return aloneFirmnessToLevel(resolved);
   }
 
-  // Double alone: heavy adjustments live only in resolveAloneFirmness
-  // (supersoft→soft, mediumHard→medium). Do not also bump — that cancels
-  // mediumHard heavy back to 4 and double-steps supersoft.
   const alone = aloneFirmnessFromPreference(
     input.preference,
     "doubleAlone",
@@ -124,13 +166,51 @@ export function cutoutFirmnessForSleeper(input: {
   return aloneFirmnessToLevel(resolved);
 }
 
-/** Full exploded stack for a firmness: Tencel → foams → cover. */
+function foamCodeForVisualState(
+  mode: VideoMode,
+  state: number,
+  side: "you" | "partner",
+): string {
+  if (mode === "single") {
+    return SINGLE_FOAM_BY_STATE[state] ?? DEFAULT_SINGLE_CODE;
+  }
+  const pair = DOUBLE_FOAM_BY_STATE[state] ?? DEFAULT_DOUBLE;
+  return side === "you" ? pair.you : pair.partner;
+}
+
+/**
+ * Exploded stack for the result step: driven by the last visual mattress
+ * state (trailing number in SCN_{Single|Double}_*) before close/packaging.
+ * Tencel always top, cover always bottom; only the four foams reorder.
+ */
+export function visualStateLayerStack(
+  mode: VideoMode,
+  state: number,
+  side: "you" | "partner" = "you",
+): ConfiguratorLayerSlice[] {
+  const code = foamCodeForVisualState(mode, state, side);
+  const ids: ConfiguratorLayerId[] = [
+    "tencel",
+    ...foamsFromCode(code),
+    "cover",
+  ];
+  return ids.map((id) => LAYER_SLICES[id]);
+}
+
+/** @deprecated Prefer {@link visualStateLayerStack} — kept for advice/scale helpers. */
 export function firmnessLayerStack(
   firmness: Firmness,
 ): ConfiguratorLayerSlice[] {
-  const foams = FOAM_ORDER[firmness] ?? FOAM_ORDER[3];
-  const ids: ConfiguratorLayerId[] = ["tencel", ...foams, "cover"];
-  return ids.map((id) => LAYER_SLICES[id]);
+  // Legacy 1–6 firmness → approximate single-state foam codes.
+  const legacyState: Record<Firmness, number> = {
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+  };
+  return visualStateLayerStack("single", legacyState[firmness] ?? 3);
 }
 
 export function sleeperLayerStack(input: {
@@ -138,6 +218,12 @@ export function sleeperLayerStack(input: {
   sleeping: Sleeping;
   weightKg: number;
   preference: number;
+  visualState: number;
+  side?: "you" | "partner";
 }): ConfiguratorLayerSlice[] {
-  return firmnessLayerStack(cutoutFirmnessForSleeper(input));
+  return visualStateLayerStack(
+    videoMode(input.bed, input.sleeping),
+    input.visualState,
+    input.side ?? "you",
+  );
 }

@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   cutoutFirmnessForSleeper,
   firmnessLayerStack,
+  visualStateLayerStack,
 } from "@/lib/configurator-layer-stack";
 
 describe("cutoutFirmnessForSleeper", () => {
@@ -62,7 +63,6 @@ describe("cutoutFirmnessForSleeper", () => {
         preference: 35,
       }),
     ).toBe(3);
-    // preference 52 → mediumHard (4); heavy resolves to medium (3), not bump back to 4
     expect(
       cutoutFirmnessForSleeper({
         bed: "double",
@@ -108,7 +108,7 @@ describe("cutoutFirmnessForSleeper", () => {
         weightKg: 75,
         preference: 48,
       }),
-    ).toBe(5); // hard, not medium/firm (4)
+    ).toBe(5);
     expect(
       cutoutFirmnessForSleeper({
         bed: "single",
@@ -120,32 +120,112 @@ describe("cutoutFirmnessForSleeper", () => {
   });
 });
 
-describe("firmnessLayerStack", () => {
+describe("visualStateLayerStack", () => {
+  const foamIds = (mode: "single" | "doubleAlone" | "doubleTogether", state: number, side: "you" | "partner" = "you") =>
+    visualStateLayerStack(mode, state, side)
+      .map((layer) => layer.id)
+      .filter((id) => id !== "tencel" && id !== "cover");
+
   test("always wraps foams with tencel and cover", () => {
-    const stack = firmnessLayerStack(3);
+    const stack = visualStateLayerStack("single", 3);
     expect(stack[0]?.id).toBe("tencel");
     expect(stack.at(-1)?.id).toBe("cover");
     expect(stack).toHaveLength(6);
   });
 
-  test("default medium keeps factory foam order", () => {
+  test("single states match H/M/W/G mapping sheet", () => {
+    expect(foamIds("single", 1)).toEqual([
+      "memoryFoam",
+      "hypersupport",
+      "coldFoamSoft",
+      "coldFoamFirm",
+    ]); // MHWG
+    expect(foamIds("single", 2)).toEqual([
+      "memoryFoam",
+      "hypersupport",
+      "coldFoamFirm",
+      "coldFoamSoft",
+    ]); // MHGW
+    expect(foamIds("single", 3)).toEqual([
+      "hypersupport",
+      "memoryFoam",
+      "coldFoamSoft",
+      "coldFoamFirm",
+    ]); // HMWG factory
+    expect(foamIds("single", 4)).toEqual([
+      "hypersupport",
+      "memoryFoam",
+      "coldFoamFirm",
+      "coldFoamSoft",
+    ]); // HMGW
+    expect(foamIds("single", 5)).toEqual([
+      "coldFoamSoft",
+      "coldFoamFirm",
+      "hypersupport",
+      "memoryFoam",
+    ]); // WGHM
+    expect(foamIds("single", 6)).toEqual([
+      "coldFoamFirm",
+      "coldFoamSoft",
+      "hypersupport",
+      "memoryFoam",
+    ]); // GWHM
+  });
+
+  test("double state 8 alone-style: both sides HMGW", () => {
+    expect(foamIds("doubleAlone", 8, "you")).toEqual([
+      "hypersupport",
+      "memoryFoam",
+      "coldFoamFirm",
+      "coldFoamSoft",
+    ]);
+    expect(foamIds("doubleAlone", 8, "partner")).toEqual([
+      "hypersupport",
+      "memoryFoam",
+      "coldFoamFirm",
+      "coldFoamSoft",
+    ]);
+  });
+
+  test("double together state 12: you WGHM / partner GWHM", () => {
+    expect(foamIds("doubleTogether", 12, "you")).toEqual([
+      "coldFoamSoft",
+      "coldFoamFirm",
+      "hypersupport",
+      "memoryFoam",
+    ]);
+    expect(foamIds("doubleTogether", 12, "partner")).toEqual([
+      "coldFoamFirm",
+      "coldFoamSoft",
+      "hypersupport",
+      "memoryFoam",
+    ]);
+  });
+
+  test("double together state 2: you MHGW / partner MHWG", () => {
+    expect(foamIds("doubleTogether", 2, "you")).toEqual([
+      "memoryFoam",
+      "hypersupport",
+      "coldFoamFirm",
+      "coldFoamSoft",
+    ]);
+    expect(foamIds("doubleTogether", 2, "partner")).toEqual([
+      "memoryFoam",
+      "hypersupport",
+      "coldFoamSoft",
+      "coldFoamFirm",
+    ]);
+  });
+});
+
+describe("firmnessLayerStack", () => {
+  test("legacy firmness 3 still maps to factory HMWG", () => {
     expect(firmnessLayerStack(3).map((layer) => layer.id)).toEqual([
       "tencel",
       "hypersupport",
       "memoryFoam",
       "coldFoamSoft",
       "coldFoamFirm",
-      "cover",
-    ]);
-  });
-
-  test("medium/firm swaps soft and firm foams", () => {
-    expect(firmnessLayerStack(4).map((layer) => layer.id)).toEqual([
-      "tencel",
-      "hypersupport",
-      "memoryFoam",
-      "coldFoamFirm",
-      "coldFoamSoft",
       "cover",
     ]);
   });

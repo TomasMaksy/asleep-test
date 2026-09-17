@@ -1,20 +1,24 @@
-import type { Firmness } from "@/lib/configurator";
 import type { ConfiguratorLayerId } from "@/lib/configurator-layer-stack";
-import { firmnessLayerStack } from "@/lib/configurator-layer-stack";
+import { visualStateLayerStack } from "@/lib/configurator-layer-stack";
+import type { VideoMode } from "@/lib/configurator-video-map";
 import { staticImageUrl } from "@/lib/static-image-url";
 
 type ResultLayerStackProps = {
-  firmness: Firmness;
   labels: Record<ConfiguratorLayerId, string>;
+  mode: VideoMode;
+  side?: "you" | "partner";
+  visualState: number;
   heading?: string;
 };
 
 export function ResultLayerStack({
-  firmness,
-  labels,
   heading,
+  labels,
+  mode,
+  side = "you",
+  visualState,
 }: ResultLayerStackProps) {
-  const layers = firmnessLayerStack(firmness);
+  const layers = visualStateLayerStack(mode, visualState, side);
 
   return (
     <div className="mt-6">
