@@ -269,7 +269,7 @@ export function ConfiguratorSizeList({
   sizes: readonly SizeOption[];
 }) {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pb-6">
       {sizes.map((entry) => {
         const selected = entry.id === selectedId;
         return (

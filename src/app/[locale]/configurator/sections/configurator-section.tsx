@@ -35,6 +35,7 @@ import {
   suggestedSingleSizeId,
   VIDEO_PLAYBACK_RATE,
   VIDEO_PLAYBACK_RATE_CLOSE_SNAP,
+  VIDEO_PLAYBACK_RATE_FLUSH,
 } from "@/lib/configurator";
 import type { ConfiguratorLayerId } from "@/lib/configurator-layer-stack";
 import { cutoutFirmnessForSleeper } from "@/lib/configurator-layer-stack";
@@ -274,11 +275,12 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   function startClip(nextClip: ConfiguratorClip) {
     playingClipRef.current = nextClip;
     setClip(nextClip);
-    // Never trap controls on result handoffs or silent end-frame snaps.
+    // Never trap controls on result handoffs, silent end-frame snaps, or
+    // reverse intros (back) — those should feel instant in the form.
     const keepInteractive =
       nextClip.kind === "packaging" ||
       nextClip.kind === "hold" ||
-      (nextClip.kind === "intro" && nextClip.reverse && nextClip.snapClose);
+      (nextClip.kind === "intro" && nextClip.reverse);
     setControlsLocked(!keepInteractive);
   }
 
@@ -305,7 +307,9 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   function playIntroReverse(afterStep: Step) {
     clipIdRef.current += 1;
     setStageReady(false);
-    pendingStepRef.current = afterStep;
+    pendingStepRef.current = null;
+    setStep(afterStep);
+    setPlaybackRate(VIDEO_PLAYBACK_RATE_FLUSH);
     startClip({
       id: clipIdRef.current,
       kind: "intro",
@@ -663,10 +667,10 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
         >
           <div
             className={cn(
-              "min-w-0 p-5 pb-5 lg:min-h-0 lg:flex-1 lg:p-0 lg:px-10 lg:pt-12 lg:pb-6",
+              "min-w-0 p-5 lg:min-h-0 lg:flex-1 lg:p-0 lg:px-10 lg:pt-12 lg:pb-0",
               step === 1
-                ? "pb-5 lg:flex lg:flex-col lg:overflow-hidden"
-                : "pb-5 lg:pb-6",
+                ? "pb-4 lg:flex lg:flex-col lg:overflow-hidden"
+                : "pb-2 lg:pb-0",
               step === 5 && "min-h-0 flex-1 overflow-y-auto overscroll-contain",
               step !== 1 && step !== 5 && "lg:overflow-y-auto",
               // Result step stays interactive while packaging plays — only back locks.
@@ -822,7 +826,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
             ) : null}
 
             {step === 5 ? (
-              <div>
+              <div className="pb-6">
                 <h2 className="mb-4 font-bold font-heading text-2xl text-brand-dark lg:text-[32px]">
                   {t("resultTitle")}
                 </h2>
