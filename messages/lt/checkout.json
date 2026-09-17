@@ -94,22 +94,22 @@
     "saveAmount": "−{amount}"
   },
   "closed": {
-    "title": "Šiuo metu nepriimame naujų užsakymų",
-    "body": "Ačiū, kad nuėjote iki apmokėjimo. asleep dabar nepriima užsakymų.\n\nJūsų kortelė nebuvo apmokestinta.\n\nSpustelėkite žemiau — parašysime, kai tik pradėsime.",
-    "cta": "Praneškite, kai pradėsite",
+    "title": "Šiuo metu visi ASLEEP čiužiniai išparduoti",
+    "body": "Atsiprašome — dėl didelio užsakymų kiekio šiuo metu visi ASLEEP čiužiniai yra išparduoti.\n\nJūsų kortelė nebuvo apmokestinta. Išsaugojome jūsų pasirinktą čiužinį ir pranešime el. paštu, kai tik būsime pasiruošę jį pristatyti.\n\nUž laukimą norime padėkoti — el. paštu taip pat atsiųsime 20 % nuolaidos kodą jūsų užsakymui.",
+    "cta": "Praneškite, kai bus galima užsisakyti",
     "saving": "Saugoma…",
-    "successTitle": "Esate sąraše",
-    "successBody": "Jūsų kortelė nebuvo apmokestinta. Parašysime adresu {email}, kai tik pradėsime priimti užsakymus.",
+    "successTitle": "Pranešime, kai tik būsime pasiruošę",
+    "successBody": "Jūsų kortelė nebuvo apmokestinta. Parašysime adresu {email}, kai tik jūsų pasirinktą ASLEEP čiužinį vėl bus galima užsisakyti. Į šį el. paštą taip pat atsiųsime 20 % nuolaidos kodą.",
     "home": "Grįžti į parduotuvę"
   },
   "thanks": {
     "metaTitle": "Ačiū",
-    "metaDescription": "Jūsų asleep apmokėjimas baigtas.",
+    "metaDescription": "Jūsų ASLEEP užklausa gauta.",
     "kicker": "Atsiprašome",
     "title": "Ačiū, {name}",
     "titleAnonymous": "Ačiū",
     "notCharged": "Jūsų kortelė nebuvo apmokestinta",
-    "body": "asleep dar nepriima užsakymų. Iš jūsų sąskaitos nieko nenuskaičiavome. Parašysime adresu {email}, kai tik pradėsime.",
+    "body": "Dėl didelio užsakymų kiekio šiuo metu visi ASLEEP čiužiniai yra išparduoti. Iš jūsų sąskaitos nieko nenuskaičiavome.\n\nPranešime adresu {email}, kai tik būsime pasiruošę pristatyti jūsų pasirinktą čiužinį. Už laukimą taip pat atsiųsime jums 20 % nuolaidos kodą, kurį galėsite panaudoti savo užsakymui.",
     "home": "Grįžti į parduotuvę"
   },
   "empty": {

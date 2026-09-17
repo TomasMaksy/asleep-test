@@ -94,22 +94,22 @@
     "saveAmount": "save {amount}"
   },
   "closed": {
-    "title": "We're not accepting new orders yet",
-    "body": "Thank you for going all the way to checkout. asleep isn't taking orders right now.\n\nYou have not been charged.\n\nClick below and we'll email you the moment we open.",
-    "cta": "Email me when we open",
+    "title": "All ASLEEP mattresses are currently sold out",
+    "body": "We're sorry — due to high demand, all ASLEEP mattresses are currently sold out.\n\nYour card has not been charged. We've saved your selected mattress and will email you as soon as we're ready to deliver it.\n\nAs a thank-you for waiting, we'll also email you a 20% discount code for your order.",
+    "cta": "Notify me when I can order",
     "saving": "Saving…",
-    "successTitle": "You're on the list",
-    "successBody": "You have not been charged. We'll write to {email} as soon as orders open.",
+    "successTitle": "We'll let you know as soon as we're ready",
+    "successBody": "Your card has not been charged. We'll email {email} as soon as your selected ASLEEP mattress is available to order again. We'll also send a 20% discount code to this email address.",
     "home": "Back to the shop"
   },
   "thanks": {
     "metaTitle": "Thank you",
-    "metaDescription": "Your asleep checkout is complete.",
+    "metaDescription": "Your ASLEEP request has been received.",
     "kicker": "We're sorry",
     "title": "Thank you, {name}",
     "titleAnonymous": "Thank you",
     "notCharged": "You have not been charged",
-    "body": "asleep isn't taking orders yet. Nothing left your account. We'll email {email} the moment we open.",
+    "body": "Due to high demand, all ASLEEP mattresses are currently sold out. Nothing has been charged to your account.\n\nWe'll email {email} as soon as we're ready to deliver your selected mattress. As a thank-you for waiting, we'll also send you a 20% discount code to use on your order.",
     "home": "Back to the shop"
   },
   "empty": {
