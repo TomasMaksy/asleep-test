@@ -663,10 +663,10 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
         >
           <div
             className={cn(
-              "min-w-0 p-5 lg:min-h-0 lg:flex-1 lg:p-0 lg:px-10 lg:pt-12 lg:pb-0",
+              "min-w-0 p-5 pb-5 lg:min-h-0 lg:flex-1 lg:p-0 lg:px-10 lg:pt-12 lg:pb-6",
               step === 1
-                ? "pb-4 lg:flex lg:flex-col lg:overflow-hidden"
-                : "pb-2 lg:pb-0",
+                ? "pb-5 lg:flex lg:flex-col lg:overflow-hidden"
+                : "pb-5 lg:pb-6",
               step === 5 && "min-h-0 flex-1 overflow-y-auto overscroll-contain",
               step !== 1 && step !== 5 && "lg:overflow-y-auto",
               // Result step stays interactive while packaging plays — only back locks.
@@ -904,12 +904,12 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
             ) : null}
           </div>
 
-          <div className="z-100 shrink-0 border-[#D9D9D9] border-t bg-white pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:pb-0">
+          <div className="z-100 shrink-0 border-[#D9D9D9] border-t bg-white pb-[max(1.5rem,env(safe-area-inset-bottom))]">
             <div
               className="relative -top-0.5 h-1 bg-brand transition-all duration-500 ease-in-out"
               style={{ width: `${20 * step}%` }}
             />
-            <div className="flex items-center justify-between gap-3 px-5 py-3 lg:px-10 lg:py-4">
+            <div className="flex items-center justify-between gap-3 px-5 pt-3 pb-1 lg:px-10 lg:pt-4 lg:pb-2">
               <button
                 className="flex min-w-0 items-center gap-2 py-2 text-brand text-sm disabled:opacity-40 lg:py-4"
                 disabled={controlsLocked}
