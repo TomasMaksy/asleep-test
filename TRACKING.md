@@ -33,8 +33,8 @@ All ads-funnel events contain:
   "occurred_at": "2026-09-14T12:00:00.000Z",
   "visitor_id": "e2f15c96-e14a-4e1a-bca6-fb9983f32de0",
   "locale": "lt",
-  "path": "/lt/products/original",
-  "url": "https://asleep.lt/lt/products/original",
+  "path": "/products/original",
+  "url": "https://asleep.lt/products/original",
   "source": "pdp_buy_box"
 }
 ```

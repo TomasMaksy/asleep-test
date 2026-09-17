@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useLocale } from "next-intl";
 import { useState } from "react";
 import type { Locale } from "@/i18n/routing";
+import { localePath } from "@/lib/seo-metadata";
 import { cn } from "@/lib/utils";
 
 type Mode = "split" | "overlay" | "difference";
@@ -12,7 +13,7 @@ const ORIGINAL = "https://www.mattsleeps.com/en";
 
 export function CompareView() {
   const locale = useLocale() as Locale;
-  const previewPath = `/${locale}`;
+  const previewPath = localePath(locale) || "/";
   const [mode, setMode] = useState<Mode>("split");
   const [opacity, setOpacity] = useState(50);
   const [width, setWidth] = useState(1440);

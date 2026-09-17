@@ -2,18 +2,18 @@
 
 > Premium mattresses and bedroom products for Lithuania. asleep sells the Original mattress with a long trial, local support, and a build-your-own configurator.
 
-asleep is an ecommerce brand. Primary locales are Lithuanian (`/lt`) and English (`/en`). Prefer linking customers to locale-prefixed product and support pages.
+asleep is an ecommerce brand. Default locale is Lithuanian at unprefixed URLs (`https://asleep.lt/...`). English uses the `/en` prefix. Prefer linking customers to these canonical locale URLs.
 
 ## Products
 
-- [Original mattress](https://asleep.lt/lt/products/original): Flagship mattress product page (sizes, layers, specs, buy)
-- [Mattress configurator](https://asleep.lt/lt/configurator): Interactive size and firmness configuration flow
+- [Original mattress](https://asleep.lt/products/original): Flagship mattress product page (sizes, layers, specs, buy)
+- [Mattress configurator](https://asleep.lt/configurator): Interactive size and firmness configuration flow
 
 ## Support
 
-- [Reviews](https://asleep.lt/lt/reviews): Customer reviews
-- [Contact](https://asleep.lt/lt/contact): Contact and FAQ
-- [Home](https://asleep.lt/lt): Brand homepage
+- [Reviews](https://asleep.lt/reviews): Customer reviews
+- [Contact](https://asleep.lt/contact): Contact and FAQ
+- [Home](https://asleep.lt/): Brand homepage
 
 ## English
 

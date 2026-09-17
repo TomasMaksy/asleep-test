@@ -96,7 +96,7 @@ describe("Meta click IDs", () => {
 
 describe("applyMetaFbcCookies", () => {
   test("sets _fbc and asleep_fbc when fbclid is present", () => {
-    const request = new NextRequest("https://asleep.lt/lt?fbclid=Click123");
+    const request = new NextRequest("https://asleep.lt/?fbclid=Click123");
     const response = applyMetaFbcCookies(request, NextResponse.next());
 
     const pixel = response.cookies.get(PIXEL_FBC_COOKIE)?.value;
@@ -107,7 +107,7 @@ describe("applyMetaFbcCookies", () => {
 
   test("skips Set-Cookie when matching fbc cookies already exist", () => {
     const existing = "fb.1.1000.Click123";
-    const request = new NextRequest("https://asleep.lt/lt?fbclid=Click123", {
+    const request = new NextRequest("https://asleep.lt/?fbclid=Click123", {
       headers: {
         cookie: `${PIXEL_FBC_COOKIE}=${existing}; ${ASLEEP_FBC_COOKIE}=${existing}`,
       },
@@ -118,7 +118,7 @@ describe("applyMetaFbcCookies", () => {
   });
 
   test("does nothing without fbclid", () => {
-    const request = new NextRequest("https://asleep.lt/lt");
+    const request = new NextRequest("https://asleep.lt/");
     const response = applyMetaFbcCookies(request, NextResponse.next());
     expect(response.cookies.get(PIXEL_FBC_COOKIE)).toBeUndefined();
     expect(response.cookies.get(ASLEEP_FBC_COOKIE)).toBeUndefined();

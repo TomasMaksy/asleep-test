@@ -10,8 +10,8 @@ const base = {
   occurred_at: "2026-09-14T12:00:00.000Z",
   visitor_id: "e2f15c96-e14a-4e1a-bca6-fb9983f32de0",
   locale: "lt" as const,
-  path: "/lt/checkout",
-  url: "https://asleep.lt/lt/checkout",
+  path: "/checkout",
+  url: "https://asleep.lt/checkout",
 };
 
 const item = {
@@ -81,16 +81,16 @@ describe("tracking event contract", () => {
   test("keeps configurator events off Meta and GA4", () => {
     const started = trackingEventSchema.parse({
       ...base,
-      path: "/lt/configurator",
-      url: "https://asleep.lt/lt/configurator",
+      path: "/configurator",
+      url: "https://asleep.lt/configurator",
       name: "configurator_started",
       source: "configurator",
       properties: {},
     });
     const finished = trackingEventSchema.parse({
       ...base,
-      path: "/lt/configurator",
-      url: "https://asleep.lt/lt/configurator",
+      path: "/configurator",
+      url: "https://asleep.lt/configurator",
       name: "configurator_finished",
       source: "configurator",
       properties: {

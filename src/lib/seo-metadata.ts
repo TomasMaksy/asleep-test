@@ -9,10 +9,17 @@ const OG_IMAGE = {
   alt: "asleep",
 } as const;
 
-/** Locale-prefixed path without trailing slash. Pass "" or "/" for home. */
+/**
+ * Public path for a locale under `localePrefix: "as-needed"`.
+ * Default locale (lt) is unprefixed; others get `/${locale}…`.
+ * Pass "" or "/" for home. No trailing slash.
+ */
 export function localePath(locale: string, path = "") {
   const normalized =
     !path || path === "/" ? "" : path.startsWith("/") ? path : `/${path}`;
+  if (locale === routing.defaultLocale) {
+    return normalized;
+  }
   return `/${locale}${normalized}`;
 }
 

@@ -48,6 +48,21 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/lt",
+        destination: "/",
+        permanent: true,
+      },
+      // Exclude /lt/ingest — next.config redirects run before Proxy/rewrites.
+      {
+        source: "/lt/:path((?!ingest(?:/|$)).*)",
+        destination: "/:path",
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     // beforeFiles so next-intl's [locale] app route cannot 404 /ingest
     // (or a locale-prefixed /lt/ingest leftover) before the proxy runs.

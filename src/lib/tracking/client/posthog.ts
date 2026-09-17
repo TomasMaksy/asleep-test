@@ -24,7 +24,7 @@ export function initializePostHog() {
   const visitorId = getVisitorId();
 
   posthog.init(clientTrackingConfig.posthogKey, {
-    // Origin-absolute so next-intl cannot turn `/ingest` into `/lt/ingest`.
+    // Origin-absolute so next-intl never rewrites the ingest host into a locale path.
     api_host: `${window.location.origin}/ingest`,
     ui_host: clientTrackingConfig.posthogUiHost,
     defaults: "2026-05-30",

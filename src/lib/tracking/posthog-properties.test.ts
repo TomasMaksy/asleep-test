@@ -9,8 +9,8 @@ describe("PostHog product breakdown", () => {
       occurred_at: "2026-09-14T12:00:00.000Z",
       visitor_id: "e2f15c96-e14a-4e1a-bca6-fb9983f32de0",
       locale: "lt",
-      path: "/lt/checkout",
-      url: "https://asleep.lt/lt/checkout",
+      path: "/checkout",
+      url: "https://asleep.lt/checkout",
       source: "checkout_page",
       name: "purchase",
       properties: {

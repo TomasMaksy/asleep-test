@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { CompareView } from "@/app/[locale]/compare/compare-view";
 
 /**
- * Internal design/compare tool. Kept in the repo for later use, but blocked
- * from indexing (robots.txt + noindex) and omitted from the sitemap / llms.txt.
+ * Internal design/compare tool. Crawlable with noindex (so Google can see the
+ * robots meta) and omitted from the sitemap / llms.txt — not Disallow'd.
  */
 export const metadata: Metadata = {
   robots: {

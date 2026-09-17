@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { ChevronIcon } from "@/components/icons";
 import { LOCALE_CODE, LocaleFlag } from "@/components/locale-flag";
-import { Link, usePathname } from "@/i18n/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { type Locale, routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +20,7 @@ export function LanguageSwitcher({
   const locale = useLocale();
   const t = useTranslations("locale");
   const pathname = usePathname();
+  const router = useRouter();
 
   const triggerClassName = cn(
     triggerBaseClassName,
@@ -84,19 +85,21 @@ export function LanguageSwitcher({
           }
 
           return (
-            <Link
+            <button
               className={cn(
                 rowClassName,
-                "transition-colors duration-150 hover:bg-surface hover:text-brand-dark",
+                "w-full cursor-pointer transition-colors duration-150 hover:bg-surface hover:text-brand-dark",
               )}
-              href={pathname}
               key={item}
-              locale={item}
-              scroll={false}
+              onClick={() => {
+                // Client locale switch avoids /lt-prefixed hrefs under as-needed.
+                router.replace(pathname, { locale: item });
+              }}
+              type="button"
             >
               <LocaleFlag locale={item} />
               <span>{LOCALE_CODE[item]}</span>
-            </Link>
+            </button>
           );
         })}
       </div>

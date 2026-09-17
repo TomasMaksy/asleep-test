@@ -14,7 +14,7 @@ describe("reportCatalogMismatch", () => {
     // @ts-expect-error test shim
     globalThis.navigator = { sendBeacon };
     // @ts-expect-error test shim
-    globalThis.window = { location: { pathname: "/lt/x", href: "https://asleep.lt/lt/x" } };
+    globalThis.window = { location: { pathname: "/x", href: "https://asleep.lt/x" } };
 
     const items = [
       {

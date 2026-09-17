@@ -218,6 +218,10 @@ function sendMetaCapiRelay(
 }
 
 function getLocale(pathname: string): "lt" | "en" {
-  const candidate = pathname.split("/")[1] || document.documentElement.lang;
-  return candidate === "en" ? "en" : "lt";
+  const segment = pathname.split("/")[1];
+  if (segment === "en" || segment === "lt") {
+    return segment;
+  }
+  const lang = document.documentElement.lang;
+  return lang === "en" ? "en" : "lt";
 }

@@ -1,7 +1,7 @@
 # Copy & translations
 
 This site is bilingual: **Lithuanian (`lt`, default)** and **English (`en`)**.
-URLs are always prefixed: `/lt/...` and `/en/...`.
+Default LT URLs are unprefixed (`/products/original`). Other locales use a prefix (`/en/...`, future `/pl/...`).
 
 All user-facing copy lives in JSON under `messages/`. You do not need to edit React files to change headlines, buttons, FAQs, or reviews.
 
@@ -18,12 +18,12 @@ Then say which page and locale you want to work on.
 | File | What it is | Preview |
 |------|------------|---------|
 | `messages/en.json` / `messages/lt.json` | Shared chrome: nav, language names, cart, footer, default SEO title/description | Every page |
-| `messages/{locale}/home.json` | Homepage sections: hero, products, bundles, floating review quotes, bedroom, promise, press, support | `/lt` and `/en` |
-| `messages/{locale}/product-original.json` | Original mattress PDP: buy box, FAQs, layers, specs, compare, related | `/lt/products/original` |
-| `messages/{locale}/reviews-page.json` | Reviews page: hero, share form, carousel | `/lt/reviews` |
-| `messages/{locale}/contact.json` | Contact page | `/lt/contact` |
-| `messages/{locale}/configurator.json` | Mattress configurator | `/lt/configurator` |
-| `messages/{locale}/checkout.json` | Fake-door checkout copy | `/lt/checkout`, `/lt/checkout/thank-you` |
+| `messages/{locale}/home.json` | Homepage sections: hero, products, bundles, floating review quotes, bedroom, promise, press, support | `/` and `/en` |
+| `messages/{locale}/product-original.json` | Original mattress PDP: buy box, FAQs, layers, specs, compare, related | `/products/original`, `/en/products/original` |
+| `messages/{locale}/reviews-page.json` | Reviews page: hero, share form, carousel | `/reviews`, `/en/reviews` |
+| `messages/{locale}/contact.json` | Contact page | `/contact`, `/en/contact` |
+| `messages/{locale}/configurator.json` | Mattress configurator | `/configurator`, `/en/configurator` |
+| `messages/{locale}/checkout.json` | Fake-door checkout copy | `/checkout`, `/en/checkout` |
 
 `{locale}` is `lt` or `en`. Edit **both** when you change meaning — not only the language you are writing.
 
@@ -38,12 +38,12 @@ bun run dev
 
 The first `bun run dev` needs an internet connection so Next can download the Outfit font. After that it is cached.
 
-- Lithuanian homepage: [http://localhost:3000/lt](http://localhost:3000/lt)
+- Lithuanian homepage: [http://localhost:3000/](http://localhost:3000/)
 - English homepage: [http://localhost:3000/en](http://localhost:3000/en)
-- Product: `/lt/products/original` and `/en/products/original`
-- Reviews: `/lt/reviews` and `/en/reviews`
-- Checkout: `/lt/checkout` and `/en/checkout`
-- Thank you: `/lt/checkout/thank-you` and `/en/checkout/thank-you`
+- Product: `/products/original` and `/en/products/original`
+- Reviews: `/reviews` and `/en/reviews`
+- Checkout: `/checkout` and `/en/checkout`
+- Thank you: `/checkout/thank-you` and `/en/checkout/thank-you`
 
 The language switcher in the header jumps to the same path in the other locale.
 

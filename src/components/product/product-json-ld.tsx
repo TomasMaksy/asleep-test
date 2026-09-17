@@ -3,13 +3,14 @@ import {
   MATTRESS_SIZES,
   mattressSaleCents,
 } from "@/lib/product-original-sizes";
+import { localePath } from "@/lib/seo-metadata";
 import { getSiteUrl } from "@/lib/site-url";
 
 export async function ProductJsonLd() {
   const locale = await getLocale();
   const t = await getTranslations("productOriginal");
   const site = getSiteUrl();
-  const url = `${site}/${locale}/products/original`;
+  const url = `${site}${localePath(locale, "/products/original")}`;
   const image = `${site}/images/product-gallery/hero-square.webp`;
   const name = t("hero.subtitle");
 

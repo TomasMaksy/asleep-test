@@ -10,7 +10,7 @@ alwaysApply: false
 
 # Internationalization
 
-Read `COPY.md` before editing copy. Supported locales: `lt` (default), `en`. URLs are always prefixed: `/lt/...`, `/en/...`.
+Read `COPY.md` before editing copy. Supported locales: `lt` (default), `en`. Default LT URLs are unprefixed (`/…`); other locales use a prefix (`/en/…`).
 
 ## Where strings live
 
