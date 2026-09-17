@@ -1,0 +1,84 @@
+/* Scoped overrides on top of swiffy-slider/css — thumbs replace default dots. */
+.product-gallery-swiffy .slider-container {
+  aspect-ratio: 1 / 1;
+  background-color: var(--color-surface);
+}
+
+.product-gallery-swiffy .slider-container > * {
+  height: 100%;
+  scroll-snap-stop: always;
+}
+
+.product-gallery-thumbs {
+  --thumb-size: 4.5rem;
+  --thumb-gap: 0.5rem;
+  --thumb-pad-x: 1.25rem;
+  margin-top: 0.75rem;
+}
+
+/* Scroll rail: thumbs + underline move together so the bar can't stick out. */
+.product-gallery-thumbs-rail {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.product-gallery-thumbs-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.product-gallery-thumbs-track {
+  position: relative;
+  width: max-content;
+  min-width: 100%;
+}
+
+.product-gallery-swiffy .slider-indicators {
+  position: relative;
+  inset: auto;
+  display: flex;
+  justify-content: flex-start;
+  gap: var(--thumb-gap);
+  margin: 0;
+  padding: 0 var(--thumb-pad-x) 0.5rem;
+  overflow: visible;
+}
+
+.product-gallery-swiffy .slider-indicators > * {
+  position: relative;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: var(--thumb-size);
+  height: auto;
+  padding: 0;
+  border: 0;
+  opacity: 1;
+  background: transparent;
+  background-clip: border-box;
+  cursor: pointer;
+  transition: none;
+}
+
+.product-gallery-thumb-bar {
+  position: absolute;
+  bottom: 0;
+  left: var(--thumb-pad-x);
+  width: var(--thumb-size);
+  height: 2px;
+  border-radius: 9999px;
+  background: var(--color-brand);
+  pointer-events: none;
+  transform: translate3d(
+    calc(var(--active-index, 0) * (var(--thumb-size) + var(--thumb-gap))),
+    0,
+    0
+  );
+  transition: transform 0.22s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-gallery-thumb-bar {
+    transition: none;
+  }
+}

@@ -101,7 +101,8 @@
     },
     "awards": {
       "heading": "The best-rated mattress in the Baltics.",
-      "imageAlt": "asleep awards and ratings"
+      "imageAlt": "asleep awards and ratings",
+      "badgeAlt": "Consumer association — best tested, 13-time winner"
     },
     "faq": [
       {

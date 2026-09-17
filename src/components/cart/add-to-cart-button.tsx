@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { warmCartSheet } from "@/components/cart/cart-sheet-warm";
 import { useCartStore } from "@/lib/cart-store";
 import { cn } from "@/lib/utils";
 
@@ -34,6 +35,8 @@ export function AddToCartButton({
         addItem(product);
         openCart();
       }}
+      onFocus={warmCartSheet}
+      onPointerEnter={warmCartSheet}
       type="button"
     >
       {children}

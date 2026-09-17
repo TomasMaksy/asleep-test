@@ -480,6 +480,32 @@ html:has(#site-header[data-hidden="true"]) .product-info-heading-row {
   height: min(100cqw, 100cqh);
 }
 
+/* Mattress media only — SVG shadow stays planted while the stack lifts.
+   Delay/duration come from inline style so they track video playbackRate. */
+.configurator-stage-media {
+  position: absolute;
+  inset: 0;
+  transform: translateY(3%);
+}
+
+.configurator-stage-media[data-lift="open"] {
+  transform: translateY(-5.5%);
+}
+
+.configurator-stage-media[data-lift="closed"] {
+  transform: translateY(3%);
+}
+
+.configurator-stage-media[data-lift="packaging"] {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .configurator-stage-media {
+    transition: none;
+  }
+}
+
 .configurator-stage-video {
   position: absolute;
   inset: 0;
@@ -506,6 +532,14 @@ html:has(#site-header[data-hidden="true"]) .product-info-heading-row {
 .configurator-stage-video[data-layer="idle"] {
   opacity: 0;
   z-index: 10;
+}
+
+/* Leave packaging without compositing under the open mattress (alpha stack). */
+.configurator-stage-video[data-layer="fade-out"] {
+  opacity: 0;
+  z-index: 13;
+  transition: opacity 0.28s ease;
+  pointer-events: none;
 }
 
 /* SVG filters flatten WebKit video alpha to black. */
@@ -596,23 +630,27 @@ html:has(#site-header[data-hidden="true"]) .product-info-heading-row {
   opacity: 0;
 }
 
-@keyframes configurator-catchup {
-  from {
-    transform: translateX(-120%);
+@keyframes star-pop {
+  0% {
+    transform: scale(1);
   }
-  to {
-    transform: translateX(420%);
+  25% {
+    transform: scale(1.28);
   }
-}
-
-.configurator-catchup-bar {
-  animation: configurator-catchup 1.15s ease-in-out infinite;
+  50% {
+    transform: scale(0.92);
+  }
+  75% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .configurator-catchup-bar {
-    animation: none;
-    width: 100%;
+  [class*="animate-[star-pop"] {
+    animation: none !important;
   }
 }
 

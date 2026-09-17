@@ -1,8 +1,6 @@
 import { getTranslations } from "next-intl/server";
-import {
-  type LayerItem,
-  ProductLayers,
-} from "@/app/[locale]/products/original/sections/product-layers";
+import type { LayerItem } from "@/app/[locale]/products/original/sections/product-layers";
+import { ProductLayersLazy } from "@/app/[locale]/products/original/sections/product-layers-lazy";
 
 const ITEM_IDS = [
   "tencel",
@@ -44,7 +42,7 @@ export async function ProductLayersSection({
   });
 
   return (
-    <ProductLayers
+    <ProductLayersLazy
       advantagesLabel={t("advantages")}
       className={className}
       closeLabel={t("close")}

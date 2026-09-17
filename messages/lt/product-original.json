@@ -101,7 +101,8 @@
     },
     "awards": {
       "heading": "Geriausiai Baltijos šalyse įvertintas čiužinys.",
-      "imageAlt": "asleep apdovanojimai ir įvertinimai"
+      "imageAlt": "asleep apdovanojimai ir įvertinimai",
+      "badgeAlt": "Vartotojų pasirinkimas — geriausias iš testų, 13 kartų nugalėtojas"
     },
     "faq": [
       {

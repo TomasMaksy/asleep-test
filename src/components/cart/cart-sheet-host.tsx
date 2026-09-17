@@ -2,6 +2,10 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import {
+  subscribeCartSheetWarm,
+  warmCartSheet,
+} from "@/components/cart/cart-sheet-warm";
 import { useCartStore } from "@/lib/cart-store";
 
 const CartSheet = dynamic(
@@ -10,7 +14,10 @@ const CartSheet = dynamic(
   { ssr: false },
 );
 
-/** Defer cart/motion bundle until first open or idle time. */
+/**
+ * Defer cart sheet JS until first open, bag hover/focus, or idle time.
+ * Keeps cart off the critical path for LCP while avoiding open lag.
+ */
 export function CartSheetHost() {
   const isOpen = useCartStore((s) => s.isOpen);
   const [ready, setReady] = useState(false);
@@ -21,17 +28,21 @@ export function CartSheetHost() {
     }
   }, [isOpen]);
 
+  useEffect(() => subscribeCartSheetWarm(() => setReady(true)), []);
+
   useEffect(() => {
     if (ready) {
       return;
     }
 
-    const warm = () => setReady(true);
+    const warm = () => {
+      warmCartSheet();
+    };
     let idleId = 0;
-    const timeoutId = window.setTimeout(warm, 3500);
+    const timeoutId = window.setTimeout(warm, 2500);
 
     if ("requestIdleCallback" in window) {
-      idleId = window.requestIdleCallback(warm, { timeout: 5000 });
+      idleId = window.requestIdleCallback(warm, { timeout: 4000 });
     }
 
     return () => {

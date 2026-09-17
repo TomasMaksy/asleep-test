@@ -10,7 +10,7 @@ export async function ProductJsonLd() {
   const t = await getTranslations("productOriginal");
   const site = getSiteUrl();
   const url = `${site}/${locale}/products/original`;
-  const image = `${site}/images/product-original-hero-lifestyle.webp`;
+  const image = `${site}/images/product-gallery/hero-square.webp`;
   const name = t("hero.subtitle");
 
   const jsonLd = {

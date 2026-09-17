@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
+import { localePath } from "@/lib/seo-metadata";
 import { getSiteUrl } from "@/lib/site-url";
 
+/** Public, indexable routes only — never internal tools like /compare. */
 const paths = [
   "/",
-  "/compare",
   "/products/original",
   "/reviews",
   "/configurator",
@@ -13,20 +14,19 @@ const paths = [
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = getSiteUrl();
-  const lastModified = new Date();
 
-  return routing.locales.flatMap((locale) =>
-    paths.map((path) => ({
-      url: `${baseUrl}/${locale}${path === "/" ? "" : path}`,
-      lastModified,
-      alternates: {
-        languages: Object.fromEntries(
-          routing.locales.map((altLocale) => [
-            altLocale,
-            `${baseUrl}/${altLocale}${path === "/" ? "" : path}`,
-          ]),
-        ),
-      },
-    })),
-  );
+  return paths.flatMap((path) => {
+    const languages = Object.fromEntries([
+      ...routing.locales.map((locale) => [
+        locale,
+        `${baseUrl}${localePath(locale, path)}`,
+      ]),
+      ["x-default", `${baseUrl}${localePath(routing.defaultLocale, path)}`],
+    ]);
+
+    return routing.locales.map((locale) => ({
+      url: `${baseUrl}${localePath(locale, path)}`,
+      alternates: { languages },
+    }));
+  });
 }

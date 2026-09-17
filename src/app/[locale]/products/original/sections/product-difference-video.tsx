@@ -1,7 +1,6 @@
 "use client";
 
 import { Pause, Play } from "lucide-react";
-import { useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 export function DifferenceVideo({
@@ -14,7 +13,6 @@ export function DifferenceVideo({
   src: string;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const reduceMotion = useReducedMotion();
   const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
@@ -22,6 +20,8 @@ export function DifferenceVideo({
     if (!video) {
       return;
     }
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     const sync = () => {
       setPlaying(!video.paused);
@@ -36,7 +36,7 @@ export function DifferenceVideo({
           video.pause();
           return;
         }
-        if (reduceMotion) {
+        if (reduceMotion.matches) {
           return;
         }
         void video.play().catch(() => {});
@@ -50,7 +50,7 @@ export function DifferenceVideo({
       video.removeEventListener("play", sync);
       video.removeEventListener("pause", sync);
     };
-  }, [reduceMotion]);
+  }, []);
 
   function togglePlayback() {
     const video = videoRef.current;

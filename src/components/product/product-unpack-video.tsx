@@ -12,6 +12,7 @@ const POSTER = "/images/product-unpack.webp";
 const VIDEO_WIDTH = 720;
 const VIDEO_HEIGHT = 488;
 const EDGE = 0.05;
+const HOLD_OPEN_MS = 400;
 const HOVER_QUERY = "(hover: hover) and (pointer: fine)";
 
 type Direction = "forward" | "reverse";
@@ -75,7 +76,8 @@ export function ProductUnpackVideo({ alt }: { alt: string }) {
         });
         reveal.disconnect();
       },
-      { rootMargin: "600px" },
+      // Stay near-fold without racing the home hero LCP.
+      { rootMargin: "200px" },
     );
     reveal.observe(card);
 
@@ -148,14 +150,34 @@ export function ProductUnpackVideo({ alt }: { alt: string }) {
 
     const videos = { forward, reverse } as const;
     let intent: Direction | "packed" = "packed";
+    let engaged = false;
+    let holdTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const clearHold = () => {
+      if (holdTimer !== null) {
+        clearTimeout(holdTimer);
+        holdTimer = null;
+      }
+    };
 
     const show = (direction: Direction) => {
       activeRef.current = direction;
       setActive(direction);
     };
 
+    const scheduleCloseAfterHold = () => {
+      clearHold();
+      holdTimer = setTimeout(() => {
+        holdTimer = null;
+        if (engaged) {
+          playDirection("reverse");
+        }
+      }, HOLD_OPEN_MS);
+    };
+
     const playDirection = (direction: Direction) => {
       intent = direction;
+      clearHold();
       const incoming = videos[direction];
       const outgoing = videos[otherDirection(direction)];
 
@@ -185,6 +207,12 @@ export function ProductUnpackVideo({ alt }: { alt: string }) {
         }
         show(direction);
         if (!canAdvance(incoming)) {
+          // Already fully open/closed — continue the hover loop from here.
+          if (direction === "forward" && engaged) {
+            scheduleCloseAfterHold();
+          } else if (direction === "reverse" && engaged) {
+            playDirection("forward");
+          }
           return;
         }
         void incoming.play().catch(() => {});
@@ -210,8 +238,23 @@ export function ProductUnpackVideo({ alt }: { alt: string }) {
       }
     };
 
+    const setEngaged = (next: boolean) => {
+      if (next === engaged) {
+        return;
+      }
+      engaged = next;
+      if (next) {
+        playDirection("forward");
+      } else {
+        clearHold();
+        playDirection("reverse");
+      }
+    };
+
     const resetPacked = () => {
       intent = "packed";
+      engaged = false;
+      clearHold();
       generationRef.current += 1;
       reverse.pause();
       forward.pause();
@@ -223,15 +266,30 @@ export function ProductUnpackVideo({ alt }: { alt: string }) {
       show("forward");
     };
 
+    const onForwardEnded = () => {
+      if (engaged && intent === "forward") {
+        scheduleCloseAfterHold();
+      }
+    };
+
+    const onReverseEnded = () => {
+      if (engaged && intent === "reverse") {
+        playDirection("forward");
+      }
+    };
+
+    forward.addEventListener("ended", onForwardEnded);
+    reverse.addEventListener("ended", onReverseEnded);
+
     const hoverable = window.matchMedia(HOVER_QUERY);
     let inView = false;
 
-    const onEnter = () => playDirection("forward");
-    const onLeave = () => playDirection("reverse");
-    const onFocusIn = () => playDirection("forward");
+    const onEnter = () => setEngaged(true);
+    const onLeave = () => setEngaged(false);
+    const onFocusIn = () => setEngaged(true);
     const onFocusOut = (event: FocusEvent) => {
       if (!card.contains(event.relatedTarget as Node | null)) {
-        playDirection("reverse");
+        setEngaged(false);
       }
     };
 
@@ -246,9 +304,9 @@ export function ProductUnpackVideo({ alt }: { alt: string }) {
         }
         inView = next;
         if (next) {
-          playDirection("forward");
+          setEngaged(true);
         } else if (entry.intersectionRatio > 0) {
-          playDirection("reverse");
+          setEngaged(false);
         } else {
           resetPacked();
         }
@@ -283,6 +341,9 @@ export function ProductUnpackVideo({ alt }: { alt: string }) {
 
     return () => {
       generationRef.current += 1;
+      clearHold();
+      forward.removeEventListener("ended", onForwardEnded);
+      reverse.removeEventListener("ended", onReverseEnded);
       unbindHover();
       hoverable.removeEventListener("change", onHoverChange);
       view.disconnect();

@@ -139,6 +139,19 @@ export function catalogProductId(sizeId: string) {
   return `matt-original-${sizeId}`;
 }
 
+/** Cart line id for configurator ATC. Catalog regex still resolves the size SKU. */
+export function configuratorCartProductId(
+  sizeId: MattressSizeId,
+  you: number,
+  partner?: number,
+) {
+  const base = catalogProductId(sizeId);
+  if (partner != null) {
+    return `${base}-c${you}p${partner}`;
+  }
+  return `${base}-c${you}`;
+}
+
 function isMattressSizeId(value: string): value is MattressSizeId {
   return MATTRESS_SIZES.some((entry) => entry.id === value);
 }

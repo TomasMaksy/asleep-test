@@ -5,12 +5,15 @@ import { asleepNavyPackagingFilterStyle } from "@/components/asleep-navy-filter"
 import { useAsleepNavyFilterStyle } from "@/components/asleep-navy-filter-style";
 import {
   type BedKind,
+  introPosterSrc,
   introVideoSrc,
   packagingVideoSrc,
+  preloadConfiguratorPosters,
   transitionVideoSrc,
   VIDEO_PLAYBACK_RATE,
   VIDEO_PLAYBACK_RATE_CATCHUP,
 } from "@/lib/configurator";
+import { staticImageUrl } from "@/lib/static-image-url";
 import { cn } from "@/lib/utils";
 
 export type ClipKind = "intro" | "transition" | "packaging";
@@ -85,6 +88,65 @@ function frameKind(clip: ConfiguratorClip): ClipKind {
 
 function usesScnFraming(bed: BedKind, kind: ClipKind) {
   return bed === "double" && kind === "transition";
+}
+
+/** Closed sits low; open lifts the stack (not the shadow) and stays there. */
+function mediaLift(
+  clip: ConfiguratorClip | null,
+): "closed" | "open" | "packaging" {
+  if (!clip) {
+    return "closed";
+  }
+  if (clip.kind === "packaging") {
+    return "packaging";
+  }
+  if (clip.kind === "intro" && clip.reverse) {
+    return "closed";
+  }
+  return "open";
+}
+
+/**
+ * Lift timings in opening-clip content seconds (file timeline).
+ * Tuned so at 1.5× wall = delay 0.42s / dur 1.05s open, delay 0.7s close.
+ * Divided by playbackRate so speed-ups stay locked to the video.
+ */
+const LIFT_CONTENT = {
+  open: { delay: 0.63, duration: 1.575 },
+  closed: { delay: 1.05, duration: 1.575 },
+  packaging: { delay: 0, duration: 0.35 },
+} as const;
+
+const LIFT_EASING = {
+  // Sharp S-curve: holds, then moves, then settles (no bounce).
+  open: "cubic-bezier(0.85, 0, 0.15, 1)",
+  closed: "cubic-bezier(0.85, 0, 0.15, 1)",
+  packaging: "cubic-bezier(0.32, 0.72, 0, 1)",
+} as const;
+
+function mediaLiftStyle(
+  lift: "closed" | "open" | "packaging",
+  playbackRate: number,
+  reducedMotion: boolean,
+): { transition: string } {
+  // Catchup seeks the clip to the end — snap the stack with it.
+  if (
+    reducedMotion ||
+    playbackRate >= VIDEO_PLAYBACK_RATE_CATCHUP ||
+    playbackRate >= 4
+  ) {
+    return { transition: "none" };
+  }
+
+  const rate = Math.max(playbackRate, 0.01);
+  const { delay, duration } = LIFT_CONTENT[lift];
+  // Packaging is a short settle, not tied to the opening plate timeline.
+  const wallDelay = lift === "packaging" ? delay : delay / rate;
+  const wallDuration = lift === "packaging" ? duration : duration / rate;
+
+  return {
+    transition: `transform ${wallDuration}s ${LIFT_EASING[lift]} ${wallDelay}s`,
+  };
 }
 
 function videoFitClass(bed: BedKind, kind: ClipKind) {
@@ -171,7 +233,7 @@ function seekToStart(video: HTMLVideoElement, done: () => void) {
  * enough. Keep the outgoing clip as `front` and prime the incoming as `back`
  * (opacity 1, lower z-index) so frames actually paint; then promote.
  */
-type VideoLayer = "front" | "back" | "idle";
+type VideoLayer = "front" | "back" | "idle" | "fade-out";
 
 function setVideoLayer(video: HTMLVideoElement, layer: VideoLayer) {
   video.dataset.layer = layer;
@@ -227,10 +289,7 @@ function whenVideoFramesPainted(
     window.clearTimeout(timeout);
     cancelAnimationFrame(rafA);
     cancelAnimationFrame(rafB);
-    if (
-      rvfcHandle &&
-      typeof video.cancelVideoFrameCallback === "function"
-    ) {
+    if (rvfcHandle && typeof video.cancelVideoFrameCallback === "function") {
       video.cancelVideoFrameCallback(rvfcHandle);
     }
   };
@@ -251,18 +310,30 @@ export function ConfiguratorVideos({
   const videoBRef = useRef<HTMLVideoElement>(null);
   const activeRef = useRef<0 | 1>(0);
   const [visible, setVisible] = useState<0 | 1 | null>(null);
+  /** Bed framing follows images instantly on the size step; videos update on reveal. */
+  const [displayBed, setDisplayBed] = useState<BedKind>(bed);
+  const [showPoster, setShowPoster] = useState(true);
   const [clipKind, setClipKind] = useState<[ClipKind, ClipKind]>([
     "intro",
     "intro",
   ]);
+  const clipKindRef = useRef(clipKind);
+  clipKindRef.current = clipKind;
   const lastClipIdRef = useRef<number | null>(null);
   const onEndedRef = useRef(onEnded);
   const onReadyRef = useRef(onReady);
   const playbackRateRef = useRef(playbackRate);
+  /** Once a video frame has painted, dual-buffer covers swaps — never flash the closed poster under alpha. */
+  const stageHasVideoRef = useRef(false);
+  const idle = clip === null;
 
   onEndedRef.current = onEnded;
   onReadyRef.current = onReady;
   playbackRateRef.current = playbackRate;
+
+  useEffect(() => {
+    preloadConfiguratorPosters();
+  }, []);
 
   useEffect(() => {
     const rate = playbackRate;
@@ -273,30 +344,33 @@ export function ConfiguratorVideos({
     }
   }, [playbackRate]);
 
+  /**
+   * Size step: static posters only. Unload any video so rapid single↔double
+   * toggles never queue HEVC/VP9 decodes.
+   */
   useEffect(() => {
-    if (clip) {
+    if (!idle) {
       return;
     }
-    const video = videoARef.current;
-    const other = videoBRef.current;
-    if (!video) {
-      return;
+
+    setDisplayBed(bed);
+    setShowPoster(true);
+    setVisible(null);
+    lastClipIdRef.current = null;
+    stageHasVideoRef.current = false;
+
+    for (const video of [videoARef.current, videoBRef.current]) {
+      if (!video) {
+        continue;
+      }
+      video.pause();
+      if (video.getAttribute("src") || video.currentSrc) {
+        video.removeAttribute("src");
+        video.load();
+      }
+      setVideoLayer(video, "idle");
     }
-    video.src = introVideoSrc(bed);
-    video.load();
-    activeRef.current = 0;
-    setVideoLayer(video, "front");
-    if (other) {
-      setVideoLayer(other, "idle");
-    }
-    setClipKind((current) => ["intro", current[1]]);
-    const showFirstFrame = () => {
-      video.currentTime = 0;
-      setVisible(0);
-    };
-    video.addEventListener("loadeddata", showFirstFrame);
-    return () => video.removeEventListener("loadeddata", showFirstFrame);
-  }, [bed, clip]);
+  }, [bed, idle]);
 
   useEffect(() => {
     if (!clip || lastClipIdRef.current === clip.id) {
@@ -312,6 +386,10 @@ export function ConfiguratorVideos({
       onEndedRef.current(clip);
       return;
     }
+
+    // Packaging is a different subject — never keep it as the dual-buffer
+    // cover under the mattress (both show through alpha). Fade it out instead.
+    const outgoingIsPackaging = clipKindRef.current[current] === "packaging";
 
     const src = clipSrc(clip);
     applyPlaybackRate(incoming, playbackRateRef.current);
@@ -333,6 +411,20 @@ export function ConfiguratorVideos({
     let stopSeek = () => {};
     let stopPaint = () => {};
     let hideOutgoingRaf = 0;
+    let fadeOutTimer = 0;
+
+    if (outgoing && outgoingIsPackaging) {
+      outgoing.pause();
+      // Start from the visible packaging layer so opacity can transition.
+      setVideoLayer(outgoing, "front");
+      void outgoing.offsetWidth;
+      setVideoLayer(outgoing, "fade-out");
+      fadeOutTimer = window.setTimeout(() => {
+        if (!disposed && outgoing.dataset.layer === "fade-out") {
+          setVideoLayer(outgoing, "idle");
+        }
+      }, 300);
+    }
 
     const reveal = () => {
       if (disposed || revealed) {
@@ -341,11 +433,14 @@ export function ConfiguratorVideos({
       revealed = true;
       // Promote incoming on top while outgoing still covers any transparent gaps.
       setVideoLayer(incoming, "front");
-      if (outgoing) {
+      if (outgoing && !outgoingIsPackaging) {
         setVideoLayer(outgoing, "back");
       }
       activeRef.current = nextIndex;
+      setDisplayBed(clip.bed);
       setVisible(nextIndex);
+      stageHasVideoRef.current = true;
+      setShowPoster(false);
       onReadyRef.current?.(clip);
 
       hideOutgoingRaf = requestAnimationFrame(() => {
@@ -353,7 +448,7 @@ export function ConfiguratorVideos({
           if (disposed) {
             return;
           }
-          if (outgoing) {
+          if (outgoing && !outgoingIsPackaging) {
             setVideoLayer(outgoing, "idle");
           }
           if (clip.kind === "intro" && outgoing) {
@@ -384,7 +479,7 @@ export function ConfiguratorVideos({
       if (disposed) {
         return;
       }
-      if (outgoing) {
+      if (outgoing && !outgoingIsPackaging) {
         setVideoLayer(outgoing, "front");
       }
       setVideoLayer(incoming, "back");
@@ -419,7 +514,7 @@ export function ConfiguratorVideos({
           if (disposed) {
             return;
           }
-          if (outgoing) {
+          if (outgoing && !outgoingIsPackaging) {
             setVideoLayer(outgoing, "front");
           }
           setVideoLayer(incoming, "back");
@@ -451,6 +546,13 @@ export function ConfiguratorVideos({
       stopSeek = seekToStart(incoming, playThenReveal);
     };
 
+    // Closed still only covers size → first paint. Re-showing it under an
+    // already-open alpha video flashes the collapsed mattress through gaps.
+    if (!stageHasVideoRef.current) {
+      setShowPoster(true);
+    }
+    setDisplayBed(clip.bed);
+
     incoming.addEventListener("canplay", start);
     incoming.addEventListener("ended", finish);
     incoming.addEventListener("error", finish);
@@ -463,25 +565,32 @@ export function ConfiguratorVideos({
       stopSeek();
       stopPaint();
       cancelAnimationFrame(hideOutgoingRaf);
+      window.clearTimeout(fadeOutTimer);
       incoming.removeEventListener("canplay", start);
       incoming.removeEventListener("ended", finish);
       incoming.removeEventListener("error", finish);
     };
   }, [clip, reducedMotion]);
 
+  const lift = mediaLift(clip);
+
   return (
     <div className="configurator-stage absolute inset-0 overflow-hidden">
       <div className="configurator-stage-fade">
         <div
           className={cn(
-            "configurator-stage-zoom absolute inset-0 origin-center md:scale-100",
-            bed === "double" ? "scale-110" : "scale-150",
+            // Mobile zooms both; desktop keeps single at 1 and shrinks
+            // double by the same 1.1/1.5 ratio so it stays relative to single.
+            "configurator-stage-zoom absolute inset-0 origin-center",
+            displayBed === "double"
+              ? "scale-110 md:scale-[0.73]"
+              : "scale-150 md:scale-100",
           )}
         >
           <div
             className={cn(
               "configurator-stage-frame",
-              bed === "double"
+              displayBed === "double"
                 ? "configurator-stage-frame-double"
                 : "configurator-stage-frame-single",
             )}
@@ -520,37 +629,65 @@ export function ConfiguratorVideos({
                 <polygon
                   fill="rgba(6,16,40,0.12)"
                   filter={`url(#${filterId}-soft)`}
-                  points={MATTRESS_SHADOW[bed].soft}
+                  points={MATTRESS_SHADOW[displayBed].soft}
                 />
                 <polygon
                   fill="rgba(6,16,40,0.20)"
                   filter={`url(#${filterId}-contact)`}
-                  points={MATTRESS_SHADOW[bed].contact}
+                  points={MATTRESS_SHADOW[displayBed].contact}
                 />
               </svg>
             ) : null}
-            <video
-              className={cn(
-                "configurator-stage-video",
-                videoFitClass(bed, clipKind[0]),
-              )}
-              muted
-              playsInline
-              preload="auto"
-              ref={videoARef}
-              style={videoNavyStyle(clipKind[0], navyFilterStyle)}
-            />
-            <video
-              className={cn(
-                "configurator-stage-video",
-                videoFitClass(bed, clipKind[1]),
-              )}
-              muted
-              playsInline
-              preload="auto"
-              ref={videoBRef}
-              style={videoNavyStyle(clipKind[1], navyFilterStyle)}
-            />
+            <div
+              className="configurator-stage-media"
+              data-lift={lift}
+              style={mediaLiftStyle(lift, playbackRate, reducedMotion)}
+            >
+              {/* Both stills stay mounted — size toggles are CSS opacity only.
+                  Same navy SVG filter as the stage videos so still ↔ frame 0 match. */}
+              {(["single", "double"] as const).map((kind) => (
+                // biome-ignore lint/performance/noImgElement: alpha stills; next/image flattens transparency
+                <img
+                  alt=""
+                  aria-hidden
+                  className={cn(
+                    "pointer-events-none absolute inset-0 z-9 size-full object-contain transition-opacity duration-150",
+                    showPoster && displayBed === kind
+                      ? "opacity-100"
+                      : "opacity-0",
+                  )}
+                  decoding="async"
+                  draggable={false}
+                  height={kind === "double" ? 1280 : 1520}
+                  key={kind}
+                  src={staticImageUrl(introPosterSrc(kind))}
+                  style={navyFilterStyle}
+                  width={1280}
+                />
+              ))}
+              <video
+                className={cn(
+                  "configurator-stage-video",
+                  videoFitClass(displayBed, clipKind[0]),
+                )}
+                muted
+                playsInline
+                preload="none"
+                ref={videoARef}
+                style={videoNavyStyle(clipKind[0], navyFilterStyle)}
+              />
+              <video
+                className={cn(
+                  "configurator-stage-video",
+                  videoFitClass(displayBed, clipKind[1]),
+                )}
+                muted
+                playsInline
+                preload="none"
+                ref={videoBRef}
+                style={videoNavyStyle(clipKind[1], navyFilterStyle)}
+              />
+            </div>
           </div>
         </div>
       </div>

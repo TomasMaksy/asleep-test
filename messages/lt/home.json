@@ -13,7 +13,7 @@
         "id": "original",
         "title": "Original",
         "variant": "dark",
-        "image": "/images/product-original.webp",
+        "image": "/images/product-unpack.webp",
         "imageAlt": "Lorem ipsum mattress",
         "cta": "Atrasti Original",
         "price": 699,
@@ -299,7 +299,7 @@
     "items": [
       {
         "label": "Reguliuojamas čiužinys",
-        "src": "/images/bedroom-1.jpg",
+        "src": "/images/bedroom-wide.webp",
         "alt": "Reguliuojamas čiužinys miegamajame",
         "href": "#",
         "className": "row-start-1 col-start-1 col-span-2 row-span-2",

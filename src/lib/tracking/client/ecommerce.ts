@@ -1,5 +1,6 @@
 import type { CartItem } from "@/lib/cart-store";
 import { resolveCatalogItem } from "@/lib/product-catalog";
+import { reportCatalogMismatch } from "@/lib/tracking/catalog-alert";
 import { cartToTrackingItems, trackingItemsValue } from "@/lib/tracking/cart";
 import {
   createTrackingEvent,
@@ -40,6 +41,11 @@ export function trackAddedCartItems(
 ) {
   const tracked = cartToTrackingItems(items);
   if (tracked.length === 0) {
+    reportCatalogMismatch({
+      eventName: "add_to_cart",
+      source,
+      items,
+    });
     return;
   }
 
@@ -64,9 +70,10 @@ export function trackCheckoutInitiated(
 
   const tracked = cartToTrackingItems(items);
   if (tracked.length === 0) {
-    logTrackingIssue({
+    reportCatalogMismatch({
       eventName: "checkout_initiated",
-      reason: "catalog_mismatch",
+      source,
+      items,
     });
     return;
   }
@@ -116,6 +123,11 @@ export async function createPurchaseTrackingEvent({
 }): Promise<TrackingEventOf<"purchase">> {
   const tracked = cartToTrackingItems(items, coupon);
   if (tracked.length === 0) {
+    reportCatalogMismatch({
+      eventName: "purchase",
+      source: "checkout_page",
+      items,
+    });
     throw new Error("Purchase items are not in the catalog.");
   }
 

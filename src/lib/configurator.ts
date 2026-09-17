@@ -28,8 +28,7 @@ export const MAX_TRANSITION_QUEUE = 2;
 
 /** Bunny CDN pull zone for configurator HEVC/VP9 clips (`single/` + `double/`). */
 const CONFIGURATOR_VIDEO_CDN = (
-  process.env.NEXT_PUBLIC_CONFIGURATOR_VIDEO_CDN ??
-  "https://unive-v2.b-cdn.net"
+  process.env.NEXT_PUBLIC_CONFIGURATOR_VIDEO_CDN ?? "https://unive-v2.b-cdn.net"
 ).replace(/\/$/, "");
 
 function configuratorClipSrc(bed: BedKind, fileName: string): string {
@@ -90,7 +89,10 @@ export function isMindTheGap(you: Firmness, partner: Firmness): boolean {
 }
 
 /** Together 3×3: soft↔hard is too far for one double top layer. */
-export function isMindTheGapTogether(you: Firmness, partner: Firmness): boolean {
+export function isMindTheGapTogether(
+  you: Firmness,
+  partner: Firmness,
+): boolean {
   return Math.abs(you - partner) >= 2;
 }
 
@@ -124,10 +126,51 @@ export function introVideoSrc(bed: BedKind, reverse = false): string {
   );
 }
 
+/** Closed-mattress still (first frame of the opening clip) — size step +
+ * cover while alpha video paints. */
+export function introPosterSrc(bed: BedKind): string {
+  return bed === "single"
+    ? "/images/configurator/intro-single.webp"
+    : "/images/configurator/intro-double.webp";
+}
+
+const preloadedConfiguratorUrls = new Set<string>();
+
+function preloadUrlOnce(url: string, kind: "image" | "video") {
+  if (typeof window === "undefined" || preloadedConfiguratorUrls.has(url)) {
+    return;
+  }
+  preloadedConfiguratorUrls.add(url);
+  if (kind === "image") {
+    const img = new Image();
+    img.decoding = "async";
+    img.src = url;
+    return;
+  }
+  const video = document.createElement("video");
+  video.muted = true;
+  video.playsInline = true;
+  video.preload = "auto";
+  video.src = url;
+}
+
+/** Tiny WebPs only — safe to call on link hover / size-step mount. */
+export function preloadConfiguratorPosters() {
+  preloadUrlOnce(introPosterSrc("single"), "image");
+  preloadUrlOnce(introPosterSrc("double"), "image");
+}
+
+/** Warm the opening clip for the bed about to play — not on every size toggle. */
+export function preloadConfiguratorIntro(bed: BedKind) {
+  preloadUrlOnce(introVideoSrc(bed), "video");
+}
+
 export function packagingVideoSrc(bed: BedKind): string {
   return configuratorClipSrc(
     bed,
-    bed === "single" ? "SCN_Single_Packaging.webm" : "SCN_Double_Packaging.webm",
+    bed === "single"
+      ? "SCN_Single_Packaging.webm"
+      : "SCN_Double_Packaging.webm",
   );
 }
 

@@ -12,17 +12,17 @@ export async function ProductPurchaseExtras() {
 
   return (
     <div className="mt-0">
-      <div className="mb-7 max-w-full overflow-visible">
-        <div className="inline-block max-w-full">
+      <div className="mb-7 max-w-full overflow-hidden">
+        <div className="w-full">
           <p className="mb-4 font-bold text-base text-brand-dark leading-snug">
             {t("awards.heading")}
           </p>
           <Image
             alt={t("awards.imageAlt")}
-            className="block h-auto w-[112%] max-w-none object-contain object-left"
-            height={171}
-            src={staticImageUrl("/images/short_awards.webp")}
-            width={486}
+            className="block h-auto w-[300px] max-w-full object-contain object-left md:w-[357px]"
+            height={342}
+            src={staticImageUrl("/images/trust-badges.webp")}
+            width={972}
           />
         </div>
       </div>

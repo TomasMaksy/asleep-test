@@ -3,6 +3,7 @@
 import { ShoppingBag } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { warmCartSheet } from "@/components/cart/cart-sheet-warm";
 import { selectCartCount, useCartStore } from "@/lib/cart-store";
 import { cn } from "@/lib/utils";
 
@@ -46,6 +47,8 @@ export function CartBagButton({
         className,
       )}
       onClick={openCart}
+      onFocus={warmCartSheet}
+      onPointerEnter={warmCartSheet}
       type="button"
     >
       <ShoppingBag className="size-[18px] shrink-0" strokeWidth={1.75} />

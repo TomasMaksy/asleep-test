@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { CartBagButton } from "@/components/cart/cart-bag-button";
 import { HeaderScroll } from "@/components/header-scroll";
 import { Logo } from "@/components/icons";
@@ -16,6 +17,7 @@ export async function SiteHeader({
 }: SiteHeaderProps) {
   const isMinimal = variant === "minimal";
   const isSolid = theme === "solid" || isMinimal;
+  const t = await getTranslations("nav");
 
   return (
     <>
@@ -45,6 +47,12 @@ export async function SiteHeader({
           </Link>
           <div className="ml-auto flex items-center gap-2 xl:gap-5">
             <LanguageSwitcher compactOnMobile solid={isSolid} />
+            <Link
+              className="hidden font-medium duration-150 lg:block"
+              href="/reviews"
+            >
+              {t("reviews")}
+            </Link>
             <CartBagButton compactOnMobile solid={isSolid} />
           </div>
         </div>

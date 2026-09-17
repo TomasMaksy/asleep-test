@@ -1,19 +1,12 @@
 "use client";
 
 import { Pause, Play, ZoomIn } from "lucide-react";
-import {
-  AnimatePresence,
-  LayoutGroup,
-  motion,
-  useReducedMotion,
-} from "motion/react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
-import {
-  galleryChromeButtonClassName,
-  ProductGalleryLightbox,
-} from "@/components/product/product-gallery-lightbox";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { swiffyslider } from "swiffy-slider";
+import { galleryChromeButtonClassName } from "@/components/product/product-gallery-chrome";
 import type { Locale } from "@/i18n/routing";
 import { useOriginalSizeStore } from "@/lib/product-original-size-store";
 import {
@@ -26,6 +19,17 @@ import {
 } from "@/lib/product-original-sizes";
 import { staticImageUrl } from "@/lib/static-image-url";
 import { cn } from "@/lib/utils";
+
+import "./product-media-gallery.css";
+import "swiffy-slider/css";
+
+const ProductGalleryLightbox = dynamic(
+  () =>
+    import("@/components/product/product-gallery-lightbox").then((mod) => ({
+      default: mod.ProductGalleryLightbox,
+    })),
+  { ssr: false },
+);
 
 const GALLERY = {
   hero: "/images/product-gallery/hero-square.webp",
@@ -120,47 +124,23 @@ function gallerySlides(
   ];
 }
 
-const SLIDE_ORDER: SlideId[] = [
-  "hero",
-  "packshot",
-  "lifestyle",
-  "layers",
-  "benefits",
-];
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = useState(false);
 
-const slideTransition = {
-  type: "tween" as const,
-  duration: 0.42,
-  ease: [0.32, 0.72, 0, 1] as const,
-};
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduced(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
 
-const barTransition = {
-  type: "spring" as const,
-  stiffness: 380,
-  damping: 34,
-  mass: 0.8,
-};
-
-const mainSlideVariants = {
-  enter: (direction: number) => ({
-    x: direction >= 0 ? "100%" : "-100%",
-  }),
-  center: { x: 0 },
-  exit: (direction: number) => ({
-    x: direction >= 0 ? "-100%" : "100%",
-  }),
-};
-
-function slideDirection(fromId: SlideId, toId: SlideId) {
-  const from = SLIDE_ORDER.indexOf(fromId);
-  const to = SLIDE_ORDER.indexOf(toId);
-  if (from === SLIDE_ORDER.length - 1 && to === 0) return 1;
-  if (from === 0 && to === SLIDE_ORDER.length - 1) return -1;
-  return to >= from ? 1 : -1;
+  return reduced;
 }
 
 function LayersVideo({
   contain,
+  interactive = true,
   pauseLabel,
   playLabel,
   poster,
@@ -168,8 +148,9 @@ function LayersVideo({
   className,
 }: {
   contain?: boolean;
-  pauseLabel: string;
-  playLabel: string;
+  interactive?: boolean;
+  pauseLabel?: string;
+  playLabel?: string;
   poster: string;
   src: string;
   className?: string;
@@ -181,10 +162,25 @@ function LayersVideo({
     const video = videoRef.current;
     if (!video) return;
 
+    // Warm bytes after first paint so swipe-in play is instant. Do not call
+    // video.load() on show — that resets the element and is what felt like lag.
+    let idleHandle: number | null = null;
+    let timeoutHandle: number | null = null;
+    const warm = () => {
+      if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+        return;
+      }
+      video.preload = "auto";
+    };
+    if (typeof window.requestIdleCallback === "function") {
+      idleHandle = window.requestIdleCallback(warm, { timeout: 2000 });
+    } else {
+      timeoutHandle = window.setTimeout(warm, 600);
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting) {
-          video.load();
           void video
             .play()
             .then(() => setPlaying(true))
@@ -194,12 +190,24 @@ function LayersVideo({
           setPlaying(false);
         }
       },
-      { threshold: 0.2 },
+      // Start a bit early while the snap scroll is still moving.
+      { threshold: 0.15, rootMargin: "0px 40% 0px 40%" },
     );
 
     observer.observe(video);
-    return () => observer.disconnect();
-  }, []);
+    return () => {
+      observer.disconnect();
+      if (
+        idleHandle !== null &&
+        typeof window.cancelIdleCallback === "function"
+      ) {
+        window.cancelIdleCallback(idleHandle);
+      }
+      if (timeoutHandle !== null) {
+        window.clearTimeout(timeoutHandle);
+      }
+    };
+  }, [src]);
 
   function togglePlayback() {
     const video = videoRef.current;
@@ -225,7 +233,7 @@ function LayersVideo({
       <video
         className={
           contain
-            ? "h-auto w-auto max-h-[min(100%,1080px)] max-w-[min(100%,908px)] object-contain"
+            ? "h-auto max-h-[min(100%,1080px)] w-auto max-w-[min(100%,908px)] object-contain"
             : "absolute inset-0 size-full object-cover object-[center_68%]"
         }
         loop
@@ -237,20 +245,163 @@ function LayersVideo({
         src={staticImageUrl(src)}
       />
 
-      <button
-        aria-label={playing ? pauseLabel : playLabel}
-        className="absolute top-4 right-4 z-10 flex size-10 cursor-pointer items-center justify-center rounded-full bg-brand text-white transition-colors hover:bg-brand-dark"
-        onClick={togglePlayback}
-        onPointerDown={(event) => event.stopPropagation()}
-        type="button"
-      >
-        {playing ? (
-          <Pause className="size-3.5 fill-current" strokeWidth={0} />
-        ) : (
-          <Play className="ml-0.5 size-3.5 fill-current" strokeWidth={0} />
-        )}
-      </button>
+      {interactive && pauseLabel && playLabel ? (
+        <button
+          aria-label={playing ? pauseLabel : playLabel}
+          className="absolute top-4 right-4 z-10 flex size-10 cursor-pointer items-center justify-center rounded-full bg-brand text-white transition-colors hover:bg-brand-dark"
+          onClick={togglePlayback}
+          onPointerDown={(event) => event.stopPropagation()}
+          type="button"
+        >
+          {playing ? (
+            <Pause className="size-3.5 fill-current" strokeWidth={0} />
+          ) : (
+            <Play className="ml-0.5 size-3.5 fill-current" strokeWidth={0} />
+          )}
+        </button>
+      ) : null}
     </div>
+  );
+}
+
+/**
+ * Strip thumbnail for the layers slide: paint the static thumb first, then
+ * mount the same gallery video after the thumb is near-view + idle so it
+ * doesn't compete with LCP. Browser cache usually serves the bytes already
+ * fetched by the main-stage LayersVideo.
+ */
+function LayersThumbVideo({
+  objectPosition = "object-center",
+  poster,
+  reduceMotion = false,
+  src,
+}: {
+  objectPosition?: string;
+  poster: string;
+  reduceMotion?: boolean;
+  src: string;
+}) {
+  const rootRef = useRef<HTMLSpanElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    if (reduceMotion) {
+      return;
+    }
+
+    const root = rootRef.current;
+    if (!root) {
+      return;
+    }
+
+    let cancelled = false;
+    let idleHandle: number | null = null;
+    let timeoutHandle: number | null = null;
+
+    const armLoad = () => {
+      if (cancelled) {
+        return;
+      }
+      setShouldLoad(true);
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) {
+          return;
+        }
+        observer.disconnect();
+        if (typeof window.requestIdleCallback === "function") {
+          idleHandle = window.requestIdleCallback(armLoad, { timeout: 2500 });
+        } else {
+          timeoutHandle = window.setTimeout(armLoad, 500);
+        }
+      },
+      { rootMargin: "80px" },
+    );
+
+    observer.observe(root);
+
+    return () => {
+      cancelled = true;
+      observer.disconnect();
+      if (
+        idleHandle !== null &&
+        typeof window.cancelIdleCallback === "function"
+      ) {
+        window.cancelIdleCallback(idleHandle);
+      }
+      if (timeoutHandle !== null) {
+        window.clearTimeout(timeoutHandle);
+      }
+    };
+  }, [reduceMotion]);
+
+  useEffect(() => {
+    if (!shouldLoad) {
+      return;
+    }
+
+    const video = videoRef.current;
+    if (!video) {
+      return;
+    }
+
+    const onReady = () => setReady(true);
+    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      onReady();
+    } else {
+      video.addEventListener("loadeddata", onReady);
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          void video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.15 },
+    );
+    observer.observe(video);
+
+    return () => {
+      video.removeEventListener("loadeddata", onReady);
+      observer.disconnect();
+    };
+  }, [shouldLoad]);
+
+  return (
+    <span className="relative block size-full overflow-hidden" ref={rootRef}>
+      <Image
+        alt=""
+        className={cn("object-cover", objectPosition)}
+        fill
+        sizes="72px"
+        src={staticImageUrl(poster)}
+        unoptimized
+      />
+      {shouldLoad ? (
+        <video
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute inset-0 size-full object-cover transition-opacity duration-300",
+            objectPosition,
+            ready ? "opacity-100" : "opacity-0",
+          )}
+          loop
+          muted
+          playsInline
+          preload="none"
+          ref={videoRef}
+          src={staticImageUrl(src)}
+          tabIndex={-1}
+        />
+      ) : null}
+    </span>
   );
 }
 
@@ -258,14 +409,12 @@ function GalleryTile({
   src,
   alt,
   zoomLabel,
-  priority,
   objectPosition = "object-center",
   onOpen,
 }: {
   src: string;
   alt: string;
   zoomLabel: string;
-  priority?: boolean;
   objectPosition?: string;
   onOpen: () => void;
 }) {
@@ -276,7 +425,6 @@ function GalleryTile({
         className={`object-cover ${objectPosition}`}
         fill
         key={src}
-        priority={priority}
         quality={GALLERY_QUALITY}
         sizes="(min-width: 1024px) 28vw, 50vw"
         src={staticImageUrl(src)}
@@ -319,25 +467,44 @@ function ZoomButton({
 }
 
 const AUTOPLAY_MS = 5000;
-const CLICK_PAUSE_MS = 7000;
+const AUTOPLAY_START_DELAY_MS = 8000;
+const PACKSHOT_SLIDE_INDEX = 1;
+
+function activeSlideIndex(sliderElement: Element, slideCount: number) {
+  const container = sliderElement.querySelector(".slider-container");
+  if (!(container instanceof HTMLElement) || slideCount <= 1) {
+    return 0;
+  }
+
+  const maxScroll = container.scrollWidth - container.offsetWidth;
+  if (maxScroll <= 0) {
+    return 0;
+  }
+
+  return Math.abs(
+    Math.round((Math.abs(container.scrollLeft) / maxScroll) * (slideCount - 1)),
+  );
+}
 
 function MobileGallery({
   awardAlt,
+  awardSrc,
   packshot,
   sizeId,
 }: {
   awardAlt: string;
+  awardSrc: string;
   packshot: string;
   sizeId: MattressSizeId;
 }) {
   const t = useTranslations("productOriginal.hero.gallery");
   const locale = useLocale();
-  const reduceMotion = useReducedMotion();
-  const [activeId, setActiveId] = useState<SlideId>("hero");
-  const [direction, setDirection] = useState(1);
-  const [zoomIndex, setZoomIndex] = useState<number | null>(null);
-  const pauseAutoplayRef = useRef<() => void>(() => {});
+  const reduceMotion = usePrefersReducedMotion();
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const thumbsRailRef = useRef<HTMLDivElement>(null);
   const previousSizeId = useRef(sizeId);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [zoomIndex, setZoomIndex] = useState<number | null>(null);
   const slides = gallerySlides(
     packshot,
     packshotThumbSrc(sizeId),
@@ -347,181 +514,215 @@ function MobileGallery({
     benefitsSrc(locale),
     benefitsThumbSrc(locale),
   );
-  const active = slides.find((slide) => slide.id === activeId) ?? slides[0];
-  const duration = reduceMotion ? 0 : slideTransition.duration;
 
-  function openZoom(id: SlideId = activeId) {
-    const nextIndex = slides.findIndex((slide) => slide.id === id);
-    if (nextIndex >= 0) {
-      setZoomIndex(nextIndex);
+  function openZoom(index: number = activeIndex) {
+    if (index >= 0 && index < slides.length) {
+      setZoomIndex(index);
     }
-    pauseAutoplayRef.current();
   }
 
-  function goTo(nextId: SlideId) {
-    if (nextId !== activeId) {
-      setDirection(slideDirection(activeId, nextId));
-      setActiveId(nextId);
+  useEffect(() => {
+    const root = sliderRef.current;
+    if (!root) {
+      return;
     }
-    pauseAutoplayRef.current();
-  }
+
+    // Official API: https://www.swiffyslider.com/docs/ + npm `swiffy-slider`
+    swiffyslider.initSlider(root);
+    swiffyslider.onSlideEnd(root, () => {
+      const slideCount = root.querySelectorAll(".slider-container > *").length;
+      setActiveIndex(activeSlideIndex(root, slideCount));
+    });
+  }, []);
+
+  useEffect(() => {
+    const root = sliderRef.current;
+    if (!root || reduceMotion || zoomIndex !== null) {
+      return;
+    }
+
+    let autoplayId: ReturnType<typeof setInterval> | undefined;
+    const startTimer = window.setTimeout(() => {
+      autoplayId = swiffyslider.autoPlay(root, AUTOPLAY_MS, true);
+    }, AUTOPLAY_START_DELAY_MS);
+
+    return () => {
+      window.clearTimeout(startTimer);
+      if (autoplayId !== undefined) {
+        window.clearInterval(autoplayId);
+      }
+    };
+  }, [reduceMotion, zoomIndex]);
 
   useEffect(() => {
     if (previousSizeId.current === sizeId) {
       return;
     }
     previousSizeId.current = sizeId;
-    setDirection(1);
-    setActiveId("packshot");
-    pauseAutoplayRef.current();
+    const root = sliderRef.current;
+    if (!root) {
+      return;
+    }
+    swiffyslider.slideTo(root, PACKSHOT_SLIDE_INDEX);
+    setActiveIndex(PACKSHOT_SLIDE_INDEX);
   }, [sizeId]);
 
   useEffect(() => {
-    if (reduceMotion || zoomIndex !== null) {
-      pauseAutoplayRef.current = () => {};
+    const rail = thumbsRailRef.current;
+    if (!rail) {
       return;
     }
 
-    let timer: number | null = null;
-
-    function clear() {
-      if (timer !== null) {
-        window.clearTimeout(timer);
-        timer = null;
-      }
+    const thumb = rail.querySelectorAll(".slider-indicators > *")[activeIndex];
+    if (!(thumb instanceof HTMLElement)) {
+      return;
     }
 
-    function schedule(delayMs: number) {
-      clear();
-      timer = window.setTimeout(() => {
-        setDirection(1);
-        setActiveId((current) => {
-          const index = SLIDE_ORDER.indexOf(current);
-          return SLIDE_ORDER[(index + 1) % SLIDE_ORDER.length] ?? "hero";
-        });
-        schedule(AUTOPLAY_MS);
-      }, delayMs);
+    const thumbLeft = thumb.offsetLeft;
+    const thumbRight = thumbLeft + thumb.offsetWidth;
+    const visibleLeft = rail.scrollLeft;
+    const visibleRight = visibleLeft + rail.clientWidth;
+    const edgePad = 20;
+
+    if (thumbLeft < visibleLeft + edgePad) {
+      rail.scrollTo({
+        left: Math.max(0, thumbLeft - edgePad),
+        behavior: reduceMotion ? "auto" : "smooth",
+      });
+      return;
     }
 
-    pauseAutoplayRef.current = () => schedule(CLICK_PAUSE_MS);
-    schedule(AUTOPLAY_MS);
-
-    return () => {
-      clear();
-      pauseAutoplayRef.current = () => {};
-    };
-  }, [reduceMotion, zoomIndex]);
+    if (thumbRight > visibleRight - edgePad) {
+      rail.scrollTo({
+        left: thumbRight - rail.clientWidth + edgePad,
+        behavior: reduceMotion ? "auto" : "smooth",
+      });
+    }
+  }, [activeIndex, reduceMotion]);
 
   return (
-    <div className="flex w-full flex-col gap-3">
-      <div className="relative w-full overflow-hidden bg-surface pt-[100%]">
-        <AnimatePresence custom={direction} initial={false}>
-          <motion.div
-            animate="center"
-            className="absolute inset-0"
-            custom={direction}
-            exit="exit"
-            initial="enter"
-            key={active.id}
-            transition={{ ...slideTransition, duration }}
-            variants={mainSlideVariants}
-          >
-            {active.type === "video" ? (
-              <LayersVideo
-                className="absolute inset-0 size-full"
-                key={active.src}
-                pauseLabel={t("pauseAnimation")}
-                playLabel={t("playAnimation")}
-                poster={active.poster ?? active.thumb}
-                src={active.src}
-              />
-            ) : (
-              <Image
-                alt={t(active.altKey)}
-                className={cn(
-                  "object-cover",
-                  active.objectPosition ?? "object-center",
-                )}
-                fill
-                loading={active.id === "hero" ? "eager" : undefined}
-                priority={active.id === "hero"}
-                quality={GALLERY_QUALITY}
-                sizes="(min-width: 1024px) 55vw, 100vw"
-                src={staticImageUrl(active.src)}
-              />
-            )}
-
-            {active.id === "hero" ? (
-              <div className="pointer-events-none absolute top-0 left-4 z-10 w-24">
-                <Image
-                  alt={awardAlt}
-                  className="w-full"
-                  height={192}
-                  src={staticImageUrl("/images/13-time-award.webp")}
-                  style={{ width: "100%", height: "auto" }}
-                  width={112}
-                />
-              </div>
-            ) : null}
-          </motion.div>
-        </AnimatePresence>
-
-        {active.type === "image" ? (
-          <button
-            aria-haspopup="dialog"
-            aria-label={t("zoomLabel")}
-            className="absolute inset-0 z-1 cursor-zoom-in"
-            onClick={() => openZoom(activeId)}
-            type="button"
-          />
-        ) : null}
-
-        <ZoomButton label={t("zoomLabel")} onClick={() => openZoom(activeId)} />
-      </div>
-
-      <div className="relative px-5 pb-1">
-        <LayoutGroup id="mobile-gallery-thumbs">
-          <div className="scrollbar-none flex gap-2 overflow-x-auto">
-            {slides.map((slide) => {
-              const selected = slide.id === activeId;
-              return (
-                <button
-                  aria-current={selected ? "true" : undefined}
-                  aria-label={t(slide.altKey)}
-                  className="relative w-18 shrink-0 cursor-pointer pb-2"
-                  key={slide.id}
-                  onClick={() => goTo(slide.id)}
-                  type="button"
-                >
-                  <span className="relative block aspect-square overflow-hidden rounded-xl bg-surface">
+    <div className="flex w-full flex-col">
+      {/*
+        Markup + class names from Swiffy Slider docs
+        (https://www.swiffyslider.com/docs/ / npm readme).
+        Swipe uses native CSS scroll-snap; JS only wires indicators + autoplay.
+      */}
+      <div
+        className="swiffy-slider product-gallery-swiffy slider-item-nogap slider-item-snapstart slider-nav-nodelay slider-indicators-outside slider-indicators-sm"
+        ref={sliderRef}
+      >
+        <ul className="slider-container">
+          {slides.map((slide, index) => {
+            const isActive = index === activeIndex;
+            return (
+              <li
+                className="relative overflow-hidden bg-surface"
+                key={slide.id}
+              >
+                {slide.type === "video" ? (
+                  <LayersVideo
+                    className="absolute inset-0 size-full"
+                    interactive={isActive}
+                    pauseLabel={t("pauseAnimation")}
+                    playLabel={t("playAnimation")}
+                    poster={slide.poster ?? slide.thumb}
+                    src={slide.src}
+                  />
+                ) : (
+                  <>
                     <Image
-                      alt=""
+                      alt={t(slide.altKey)}
                       className={cn(
                         "object-cover",
                         slide.objectPosition ?? "object-center",
                       )}
                       fill
-                      key={slide.thumb}
-                      loading="eager"
-                      sizes="72px"
-                      src={staticImageUrl(slide.thumb)}
-                      unoptimized
+                      fetchPriority={slide.id === "hero" ? "high" : "low"}
+                      loading={slide.id === "hero" ? "eager" : "lazy"}
+                      quality={GALLERY_QUALITY}
+                      sizes="(min-width: 1024px) 55vw, 100vw"
+                      src={staticImageUrl(slide.src)}
                     />
-                  </span>
-                  {selected ? (
-                    <motion.span
-                      className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-brand"
-                      layoutId="mobile-gallery-active-bar"
-                      transition={
-                        reduceMotion ? { duration: 0 } : barTransition
-                      }
+                    <button
+                      aria-haspopup="dialog"
+                      aria-label={t("zoomLabel")}
+                      className="absolute inset-0 z-1 cursor-zoom-in"
+                      onClick={() => openZoom(index)}
+                      type="button"
                     />
-                  ) : null}
-                </button>
-              );
-            })}
+                  </>
+                )}
+
+                {slide.id === "hero" ? (
+                  <div className="pointer-events-none absolute top-0 left-4 z-10 w-24">
+                    <Image
+                      alt={awardAlt}
+                      className="h-auto w-full"
+                      height={429}
+                      src={staticImageUrl(awardSrc)}
+                      width={256}
+                    />
+                  </div>
+                ) : null}
+
+                <ZoomButton
+                  label={t("zoomLabel")}
+                  onClick={() => openZoom(index)}
+                />
+              </li>
+            );
+          })}
+        </ul>
+
+        <div
+          className="product-gallery-thumbs"
+          style={{ "--active-index": activeIndex } as CSSProperties}
+        >
+          <div className="product-gallery-thumbs-rail" ref={thumbsRailRef}>
+            <div className="product-gallery-thumbs-track">
+              <div className="slider-indicators">
+                {slides.map((slide, index) => (
+                  <button
+                    aria-current={index === activeIndex ? "true" : undefined}
+                    aria-label={t(slide.altKey)}
+                    className={index === activeIndex ? "active" : undefined}
+                    key={slide.id}
+                    onClick={() => setActiveIndex(index)}
+                    type="button"
+                  >
+                    <span className="relative block aspect-square overflow-hidden rounded-xl bg-surface">
+                      {slide.type === "video" ? (
+                        <LayersThumbVideo
+                          key={slide.src}
+                          objectPosition={
+                            slide.objectPosition ?? "object-center"
+                          }
+                          poster={slide.thumb}
+                          reduceMotion={reduceMotion}
+                          src={slide.src}
+                        />
+                      ) : (
+                        <Image
+                          alt=""
+                          className={cn(
+                            "object-cover",
+                            slide.objectPosition ?? "object-center",
+                          )}
+                          fill
+                          key={slide.thumb}
+                          sizes="72px"
+                          src={staticImageUrl(slide.thumb)}
+                          unoptimized
+                        />
+                      )}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <span aria-hidden className="product-gallery-thumb-bar" />
+            </div>
           </div>
-        </LayoutGroup>
+        </div>
       </div>
 
       {zoomIndex !== null ? (
@@ -560,10 +761,12 @@ function MobileGallery({
 
 function DesktopGallery({
   awardAlt,
+  awardSrc,
   packshot,
   sizeId,
 }: {
   awardAlt: string;
+  awardSrc: string;
   packshot: string;
   sizeId: MattressSizeId;
 }) {
@@ -620,9 +823,9 @@ function DesktopGallery({
           alt={mainAlt}
           className="object-cover object-center"
           fill
+          fetchPriority="high"
           key={mainSrc}
           loading="eager"
-          priority
           quality={GALLERY_QUALITY}
           sizes="(min-width: 1024px) 55vw, 100vw"
           src={staticImageUrl(mainSrc)}
@@ -638,12 +841,10 @@ function DesktopGallery({
         <div className="pointer-events-none absolute top-0 left-5 z-10 w-28 lg:left-10">
           <Image
             alt={awardAlt}
-            className="w-full"
-            height={192}
-            priority
-            src={staticImageUrl("/images/13-time-award.webp")}
-            style={{ width: "100%", height: "auto" }}
-            width={112}
+            className="h-auto w-full"
+            height={429}
+            src={staticImageUrl(awardSrc)}
+            width={256}
           />
         </div>
 
@@ -654,7 +855,6 @@ function DesktopGallery({
         <GalleryTile
           alt={tileAlt}
           onOpen={() => setZoomIndex(1)}
-          priority
           src={tileSrc}
           zoomLabel={t("zoomLabel")}
         />
@@ -727,14 +927,30 @@ function useIsDesktopGallery() {
   return isDesktop;
 }
 
-export function ProductMediaGallery({ awardAlt }: { awardAlt: string }) {
+export function ProductMediaGallery({
+  awardAlt,
+  awardSrc,
+}: {
+  awardAlt: string;
+  awardSrc: string;
+}) {
   const sizeId = useOriginalSizeStore((state) => state.sizeId);
   const packshot = packshotSrc(sizeId);
   const isDesktop = useIsDesktopGallery();
 
   return isDesktop ? (
-    <DesktopGallery awardAlt={awardAlt} packshot={packshot} sizeId={sizeId} />
+    <DesktopGallery
+      awardAlt={awardAlt}
+      awardSrc={awardSrc}
+      packshot={packshot}
+      sizeId={sizeId}
+    />
   ) : (
-    <MobileGallery awardAlt={awardAlt} packshot={packshot} sizeId={sizeId} />
+    <MobileGallery
+      awardAlt={awardAlt}
+      awardSrc={awardSrc}
+      packshot={packshot}
+      sizeId={sizeId}
+    />
   );
 }

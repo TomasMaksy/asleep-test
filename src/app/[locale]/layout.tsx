@@ -8,6 +8,7 @@ import { AsleepNavyFilter } from "@/components/asleep-navy-filter";
 import { CartSheetHost } from "@/components/cart/cart-sheet-host";
 import { ConfiguratorShell } from "@/components/configurator/configurator-shell";
 import { RevealObserver } from "@/components/reveal-observer";
+import { OrganizationJsonLd } from "@/components/seo/organization-json-ld";
 import { TrackingRouteObserver } from "@/components/tracking/route-observer";
 import { routing } from "@/i18n/routing";
 import { getSiteUrl } from "@/lib/site-url";
@@ -39,22 +40,31 @@ export async function generateMetadata({
 
   const t = await getTranslations("metadata");
   const baseUrl = getSiteUrl();
-  const languages: Record<string, string> = {};
-
-  for (const altLocale of routing.locales) {
-    languages[altLocale] = `${baseUrl}/${altLocale}`;
-  }
-  languages["x-default"] = `${baseUrl}/${routing.defaultLocale}`;
 
   return {
+    metadataBase: new URL(baseUrl),
     title: {
       default: t("title"),
       template: "%s | asleep",
     },
     description: t("description"),
-    alternates: {
-      canonical: `${baseUrl}/${locale}`,
-      languages,
+    // Page-level canonical/hreflang/OG url live on each route via buildPageMetadata.
+    // Do not set home alternates here — children would inherit them.
+    openGraph: {
+      type: "website",
+      siteName: "asleep",
+      images: [
+        {
+          url: "/images/seo/og-default.webp",
+          width: 1200,
+          height: 630,
+          alt: "asleep",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: ["/images/seo/og-default.webp"],
     },
   };
 }
@@ -79,6 +89,7 @@ export default async function LocaleLayout({
       <body className="relative min-h-full font-sans">
         <AsleepNavyFilter />
         <NextIntlClientProvider>
+          <OrganizationJsonLd />
           <Suspense fallback={null}>
             <TrackingRouteObserver />
           </Suspense>

@@ -1,21 +1,12 @@
 "use client";
 
-import { X } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useEffect } from "react";
+import { SideSheet, SideSheetHeader } from "@/components/ui/side-sheet";
 import { Link } from "@/i18n/navigation";
 import { formatEuro, selectCartCount, useCartStore } from "@/lib/cart-store";
 import { useConfiguratorOverlayStore } from "@/lib/configurator-overlay-store";
 import { cartLinePricing, quoteCart } from "@/lib/product-catalog";
-import { cn } from "@/lib/utils";
-
-const sheetTransition = {
-  type: "tween" as const,
-  duration: 0.28,
-  ease: [0.22, 1, 0.36, 1] as const,
-};
 
 function CartLineItem({
   id,
@@ -121,7 +112,6 @@ function CartLineItem({
 
 export function CartSheet() {
   const t = useTranslations("cart");
-  const reduceMotion = useReducedMotion();
   const isOpen = useCartStore((s) => s.isOpen);
   const closeCart = useCartStore((s) => s.closeCart);
   const items = useCartStore((s) => s.items);
@@ -133,181 +123,124 @@ export function CartSheet() {
   const payableTotal = quoted?.value ?? 0;
   const discountTotal = quoted?.discountValue ?? 0;
   const empty = items.length === 0;
-  const duration = reduceMotion ? 0 : sheetTransition.duration;
-
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        closeCart();
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = previous;
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [isOpen, closeCart]);
 
   return (
-    <AnimatePresence>
-      {isOpen ? (
-        <div className="fixed inset-0 z-[2000]" key="cart">
-          <motion.button
-            aria-label={t("close")}
-            className="absolute inset-0 cursor-pointer bg-brand-dark/25 backdrop-blur-[6px] supports-[backdrop-filter]:bg-brand-dark/20"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={closeCart}
-            transition={{ duration, ease: sheetTransition.ease }}
-            type="button"
-          />
+    <SideSheet
+      closeLabel={t("close")}
+      labelledBy="cart-title"
+      onClose={closeCart}
+      open={isOpen}
+    >
+      <SideSheetHeader
+        closeLabel={t("close")}
+        onClose={closeCart}
+        titleId="cart-title"
+      >
+        {t("title")}
+        {count > 0 ? (
+          <span className="ml-2 font-medium text-brand-dark/45 text-rg">
+            ({count})
+          </span>
+        ) : null}
+      </SideSheetHeader>
 
-          <motion.aside
-            aria-labelledby="cart-title"
-            aria-modal="true"
-            className={cn(
-              "absolute inset-y-0 right-0 flex w-full flex-col bg-white text-brand-dark shadow-[-12px_0_40px_rgba(0,0,0,0.12)]",
-              "md:w-[50%] lg:w-[min(40%,512px)]",
-            )}
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            role="dialog"
-            transition={{ duration, ease: sheetTransition.ease }}
-          >
-            <header className="flex h-20 shrink-0 items-center justify-between border-brand-dark/10 border-b px-5 md:px-8">
-              <h2
-                className="!text-[1.25rem] !leading-none !tracking-normal font-bold"
-                id="cart-title"
-              >
-                {t("title")}
-                {count > 0 ? (
-                  <span className="ml-2 font-medium text-brand-dark/45 text-rg">
-                    ({count})
-                  </span>
-                ) : null}
-              </h2>
-              <button
-                aria-label={t("close")}
-                className="flex size-10 cursor-pointer items-center justify-center rounded-full border border-brand-dark/15 transition-colors hover:bg-surface"
-                onClick={closeCart}
-                type="button"
-              >
-                <X className="size-5" strokeWidth={1.5} />
-              </button>
-            </header>
+      <div className="flex min-h-0 flex-1 flex-col">
+        {empty ? (
+          <div className="flex flex-1 flex-col items-center justify-center gap-3 px-8 text-center">
+            <p className="font-bold text-lg">{t("empty")}</p>
+            <p className="max-w-[16rem] text-brand-dark/55 text-rg leading-relaxed">
+              {t("emptyHint")}
+            </p>
+            <button
+              className="mt-4 cursor-pointer font-medium text-[#1A478A] text-rg underline"
+              onClick={closeCart}
+              type="button"
+            >
+              {t("continue")}
+            </button>
+          </div>
+        ) : (
+          <ul className="flex-1 overflow-y-auto overscroll-contain px-5 md:px-8">
+            {items.map((item) => (
+              <CartLineItem key={item.id} {...item} />
+            ))}
+          </ul>
+        )}
+      </div>
 
-            <div className="flex min-h-0 flex-1 flex-col">
-              {empty ? (
-                <div className="flex flex-1 flex-col items-center justify-center gap-3 px-8 text-center">
-                  <p className="font-bold text-lg">{t("empty")}</p>
-                  <p className="max-w-[16rem] text-brand-dark/55 text-rg leading-relaxed">
-                    {t("emptyHint")}
-                  </p>
-                  <button
-                    className="mt-4 cursor-pointer font-medium text-[#1A478A] text-rg underline"
-                    onClick={closeCart}
-                    type="button"
-                  >
-                    {t("continue")}
-                  </button>
-                </div>
-              ) : (
-                <ul className="flex-1 overflow-y-auto overscroll-contain px-5 md:px-8">
-                  {items.map((item) => (
-                    <CartLineItem key={item.id} {...item} />
-                  ))}
-                </ul>
-              )}
+      <footer className="shrink-0 border-brand-dark/10 border-t bg-white px-5 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] md:px-8">
+        {!empty ? (
+          <div className="mb-4 flex flex-col gap-1.5">
+            <div className="flex items-center justify-between gap-4">
+              <span className="font-medium text-brand-dark/55 text-rg">
+                {t("subtotal")}
+              </span>
+              <span className="text-rg tabular-nums">
+                {formatEuro(compareTotal)}
+              </span>
             </div>
-
-            <footer className="shrink-0 border-brand-dark/10 border-t bg-white px-5 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] md:px-8">
-              {!empty ? (
-                <div className="mb-4 flex flex-col gap-1.5">
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="font-medium text-brand-dark/55 text-rg">
-                      {t("subtotal")}
-                    </span>
-                    <span className="text-rg tabular-nums">
-                      {formatEuro(compareTotal)}
-                    </span>
-                  </div>
-                  {discountTotal > 0 ? (
-                    <div className="flex items-center justify-between gap-4">
-                      <span className="font-medium text-brand-dark/55 text-rg">
-                        {t("discount")}
-                      </span>
-                      <span className="text-rg tabular-nums">
-                        −{formatEuro(discountTotal)}
-                      </span>
-                    </div>
-                  ) : null}
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="font-medium text-brand-dark/55 text-rg">
-                      {t("delivery")}
-                    </span>
-                    <span className="text-rg tabular-nums">
-                      {t("deliveryFree")}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between gap-4 pt-1">
-                    <span className="font-bold text-base">{t("total")}</span>
-                    <span className="font-bold text-base tabular-nums">
-                      {formatEuro(payableTotal)}
-                    </span>
-                  </div>
-                </div>
-              ) : null}
-
-              <div className="flex flex-col gap-3">
-                {empty ? (
-                  <button
-                    className="inline-flex h-12 w-full cursor-not-allowed items-center justify-center rounded-full bg-[#1A478A] font-sans text-base text-white opacity-40"
-                    disabled
-                    type="button"
-                  >
-                    {t("checkout")}
-                  </button>
-                ) : (
-                  <Link
-                    className="inline-flex h-12 w-full cursor-pointer items-center justify-center rounded-full bg-[#1A478A] font-sans text-base text-white transition-colors duration-300 hover:bg-[#2B2D41]"
-                    href="/checkout"
-                    onClick={(event) => {
-                      closeCart();
-                      if (!useConfiguratorOverlayStore.getState().isOpen) {
-                        return;
-                      }
-                      event.preventDefault();
-                      useConfiguratorOverlayStore.getState().setOpen(false);
-                      window.location.assign(
-                        (event.currentTarget as HTMLAnchorElement).href,
-                      );
-                    }}
-                  >
-                    {t("checkout")}
-                  </Link>
-                )}
-                <button
-                  className="cursor-pointer py-1 text-center text-brand-dark/50 text-rg underline transition-colors hover:text-brand-dark"
-                  onClick={closeCart}
-                  type="button"
-                >
-                  {t("continue")}
-                </button>
+            {discountTotal > 0 ? (
+              <div className="flex items-center justify-between gap-4">
+                <span className="font-medium text-brand-dark/55 text-rg">
+                  {t("discount")}
+                </span>
+                <span className="text-rg tabular-nums">
+                  −{formatEuro(discountTotal)}
+                </span>
               </div>
-            </footer>
-          </motion.aside>
+            ) : null}
+            <div className="flex items-center justify-between gap-4">
+              <span className="font-medium text-brand-dark/55 text-rg">
+                {t("delivery")}
+              </span>
+              <span className="text-rg tabular-nums">{t("deliveryFree")}</span>
+            </div>
+            <div className="flex items-center justify-between gap-4 pt-1">
+              <span className="font-bold text-base">{t("total")}</span>
+              <span className="font-bold text-base tabular-nums">
+                {formatEuro(payableTotal)}
+              </span>
+            </div>
+          </div>
+        ) : null}
+
+        <div className="flex flex-col gap-3">
+          {empty ? (
+            <button
+              className="inline-flex h-12 w-full cursor-not-allowed items-center justify-center rounded-full bg-[#1A478A] font-sans text-base text-white opacity-40"
+              disabled
+              type="button"
+            >
+              {t("checkout")}
+            </button>
+          ) : (
+            <Link
+              className="inline-flex h-12 w-full cursor-pointer items-center justify-center rounded-full bg-[#1A478A] font-sans text-base text-white transition-colors duration-300 hover:bg-[#2B2D41]"
+              href="/checkout"
+              onClick={(event) => {
+                closeCart();
+                if (!useConfiguratorOverlayStore.getState().isOpen) {
+                  return;
+                }
+                event.preventDefault();
+                useConfiguratorOverlayStore.getState().setOpen(false);
+                window.location.assign(
+                  (event.currentTarget as HTMLAnchorElement).href,
+                );
+              }}
+            >
+              {t("checkout")}
+            </Link>
+          )}
+          <button
+            className="cursor-pointer py-1 text-center text-brand-dark/50 text-rg underline transition-colors hover:text-brand-dark"
+            onClick={closeCart}
+            type="button"
+          >
+            {t("continue")}
+          </button>
         </div>
-      ) : null}
-    </AnimatePresence>
+      </footer>
+    </SideSheet>
   );
 }

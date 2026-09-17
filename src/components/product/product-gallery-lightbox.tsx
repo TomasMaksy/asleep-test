@@ -11,6 +11,7 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
+import { galleryChromeButtonClassName } from "@/components/product/product-gallery-chrome";
 import { staticImageUrl } from "@/lib/static-image-url";
 import { cn } from "@/lib/utils";
 
@@ -26,8 +27,7 @@ export type GalleryLightboxItem = {
 const MIN_SCALE = 1;
 const MAX_SCALE = 3;
 
-export const galleryChromeButtonClassName =
-  "flex cursor-pointer items-center justify-center rounded-full border border-grey bg-white text-brand-dark transition-colors hover:border-brand hover:bg-brand hover:text-white";
+export { galleryChromeButtonClassName };
 
 type ProductGalleryLightboxProps = {
   closeLabel: string;

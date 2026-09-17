@@ -26,22 +26,21 @@ import {
   DEFAULT_WEIGHT_KG,
   type Firmness,
   isMindTheGapTogether,
-  MAX_TRANSITION_QUEUE,
   MAX_WEIGHT_KG,
   MIN_WEIGHT_KG,
+  preloadConfiguratorIntro,
+  preloadConfiguratorPosters,
   type Sleeping,
   suggestedSingleSizeId,
   TOGETHER_FIRMNESS_LEVELS,
   VIDEO_PLAYBACK_RATE,
-  VIDEO_PLAYBACK_RATE_CATCHUP,
-  VIDEO_PLAYBACK_RATE_FLUSH,
-  VIDEO_PLAYBACK_RATE_QUEUED,
 } from "@/lib/configurator";
 import {
   defaultVisualState,
   resolveVisual,
   videoMode,
 } from "@/lib/configurator-video-map";
+import { configuratorCartProductId } from "@/lib/product-catalog";
 import {
   DOUBLE_MATTRESS_SIZES,
   formatMattPrice,
@@ -58,12 +57,6 @@ import { trackAddedCartItems } from "@/lib/tracking/client/ecommerce";
 import { cn } from "@/lib/utils";
 
 type Step = 1 | 2 | 3 | 4 | 5;
-
-type QueuedTransition = {
-  from: number;
-  to: number;
-  clipBed: BedKind;
-};
 
 type Advice = {
   text: string;
@@ -107,7 +100,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   const [mindTheGap, setMindTheGap] = useState(false);
   const [clip, setClip] = useState<ConfiguratorClip | null>(null);
   const [playbackRate, setPlaybackRate] = useState(VIDEO_PLAYBACK_RATE);
-  const [catchingUp, setCatchingUp] = useState(false);
+  const [controlsLocked, setControlsLocked] = useState(false);
   const [stageReady, setStageReady] = useState(false);
   const [sizeSheetOpen, setSizeSheetOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -120,10 +113,8 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   const clipIdRef = useRef(0);
   const shownStateRef = useRef(defaultVisualState("single"));
   const clipBedRef = useRef<BedKind>("single");
-  const queueRef = useRef<QueuedTransition[]>([]);
   const playingClipRef = useRef<ConfiguratorClip | null>(null);
   const pendingPackagingRef = useRef(false);
-  const catchupRef = useRef(false);
   const profileRef = useRef({
     yourWeight,
     yourPreference,
@@ -152,6 +143,22 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     media.addEventListener("change", sync);
     return () => media.removeEventListener("change", sync);
   }, []);
+
+  useEffect(() => {
+    preloadConfiguratorPosters();
+  }, []);
+
+  // Warm only the opening clip for the selected bed — after idle time so
+  // rapid size toggles don’t fight the network/decoder.
+  useEffect(() => {
+    if (step !== 1) {
+      return;
+    }
+    const handle = window.setTimeout(() => {
+      preloadConfiguratorIntro(bed);
+    }, 400);
+    return () => window.clearTimeout(handle);
+  }, [step, bed]);
 
   useLayoutEffect(() => {
     if (isDesktop || step === 5) {
@@ -198,27 +205,21 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     setYou(next.youLevel);
     setPartner(next.partnerLevel);
     setMindTheGap(
-      together
-        ? isMindTheGapTogether(next.youLevel, next.partnerLevel)
-        : false,
+      together ? isMindTheGapTogether(next.youLevel, next.partnerLevel) : false,
     );
     return next;
   }
 
-  function requestCatchup() {
-    catchupRef.current = true;
-    setCatchingUp(false);
-    setPlaybackRate(VIDEO_PLAYBACK_RATE_CATCHUP);
+  function startClip(nextClip: ConfiguratorClip) {
+    playingClipRef.current = nextClip;
+    setClip(nextClip);
+    setControlsLocked(true);
   }
 
-  function activePlaybackRate() {
-    return catchupRef.current
-      ? VIDEO_PLAYBACK_RATE_CATCHUP
-      : VIDEO_PLAYBACK_RATE;
-  }
-
-  function videoIsBusy() {
-    return playingClipRef.current != null || queueRef.current.length > 0;
+  function unlockControls() {
+    playingClipRef.current = null;
+    setControlsLocked(false);
+    setPlaybackRate(VIDEO_PLAYBACK_RATE);
   }
 
   function playIntro(afterStep: Step) {
@@ -226,13 +227,11 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     const mode = videoMode(bed, sleeping);
     shownStateRef.current = defaultVisualState(mode);
     clipBedRef.current = bed;
-    const nextClip: ConfiguratorClip = {
+    startClip({
       id: clipIdRef.current,
       kind: "intro",
       bed,
-    };
-    playingClipRef.current = nextClip;
-    setClip(nextClip);
+    });
     applyRecommendation();
     setStep(afterStep);
   }
@@ -240,171 +239,100 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   function playIntroReverse(afterStep: Step) {
     clipIdRef.current += 1;
     setStageReady(false);
-    queueRef.current = [];
-    setCatchingUp(false);
-    const nextClip: ConfiguratorClip = {
+    startClip({
       id: clipIdRef.current,
       kind: "intro",
       bed,
       reverse: true,
-    };
-    playingClipRef.current = nextClip;
-    setClip(nextClip);
+    });
     setStep(afterStep);
   }
 
   function playTransition(from: number, to: number, clipBed: BedKind) {
     clipIdRef.current += 1;
-    const nextClip: ConfiguratorClip = {
+    setPlaybackRate(VIDEO_PLAYBACK_RATE);
+    startClip({
       id: clipIdRef.current,
       kind: "transition",
       bed,
       clipBed,
       from,
       to,
-    };
-    playingClipRef.current = nextClip;
-    setClip(nextClip);
+    });
   }
 
   function playPackaging() {
-    const playing = playingClipRef.current;
-    if (playing != null || queueRef.current.length > 0) {
-      pendingPackagingRef.current = true;
-      return;
-    }
-
     startClosingThenPackaging();
   }
 
   function startClosingThenPackaging() {
     // Result step: close mattress, then package — no firmness transitions.
     pendingPackagingRef.current = true;
-    setCatchingUp(false);
     playClose();
   }
 
   function playClose() {
     clipIdRef.current += 1;
-    setPlaybackRate(activePlaybackRate());
-    const nextClip: ConfiguratorClip = {
+    setPlaybackRate(VIDEO_PLAYBACK_RATE);
+    startClip({
       id: clipIdRef.current,
       kind: "intro",
       bed,
       reverse: true,
-    };
-    playingClipRef.current = nextClip;
-    setClip(nextClip);
+    });
   }
 
   function startPackaging() {
     pendingPackagingRef.current = false;
     clipIdRef.current += 1;
-    setCatchingUp(false);
     setPlaybackRate(1);
-    const nextClip: ConfiguratorClip = {
+    startClip({
       id: clipIdRef.current,
       kind: "packaging",
       bed,
-    };
-    playingClipRef.current = nextClip;
-    setClip(nextClip);
+    });
   }
 
   function playHold(state: number, clipBed: BedKind) {
     pendingPackagingRef.current = false;
-    catchupRef.current = false;
     clipIdRef.current += 1;
     setPlaybackRate(VIDEO_PLAYBACK_RATE);
     const mode = videoMode(bed, sleeping);
-    const nextClip: ConfiguratorClip = {
+    startClip({
       id: clipIdRef.current,
       kind: "hold",
       bed,
       clipBed,
       state,
       defaultState: defaultVisualState(mode),
-    };
-    playingClipRef.current = nextClip;
-    setClip(nextClip);
-  }
-
-  function chainEnd(): number {
-    const queued = queueRef.current;
-    const lastQueued = queued[queued.length - 1];
-    if (lastQueued) {
-      return lastQueued.to;
-    }
-    const playing = playingClipRef.current;
-    if (playing?.kind === "transition") {
-      return playing.to;
-    }
-    return shownStateRef.current;
+    });
   }
 
   function enqueueState(target: number, clipBed: BedKind) {
-    if (!stageReady) {
+    if (!stageReady || playingClipRef.current != null) {
       return;
     }
-
-    const playing = playingClipRef.current;
-    const transitionPlaying = playing?.kind === "transition";
+    if (shownStateRef.current === target) {
+      return;
+    }
     clipBedRef.current = clipBed;
-
-    if (!transitionPlaying && queueRef.current.length === 0) {
-      if (shownStateRef.current === target) {
-        return;
-      }
-      playTransition(shownStateRef.current, target, clipBed);
-      return;
-    }
-
-    const from = chainEnd();
-    if (from === target) {
-      return;
-    }
-
-    setPlaybackRate(VIDEO_PLAYBACK_RATE_QUEUED);
-
-    const nextQueue = [...queueRef.current, { from, to: target, clipBed }];
-    if (nextQueue.length > MAX_TRANSITION_QUEUE) {
-      const afterCurrent =
-        playing?.kind === "transition" ? playing.to : shownStateRef.current;
-      queueRef.current =
-        afterCurrent === target
-          ? []
-          : [{ from: afterCurrent, to: target, clipBed }];
-      setCatchingUp(true);
-      setPlaybackRate(
-        catchupRef.current
-          ? VIDEO_PLAYBACK_RATE_CATCHUP
-          : VIDEO_PLAYBACK_RATE_FLUSH,
-      );
-      return;
-    }
-
-    queueRef.current = nextQueue;
+    playTransition(shownStateRef.current, target, clipBed);
   }
 
   function commitProfiles(sleeper: 1 | 2) {
+    if (controlsLocked) {
+      return;
+    }
     setActiveSleeper(sleeper);
     const next = applyRecommendation();
     enqueueState(next.state, next.clipBed);
-  }
-
-  function handleClipReady() {
-    if (queueRef.current.length === 0) {
-      setCatchingUp(false);
-    }
   }
 
   function handleClipEnded(played: ConfiguratorClip) {
     playingClipRef.current = null;
 
     if (played.kind === "packaging" || played.kind === "hold") {
-      catchupRef.current = false;
-      setPlaybackRate(VIDEO_PLAYBACK_RATE);
-      setCatchingUp(false);
+      unlockControls();
       return;
     }
 
@@ -413,14 +341,11 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
       shownStateRef.current = defaultVisualState(mode);
       clipBedRef.current = bed;
       if (played.reverse) {
-        queueRef.current = [];
-        setCatchingUp(false);
         if (pendingPackagingRef.current) {
           startPackaging();
           return;
         }
-        catchupRef.current = false;
-        setPlaybackRate(VIDEO_PLAYBACK_RATE);
+        unlockControls();
         setStageReady(false);
         return;
       }
@@ -439,41 +364,28 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
         return;
       }
       if (next.state !== shownStateRef.current) {
-        queueRef.current = [
-          {
-            from: shownStateRef.current,
-            to: next.state,
-            clipBed: next.clipBed,
-          },
-        ];
+        playTransition(shownStateRef.current, next.state, next.clipBed);
+        return;
       }
-    } else {
-      shownStateRef.current = played.to;
-      clipBedRef.current = played.clipBed;
-    }
-
-    const queued = queueRef.current;
-    const next = queued[0];
-    if (next) {
-      queueRef.current = queued.slice(1);
-      if (!catchupRef.current && queueRef.current.length > 0) {
-        setPlaybackRate(VIDEO_PLAYBACK_RATE_QUEUED);
-      }
-      playTransition(next.from, next.to, next.clipBed);
+      unlockControls();
       return;
     }
+
+    shownStateRef.current = played.to;
+    clipBedRef.current = played.clipBed;
 
     if (pendingPackagingRef.current) {
       startClosingThenPackaging();
       return;
     }
 
-    catchupRef.current = false;
-    setPlaybackRate(VIDEO_PLAYBACK_RATE);
-    setCatchingUp(false);
+    unlockControls();
   }
 
   function handleCategory(category: "single" | "double") {
+    if (controlsLocked) {
+      return;
+    }
     if (category === "single" && bed !== "single") {
       setSizeId(SINGLE_MATTRESS_SIZES[0]?.id ?? CONFIGURATOR_DEFAULT_SIZE_ID);
       setSleeping("alone");
@@ -481,6 +393,7 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
       playingClipRef.current = null;
       setClip(null);
       setStageReady(false);
+      setControlsLocked(false);
     }
     if (category === "double" && bed !== "double") {
       setSizeId(DOUBLE_MATTRESS_SIZES[0]?.id ?? "140x200");
@@ -488,12 +401,13 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
       playingClipRef.current = null;
       setClip(null);
       setStageReady(false);
+      setControlsLocked(false);
     }
   }
 
   function handleConfirm() {
-    if (videoIsBusy()) {
-      requestCatchup();
+    if (controlsLocked) {
+      return;
     }
 
     if (step === 1) {
@@ -528,8 +442,8 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
   }
 
   function handleBack() {
-    if (videoIsBusy()) {
-      requestCatchup();
+    if (controlsLocked) {
+      return;
     }
     if (step === 1) {
       if (onDismiss) {
@@ -573,10 +487,14 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
     const partnerLabel = (together ? togetherScale : scale)[partner - 1] ?? "";
     const quantity = splitId ? 2 : 1;
     const product = {
-      id: `matt-original-${cartSizeId}-c${you}${together ? `p${partner}` : ""}`,
+      id: configuratorCartProductId(
+        cartSizeId,
+        you,
+        together ? partner : undefined,
+      ),
       name: productName,
       price: size.plusCents / 100,
-      image: "/images/product-original-hero-lifestyle.webp",
+      image: "/images/product-gallery/hero-square.webp",
       variant: configuratorCartVariant({
         sizeId: cartSizeId,
         sleeping,
@@ -642,7 +560,9 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
                 : "pb-4",
               step === 5 && "min-h-0 flex-1 overflow-y-auto overscroll-contain",
               step !== 1 && step !== 5 && "lg:overflow-y-auto",
+              controlsLocked && "pointer-events-none opacity-60",
             )}
+            inert={controlsLocked ? true : undefined}
           >
             {step === 1 ? (
               <>
@@ -872,7 +792,8 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
             />
             <div className="flex items-center justify-between gap-3 px-5 py-3 lg:px-10 lg:py-4">
               <button
-                className="flex min-w-0 items-center gap-2 py-2 text-brand text-sm lg:py-4"
+                className="flex min-w-0 items-center gap-2 py-2 text-brand text-sm disabled:opacity-40 lg:py-4"
+                disabled={controlsLocked}
                 onClick={handleBack}
                 type="button"
               >
@@ -880,7 +801,8 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
                 <span className="truncate">{backLabel}</span>
               </button>
               <button
-                className="inline-flex h-11 min-w-[140px] shrink-0 items-center justify-center rounded-full bg-brand px-6 text-base text-white transition-colors hover:bg-brand-dark sm:min-w-[167px] lg:h-12"
+                className="inline-flex h-11 min-w-[140px] shrink-0 items-center justify-center rounded-full bg-brand px-6 text-base text-white transition-colors hover:bg-brand-dark disabled:opacity-40 sm:min-w-[167px] lg:h-12"
+                disabled={controlsLocked}
                 onClick={step === 5 ? handleAddToCart : handleConfirm}
                 type="button"
               >
@@ -904,28 +826,9 @@ export function ConfiguratorSection({ onDismiss }: ConfiguratorSectionProps) {
           clip={clip}
           label={t("videoAria")}
           onEnded={handleClipEnded}
-          onReady={handleClipReady}
           playbackRate={playbackRate}
           reducedMotion={reduceMotion}
         />
-
-        <div
-          aria-hidden={!catchingUp}
-          aria-live="polite"
-          className={cn(
-            "absolute inset-0 z-[15] flex items-center justify-center bg-[#244f9c]/35 transition-opacity duration-300",
-            catchingUp ? "opacity-100" : "pointer-events-none opacity-0",
-          )}
-        >
-          <div className="w-[min(16rem,70%)] px-4">
-            <div className="h-0.5 overflow-hidden rounded-full bg-white/25">
-              <div className="configurator-catchup-bar h-full w-1/3 rounded-full bg-white" />
-            </div>
-            <p className="mt-3 text-center text-sm text-white/90">
-              {t("updatingMattress")}
-            </p>
-          </div>
-        </div>
 
         <div
           className={cn(

@@ -34,19 +34,44 @@ Layer detail media sits in ~`aspect-video` panels (~400–700px CSS wide). Homep
 | `public/images/product-gallery/` | PDP media gallery (hero, lifestyle, sizes, add-ons) | Original product gallery / buy box |
 | `public/images/product-specs/` | Specs / firmness stills | Original PDP |
 | `public/images/product-difference/` | “Why asleep” loop videos | Home / difference section |
-| `public/images/configurator/` | Configurator stills (if any) | `/configurator` |
+| `public/images/configurator/` | Configurator stills (intro posters, marketing section) | `/configurator` |
 | `public/configurator/single/` | Single mattress stage videos (VP9 webm + HEVC mp4, ~1280×1520) | Configurator |
 | `public/configurator/double/` | Double mattress stage videos (VP9 webm + HEVC mp4, ~1280×1520) | Configurator |
 | `public/images/reviews/` | Review page media | `/reviews` |
 | `public/images/logo/`, `icons/`, `payments/`, `media/` | Chrome, icons, press logos | Global |
 
+## `logo/` catalog
+
+| File | Shows | Used on |
+|------|-------|---------|
+| `asleep-logo.svg` | Monochrome asleep wordmark (`fill=currentColor`) | Header/footer `Logo` (inlined); prefer this over PNGs |
+| `asleep-white.png` | White wordmark PNG (legacy, 1304×417) | Reviews hero badge |
+| `asleep-blue.png` | Navy wordmark PNG (legacy) | Unused after SVG switch (kept for now) |
+| `asleep-black.png` | Near-black wordmark PNG (legacy) | Home reviews source mark; reviews page messages |
+
 Root-level product packshots used on the homepage:
 
 | File | Shows | Used on |
 |------|-------|---------|
-| `product-unpack.{webm,mp4,webp}` (+ `-reverse`) | Original mattress unpack / peel animation (alpha) | Home products card — Original |
+| `product-unpack.{webm,mp4,webp}` (+ `-reverse`) | Original mattress unpack / peel animation (alpha) | Home products card — Original (video + poster / messages image) |
 | `product-hybrid.webp` | Custom / hybrid mattress corner packshot (alpha) | Home products card — Sukurk savo |
-| `product-original.webp` | Original packshot (legacy / other surfaces) | Home messages `products.items` image, etc. |
+| `bedroom-wide.webp` | Bedroom lifestyle (asleep) | Home bedroom grid hero tile |
+| `trust-badges.webp` | LT trust / awards strip (972×342), shared for all locales | Home hero + PDP purchase extras |
+| `13-time-award.webp` | EN “Best tested / 13-time winner” badge | PDP gallery corner (`en`) |
+| `13-time-award-lt.webp` | LT “Geriausias iš testų” badge | PDP gallery corner (`lt`) |
+
+## `seo/` catalog
+
+| File | Shows | Used on |
+|------|-------|---------|
+| `og-default.webp` | Lifestyle bedroom, asleep logo on mattress (1200×630) | Default Open Graph / Twitter + PDP share |
+| `og-brand.webp` | Campaign shot with large asleep wordmark (1200×630) | Kept for brand/campaign use; not default OG |
+
+## `product-gallery/` (SEO-relevant)
+
+| File | Shows | Used on |
+|------|-------|---------|
+| `hero-square.webp` | Original lifestyle with **asleep** logo | PDP gallery hero; Product JSON-LD; configurator cart line |
 
 ## `product-layers/` catalog
 
@@ -68,6 +93,15 @@ Root-level product packshots used on the homepage:
 | `cold-foam-firm.{mp4,webp}` | Firm cold-foam detail | Layer detail → `coldFoamFirm` |
 
 Code entry point: `src/app/[locale]/products/original/sections/product-layers.tsx` (`SLICES` + `MEDIA`).
+
+## `configurator/` catalog
+
+| File | Shows | Used on |
+|------|-------|---------|
+| `intro-single.webp` | Closed single mattress (opening clip frame 0, lossless alpha, 1280×1520) | Configurator size-step still + video cover |
+| `intro-double.webp` | Closed double mattress (opening clip frame 0, lossless alpha, 1280×1280) | Configurator size-step still + video cover |
+| `section.webp` | Marketing still of the configurator mattress | PDP “create your mattress” section |
+| `section-shadow.png` | Soft shadow under the section still | PDP configurator section |
 
 ## Adding a new asset
 

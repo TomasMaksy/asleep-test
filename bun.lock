@@ -17,6 +17,7 @@
         "react": "19.2.8",
         "react-dom": "19.2.8",
         "stripe": "^22.6.1",
+        "swiffy-slider": "^2.1.2",
         "tailwind-merge": "^3.6.0",
         "zod": "^4.6.5",
         "zustand": "^5.0.15",
@@ -393,6 +394,8 @@
     "stripe": ["stripe@22.6.1", "", { "peerDependencies": { "@types/node": ">=18" }, "optionalPeers": ["@types/node"] }, "sha512-hAKSkGeVt2u46TRYhmnvwmVHxBNtOCJnPjc+SH5sP2B2ypElYzAAY3Ljx0Ar8C2w8nfpFQiZ95qoDCDsFkXMTA=="],
 
     "styled-jsx": ["styled-jsx@5.1.6", "", { "dependencies": { "client-only": "0.0.1" }, "peerDependencies": { "@babel/core": "*", "babel-plugin-macros": "*", "react": ">= 16.8.0 || 17.x.x || ^18.0.0-0 || ^19.0.0-0" }, "optionalPeers": ["@babel/core", "babel-plugin-macros"] }, "sha512-qSVyDTeMotdvQYoHWLNGwRFJHC+i+ZvdBRYosOFgC+Wg1vx4frN2/RG/NA7SYqqvKNLf39P2LSRA2pu6n0XYZA=="],
+
+    "swiffy-slider": ["swiffy-slider@2.1.2", "", {}, "sha512-AGlmDGY/AUYZa0O6YanV/3YOMyMyNoGT8pgc8aNWSgC+kIQgpqK7In4o/A13waFz0l/Hv+IgPBgUDJ+h3hhi7Q=="],
 
     "tailwind-merge": ["tailwind-merge@3.6.0", "", {}, "sha512-uxL7qAVQriqRQPAyK3pj66VqskWqoZ37PW94jwOTwNfq/z9oyu1V+eqrZqtR2+fCiXdYOZe/Modt8GtvqNzu+w=="],
 

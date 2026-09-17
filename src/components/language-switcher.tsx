@@ -70,7 +70,8 @@ export function LanguageSwitcher({
           const rowClassName = cn(
             "flex items-center gap-3 px-4 py-3 font-medium text-sm uppercase tracking-wide",
             !isLast && "border-brand-dark/10 border-b",
-            isActive ? "text-brand-dark" : "text-brand-dark/40",
+            // Current locale is not a link — mute it. Alternatives stay full contrast so they read as clickable.
+            isActive ? "text-brand-dark/40" : "text-brand-dark",
           );
 
           if (isActive) {

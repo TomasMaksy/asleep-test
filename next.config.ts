@@ -22,6 +22,9 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["*.ngrok-free.dev"],
   experimental: {
     globalNotFound: true,
+    // lucide-react is optimized by default; motion is not.
+    // https://nextjs.org/docs/app/api-reference/config/next-config-js/optimizePackageImports
+    optimizePackageImports: ["motion"],
   },
   images: {
     dangerouslyAllowSVG: true,

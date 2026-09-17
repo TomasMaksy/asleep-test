@@ -7,11 +7,11 @@ import { staticImageUrl } from "@/lib/static-image-url";
 const HERO_TYPE: Record<Locale, { desktop: string; mobile: string }> = {
   en: {
     desktop: "top-[21.4%] w-[54%] text-[7.4cqw]",
-    mobile: "top-[27.8%] w-[94%] text-[14cqw]",
+    mobile: "top-[30%] w-[94%] text-[14cqw]",
   },
   lt: {
     desktop: "top-[21.4%] w-[60%] text-[7.4cqw]",
-    mobile: "top-[27.8%] w-[98%] text-[12.5cqw]",
+    mobile: "top-[30%] w-[98%] text-[12.5cqw]",
   },
 };
 
@@ -22,9 +22,11 @@ const HERO_PEOPLE = staticImageUrl("/images/hero-people.webp");
 async function HeroHeadline({
   peopleClassName,
   textClassName,
+  showHeading,
 }: {
   peopleClassName: string;
   textClassName: string;
+  showHeading: boolean;
 }) {
   const t = await getTranslations("hero");
   const lineThree = t("lineThree");
@@ -32,9 +34,11 @@ async function HeroHeadline({
 
   return (
     <>
-      <h1 className="sr-only">
-        {t("lineOne")} {t("lineTwo")} {lineThree}
-      </h1>
+      {showHeading ? (
+        <h1 className="sr-only">
+          {t("lineOne")} {t("lineTwo")} {lineThree}
+        </h1>
+      ) : null}
       <div className="hero-enter-left absolute inset-0 z-10">
         <p aria-hidden="true" className={typeClassName}>
           <span className="block whitespace-nowrap">{t("lineOne")}</span>
@@ -44,9 +48,11 @@ async function HeroHeadline({
         <Image
           alt=""
           className="h-auto w-full"
+          fetchPriority="high"
           height={1593}
           sizes="45vw"
           src={HERO_PEOPLE}
+          unoptimized
           width={1800}
         />
       </div>
@@ -72,6 +78,14 @@ export async function HeroSection() {
 
   return (
     <section className="relative flex h-(--hero-height) flex-col items-center overflow-hidden bg-[#1A478A] pb-8 lg:-mt-5">
+      {/*
+        Art-direction (Next.js 16): media-scoped <link rel="preload"> picks one
+        LCP candidate. Do not set Image `priority`/`preload`/`loading="eager"` on
+        both artboards — that forces both downloads. Pre-compressed WebPs use
+        `unoptimized` so preload href matches <img src>. Hidden artboards stay
+        lazy; browsers skip display:none lazy images.
+        https://nextjs.org/docs/app/api-reference/components/image
+      */}
       <link
         as="image"
         fetchPriority="high"
@@ -86,19 +100,22 @@ export async function HeroSection() {
         media="(max-width: 767px)"
         rel="preload"
       />
+      <link as="image" fetchPriority="high" href={HERO_PEOPLE} rel="preload" />
 
       <div className="absolute inset-0 z-0 overflow-hidden">
         <div className="@container hero-artboard hero-artboard--desktop">
           <Image
             alt=""
             className="object-cover"
+            fetchPriority="high"
             fill
-            priority
             sizes="100vw"
             src={HERO_DESKTOP}
+            unoptimized
           />
           <HeroHeadline
             peopleClassName="left-[29.42%] top-[23.07%] w-[43.45%]"
+            showHeading={false}
             textClassName={type.desktop}
           />
         </div>
@@ -107,12 +124,15 @@ export async function HeroSection() {
           <Image
             alt=""
             className="object-cover"
+            fetchPriority="high"
             fill
             sizes="100vw"
             src={HERO_MOBILE}
+            unoptimized
           />
           <HeroHeadline
             peopleClassName="-left-[2.06%] top-[30.19%] w-[100.92%]"
+            showHeading
             textClassName={type.mobile}
           />
         </div>
@@ -135,10 +155,10 @@ export async function HeroSection() {
             <Image
               alt=""
               className="z-40 mx-auto h-auto w-[300px] object-contain md:w-[357px]"
-              height={171}
+              height={342}
               sizes="(max-width: 768px) 300px, 357px"
-              src="/images/awards.webp"
-              width={486}
+              src="/images/trust-badges.webp"
+              width={972}
             />
           </div>
         </div>

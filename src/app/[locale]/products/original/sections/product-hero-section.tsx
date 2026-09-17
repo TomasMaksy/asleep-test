@@ -1,7 +1,13 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { ProductBuyBox } from "@/app/[locale]/products/original/product-buy-box";
 import { ProductMediaGallery } from "@/app/[locale]/products/original/product-media-gallery";
 import { ProductPurchaseExtras } from "@/app/[locale]/products/original/sections/product-purchase-extras";
+
+function awardBadgeSrc(locale: string) {
+  return locale === "lt"
+    ? "/images/13-time-award-lt.webp"
+    : "/images/13-time-award.webp";
+}
 
 function ProductHeroRating({
   rating,
@@ -59,15 +65,19 @@ function StarIcon({ half }: { half?: boolean }) {
 
 export async function ProductHeroSection() {
   const t = await getTranslations("productOriginal.hero");
+  const locale = await getLocale();
 
   return (
     <section className="border-[#ececec] border-b bg-white">
       <div className="relative flex flex-col bg-white 2xl:container lg:flex-row 2xl:mx-auto">
         <div className="relative w-full max-lg:mb-6 lg:w-[55%] lg:pb-3">
-          <ProductMediaGallery awardAlt="Consumentenbond 13-time winner" />
+          <ProductMediaGallery
+            awardAlt={t("awards.badgeAlt")}
+            awardSrc={awardBadgeSrc(locale)}
+          />
         </div>
 
-        <div className="w-full lg:w-[45%] lg:px-0 lg:py-10 lg:pl-12 xl:pr-20 xl:pl-16 2xl:px-0 2xl:pt-12 2xl:pl-24">
+        <div className="w-full lg:w-[45%] lg:py-10 lg:pr-10 lg:pl-12 xl:pr-20 xl:pl-16 2xl:pt-12 2xl:pr-0 2xl:pl-24">
           <div className="mx-auto w-full 2xl:max-w-[960px]">
             <div className="flex flex-col px-5 lg:px-0">
               <h1
@@ -87,7 +97,7 @@ export async function ProductHeroSection() {
               />
             </div>
 
-            <div className="px-5 lg:px-0">
+            <div className="overflow-x-clip px-5 lg:px-0">
               <ProductBuyBox />
               <ProductPurchaseExtras />
             </div>

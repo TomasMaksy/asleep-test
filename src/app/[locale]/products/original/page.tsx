@@ -7,12 +7,11 @@ import { ProductHeroSection } from "@/app/[locale]/products/original/sections/pr
 import { ProductInfoSliderSection } from "@/app/[locale]/products/original/sections/product-info-slider-section";
 import { ProductLayersSection } from "@/app/[locale]/products/original/sections/product-layers-section";
 import { ProductSpecsSection } from "@/app/[locale]/products/original/sections/product-specs-section";
-import { ReviewsCarouselSection } from "@/app/[locale]/reviews/sections/reviews-carousel-section";
+import { ReviewsCarouselLazy } from "@/app/[locale]/reviews/sections/reviews-carousel-lazy";
 import { ProductJsonLd } from "@/components/product/product-json-ld";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { routing } from "@/i18n/routing";
-import { getSiteUrl } from "@/lib/site-url";
+import { buildPageMetadata } from "@/lib/seo-metadata";
 
 const PRODUCT_PATH = "/products/original";
 
@@ -23,22 +22,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("productOriginal.metadata");
-  const baseUrl = getSiteUrl();
-  const languages: Record<string, string> = {};
 
-  for (const altLocale of routing.locales) {
-    languages[altLocale] = `${baseUrl}/${altLocale}${PRODUCT_PATH}`;
-  }
-  languages["x-default"] = `${baseUrl}/${routing.defaultLocale}${PRODUCT_PATH}`;
-
-  return {
+  return buildPageMetadata({
+    locale,
+    path: PRODUCT_PATH,
     title: t("title"),
     description: t("description"),
-    alternates: {
-      canonical: `${baseUrl}/${locale}${PRODUCT_PATH}`,
-      languages,
-    },
-  };
+    ogAlt: "asleep Original",
+  });
 }
 
 export default function OriginalProductPage() {
@@ -53,7 +44,7 @@ export default function OriginalProductPage() {
         <ProductLayersSection />
         <ProductDifferenceSection />
         <ProductSpecsSection />
-        <ReviewsCarouselSection />
+        <ReviewsCarouselLazy />
         <SupportSection />
       </main>
       <SiteFooter />

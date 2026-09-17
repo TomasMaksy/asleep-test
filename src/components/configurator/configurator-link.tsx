@@ -2,6 +2,7 @@
 
 import type { ComponentProps } from "react";
 import { Link, useRouter } from "@/i18n/navigation";
+import { preloadConfiguratorPosters } from "@/lib/configurator";
 
 type ConfiguratorLinkProps = Omit<
   ComponentProps<typeof Link>,
@@ -10,6 +11,7 @@ type ConfiguratorLinkProps = Omit<
 
 function preloadConfigurator() {
   void import("@/app/[locale]/configurator/sections/configurator-section");
+  preloadConfiguratorPosters();
 }
 
 export function ConfiguratorLink({
