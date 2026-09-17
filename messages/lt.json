@@ -45,7 +45,6 @@
         "title": "Pagalba",
         "links": [
           { "label": "DUK", "href": "/contact#faq" },
-          { "label": "Grąžinimo taisyklės", "href": "/contact" },
           { "label": "Garantija", "href": "/warranty" },
           { "label": "Privatumo politika", "href": "/privacy" },
           { "label": "Naudojimo sąlygos", "href": "/terms" }

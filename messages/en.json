@@ -45,7 +45,6 @@
         "title": "Help",
         "links": [
           { "label": "FAQ", "href": "/contact#faq" },
-          { "label": "Returns policy", "href": "/contact" },
           { "label": "Warranty", "href": "/warranty" },
           { "label": "Privacy policy", "href": "/privacy" },
           { "label": "Terms & conditions", "href": "/terms" }
